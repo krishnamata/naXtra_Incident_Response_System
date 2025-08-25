@@ -1,0 +1,8 @@
+# Ignore model files and databases
+*.gguf
+*.db
+.env
+output.*
+agent_logs/
+backups/
+generated_outputs/
