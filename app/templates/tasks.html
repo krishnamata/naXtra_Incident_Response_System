@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Tasks - naXtraSOAR{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Tasks</h1>
+
+  <!-- Type selector -->
+  <div class="mb-3">
+    <label for="task_type">Select Type:</label>
+    <select id="task_type" onchange="loadItems()">
+      <option value="log" {% if request.args.get('type', 'log') == 'log' %}selected{% endif %}>Logs</option>
+      <option value="alert" {% if request.args.get('type') == 'alert' %}selected{% endif %}>Alerts</option>
+    </select>
+
+    <label for="agent_filter" class="ms-3">Filter by Agent:</label>
+    <select id="agent_filter" onchange="loadItems()">
+      <option value="">-- All Agents --</option>
+      {% for agent in agent_names %}
+        <option value="{{ agent }}">{{ agent }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+<p>show_malware = {{ show_malware }}</p>
+
+<div class="mb-4">
+  {% if show_malware %}
+    <a href="{{ url_for('tasks.view_tasks') }}" class="btn btn-primary">Show Normal Alerts</a>
+  {% else %}
+    <a href="{{ url_for('tasks.view_tasks', malware='true') }}" class="btn btn-danger">Show Malware Alerts</a>
+  {% endif %}
+</div>
+
+<h2>
+  {% if show_malware %}
+    Malware Alerts
+  {% else %}
+    Normal Alerts
+  {% endif %}
+</h2>
+
+<ul>
+  {% for alert in alerts %}
+    <li>{{ alert.id }} - {{ alert.description }}</li>
+  {% endfor %}
+</ul>
+
+
+
+  <table id="tasksTable" class="table table-bordered table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Agent</th>
+        <th>Timestamp</th>
+        <th>Description / Raw Log</th>
+        <th>Status</th>
+        <th>Assigned To</th>
+
+        <!-- Only for alerts -->
+        <th>Playbook</th>
+        <th>Rule ID</th>
+        <th>Mitre ID</th>
+        <th>IOC Info</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filled dynamically via JS -->
+    </tbody>
+  </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+let table;
+let show_malware = {{ 'true' if show_malware else 'false' }};  // boolean
+
+function loadItems() {
+  const type = $('#task_type').val();
+  const agent = $('#agent_filter').val();
+
+  $.get('/tasks/get_items', { type, agent, malware: show_malware }, function(data) {
+    const tbody = $('#tasksTable tbody');
+    tbody.empty();
+
+    data.items.forEach(item => {
+      const row = $('<tr></tr>');
+
+      row.append(`<td>${item.id}</td>`);
+      row.append(`<td>${item.agent_name}</td>`);
+      row.append(`<td>${item.timestamp}</td>`);
+      row.append(`<td title="${item.description}">${item.description}</td>`);
+      row.append(`<td>${item.status}</td>`);
+      row.append(`<td>${item.assigned_to}</td>`);
+
+      if(type === 'alert') {
+        // Playbook steps
+        if(item.playbook_steps && item.playbook_steps.length > 0) {
+          let steps_html = `<ul>`;
+          item.playbook_steps.forEach(step => steps_html += `<li>${step}</li>`);
+          steps_html += `</ul>`;
+          row.append(`<td>${steps_html}</td>`);
+        } else { row.append('<td>-</td>'); }
+
+        // Rule ID
+        row.append(`<td>${item.rule_id || '-'}</td>`);
+
+        // MITRE ID link
+        if(item.technique_id && item.technique_id !== 'NA') {
+          row.append(`<td><a href="https://attack.mitre.org/techniques/${item.technique_id}/" target="_blank">${item.technique_id}</a></td>`);
+        } else { row.append('<td>-</td>'); }
+
+        // IOC Info — only for malware alerts
+        if(show_malware && item.ioc_enrichment && Object.keys(item.ioc_enrichment).length > 0) { 
+          let ioc_html = '<ul>';
+          for(const [key, val] of Object.entries(item.ioc_enrichment)) {
+            ioc_html += `<li>${key}: <pre>${JSON.stringify(val, null, 2)}</pre></li>`;
+          }
+          ioc_html += '</ul>';
+          row.append(`<td>${ioc_html}</td>`);
+        } else {
+          row.append('<td>-</td>');
+        }
+
+      } else {
+        // Logs: keep alert columns empty
+        row.append('<td>-</td><td>-</td><td>-</td><td>-</td>');
+      }
+
+      tbody.append(row);
+    });
+
+    if(table) table.destroy();
+    table = $('#tasksTable').DataTable({
+      paging: true,
+      ordering: true,
+      order: [[2, 'desc']]
+    });
+  });
+}
+
+$(document).ready(function() {
+  loadItems();
+});
+</script>
+
+
+{% endblock %}

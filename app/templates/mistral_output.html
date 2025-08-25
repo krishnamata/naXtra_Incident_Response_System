@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Mistral Output Viewer{% endblock %}
+
+{% block content %}
+<h2>Detection Rule</h2>
+<pre id="rule" class="code-block"></pre>
+
+<h2>Decoder</h2>
+<pre id="decoder" class="code-block"></pre>
+
+<h2>Playbook</h2>
+<ul id="playbook" class="list-group"></ul>
+
+<script>
+  async function fetchMistralOutput() {
+    try {
+      const res = await fetch('/api/mistral-output');
+      if (!res.ok) throw new Error('Network error');
+
+      const data = await res.json();
+
+      document.getElementById('rule').textContent = data.rule;
+      document.getElementById('decoder').textContent = data.decoder;
+
+      const playbookList = document.getElementById('playbook');
+      playbookList.innerHTML = '';
+      data.playbook.forEach(step => {
+        const li = document.createElement('li');
+        li.textContent = `Step ${step.step}: ${step.action} (${step.type})`;
+        li.className = 'list-group-item';
+        playbookList.appendChild(li);
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      document.getElementById('rule').textContent = "Failed to load data.";
+    }
+  }
+
+  fetchMistralOutput();
+</script>
+
+<style>
+  .code-block {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 12px;
+    white-space: pre-wrap;
+    font-family: monospace;
+  }
+</style>
+{% endblock %}

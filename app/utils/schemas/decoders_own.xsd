@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+  <!-- Root decoders container -->
+  <xs:element name="decoders">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="decoder" maxOccurs="unbounded" minOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="parent" type="xs:string" minOccurs="0" maxOccurs="1"/>
+              <xs:element name="prematch" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="offset" type="xs:string" use="optional"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="regex" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="offset" type="xs:string" use="optional"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="order" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

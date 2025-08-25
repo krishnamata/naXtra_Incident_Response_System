@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Agent Logs</h2>
+
+  <!-- Agent selector -->
+  <form id="agentForm" method="get" action="{{ url_for('dashboard.logs') }}">
+    <div class="form-group mb-3">
+      <label for="agent">Select Agent:</label>
+      <select name="agent_id" id="agent" class="form-control">
+        <option value="">-- Select Agent --</option>
+        {% for agent in agents %}
+          <option value="{{ agent.id }}" {% if selected_agent and selected_agent.id == agent.id %}selected{% endif %}>
+            {{ agent.hostname }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+
+  <!-- Logs display -->
+  <div id="logsContainer">
+    {% if logs %}
+      <h4 class="mt-3">Recent Logs for {{ selected_agent.hostname }}</h4>
+      <ul class="list-group" id="logsList">
+        {% for log in logs %}
+          <li class="list-group-item">
+            <strong>{{ log.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}</strong><br>
+            <code>{{ log.message }}</code>
+          </li>
+        {% endfor %}
+      </ul>
+    {% elif selected_agent %}
+      <p class="mt-3">No logs available for {{ selected_agent.hostname }}.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const agentSelect = document.getElementById('agent');
+    const logsList = document.getElementById('logsList');
+
+    // Submit form on agent change
+    agentSelect.addEventListener('change', function() {
+        const agentId = agentSelect.value;
+        fetchLogs(agentId);
+    });
+
+    // Function to fetch logs via AJAX
+    function fetchLogs(agentId) {
+        if (!agentId) return;
+        fetch(`{{ url_for('dashboard.logs') }}?agent_id=${agentId}&ajax=1`)
+            .then(response => response.json())
+            .then(data => {
+                if (logsList) {
+                    logsList.innerHTML = '';
+                    if (data.logs.length > 0) {
+                        data.logs.forEach(log => {
+                            const li = document.createElement('li');
+                            li.classList.add('list-group-item');
+                            li.innerHTML = `<strong>${log.timestamp}</strong><br><code>${log.message}</code>`;
+                            logsList.appendChild(li);
+                        });
+                    } else {
+                        logsList.innerHTML = '<li class="list-group-item">No logs available.</li>';
+                    }
+                }
+            })
+            .catch(err => console.error('Error fetching logs:', err));
+    }
+
+    // Auto-refresh every 10 seconds
+    setInterval(function() {
+        const agentId = agentSelect.value;
+        if (agentId) fetchLogs(agentId);
+    }, 10000); // 10000ms = 10 seconds
+});
+</script>
+{% endblock %}

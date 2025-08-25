@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <h3>SOC Control Panel</h3>
+        <ul>
+            <li><a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
+            {% if role in ['admin', 'Senior analyst'] %}
+            <li><a href="#">Manage Agents</a></li>
+            <li><a href="#">Alerts</a></li>
+            <li><a href="#">Tasks</a></li>
+            {% endif %}
+            <li><a href="#">Logs</a></li>
+            {% if role == 'admin' %}
+            <li><a href="#">AI Insights</a></li>
+            <li><a href="#">Configurations</a></li>
+            <li><a href="#">Compliance Reports</a></li>
+            {% endif %}
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <section class="welcome-section">
+            <h2>Welcome, {{ username }} ({{ role }})</h2>
+            <p>Total Agents: {{ total_agents | default(0) }}</p>
+        </section>
+
+        <section class="agents-overview">
+            <h3>Agents Overview</h3>
+            <ul>
+                {% for agent in agent_names %}
+                <li>{{ agent }} — Alerts: {{ alert_counts.get(agent, 0) }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section class="endpoint-risk">
+            <h3>Endpoint Risk</h3>
+            <ul>
+                {% for agent, data in endpoint_risk.items() %}
+                    {% set score = data.get('values', [0])[0] %}
+                    {% if score < 4 %}
+                        {% set label = "Low" %}
+                    {% elif score < 7 %}
+                        {% set label = "Medium" %}
+                    {% elif score < 9 %}
+                        {% set label = "High" %}
+                    {% else %}
+                        {% set label = "Critical" %}
+                    {% endif %}
+                    <li>{{ agent }}: {{ score }} ({{ label }})</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        {% if generator_summary %}
+        <section class="naxtraai-summary">
+            <h3>naXtraAI Summary</h3>
+            <p>{{ generator_summary }}</p>
+        </section>
+        {% endif %}
+
+        <!-- Future sections -->
+        <section class="threat-intel">
+            <h3>Threat Intelligence</h3>
+            <p>Upcoming: integrate external threat feeds here</p>
+        </section>
+
+        <section class="behavior-trends">
+            <h3>Behavior & Risk Trends</h3>
+            <p>Charts will display trends of alerts, risk, and user behavior.</p>
+        </section>
+    </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const endpointRisk = {{ endpoint_risk | default({}) | safe }};
+    const globalTrend = {{ global_trend | default({}) | safe }};
+    console.log("Endpoint Risk:", endpointRisk);
+    console.log("Global Trend:", globalTrend);
+</script>
+{% endblock %}

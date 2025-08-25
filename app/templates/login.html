@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>naXtraSOAR Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <!-- Login Form -->
+      <form method="POST" action="{{ url_for('auth.login') }}" class="card card-body mb-4">
+        <h4 class="text-center mb-3">Admin Login</h4>
+        <div class="mb-3">
+          <label>Username</label>
+          <input name="username" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Password</label>
+          <input name="password" type="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+        {% with messages = get_flashed_messages(category_filter=["login"]) %}
+          {% if messages %}
+            <div class="alert alert-danger mt-2">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+      </form>
+
+      <!-- Signup Form -->
+      <form method="POST" action="{{ url_for('auth.signup') }}" class="card card-body">
+        <h4 class="text-center mb-3">Sign Up</h4>
+        <div class="mb-3">
+          <label>Username</label>
+          <input name="username" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Password</label>
+          <input name="password" type="password" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Office Email</label>
+          <input name="office_email" type="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Cell Number</label>
+          <input name="cell_number" type="tel" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Request Access</button>
+        {% with messages = get_flashed_messages(category_filter=["signup"]) %}
+          {% if messages %}
+            <div class="alert alert-info mt-2">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

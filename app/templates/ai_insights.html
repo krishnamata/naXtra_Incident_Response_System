@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="chat-box" style="max-width:800px;margin:20px auto;padding:20px;background:#fff;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,0.1);">
+    <div id="messages" style="max-height:400px;overflow-y:auto;margin-bottom:10px;"></div>
+    <div style="display:flex;gap:10px;">
+        <textarea id="user-input" rows="2" placeholder="Enter log or question..." style="flex:1;padding:10px;border-radius:6px;border:1px solid #ccc;"></textarea>
+        <select id="gen-type" style="padding:10px;border-radius:6px;border:1px solid #ccc;">
+            <option value="general">General</option>
+            <option value="decoder">Decoder</option>
+            <option value="rule">Rule</option>
+        </select>
+        <button id="send-btn" style="padding:10px 15px;border-radius:6px;border:none;background:#007bff;color:#fff;cursor:pointer;">Send</button>
+    </div>
+</div>
+
+<script>
+const messagesDiv = document.getElementById('messages');
+const userInput = document.getElementById('user-input');
+const genType = document.getElementById('gen-type');
+const sendBtn = document.getElementById('send-btn');
+
+function addMessage(text, sender='user', loading=false){
+    const div = document.createElement('div');
+    div.className = `message ${sender}`;
+    div.style.padding = '8px 12px';
+    div.style.marginBottom = '10px';
+    div.style.borderRadius = '6px';
+    div.style.background = sender==='user' ? '#d1ecf1' : '#e2e3e5';
+    div.style.textAlign = sender==='user' ? 'right' : 'left';
+    div.innerHTML = loading ? `<span class="loading" style="font-style:italic;color:#888">${text}</span>` : text;
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    return div;
+}
+
+sendBtn.addEventListener('click', async () => {
+    const text = userInput.value.trim();
+    if(!text) return;
+
+    addMessage(text,'user');
+    userInput.value = '';
+    sendBtn.disabled = true;
+
+    let loadingText = genType.value==='rule' ? 'Generating XML rule...' :
+                      genType.value==='decoder' ? 'Generating XML decoder...' :
+                      'naXtraAI is generating...';
+    const loadingDiv = addMessage(loadingText,'ai',true);
+
+    try {
+        const response = await fetch('/ai_insights/generate', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json', 'Role': 'admin'},
+            body: JSON.stringify({text, gen_type: genType.value})
+        });
+
+        let data;
+        try {
+            data = await response.json();
+        } catch (e) {
+            addMessage("Error: Invalid server response. Please try again.", 'ai');
+            return;
+        }
+
+        let displayText = '';
+        if(data.status==='generated'){
+            displayText = `<pre style="background:#f0f0f0;padding:10px;border-radius:6px;overflow-x:auto;">${data.data}</pre>`;
+        } else if(data.status==='exists'){
+            if(data.id) displayText = `Rule exists: ID = ${data.id}`;
+            else if(data.name) displayText = `Decoder exists: Name = ${data.name}`;
+            else displayText = 'Entry exists.';
+        } else if(data.status==='error'){
+            displayText = `Error: ${data.message || data.data}`;
+        } else {
+            displayText = "Unexpected response from Server.";
+        }
+
+        addMessage(displayText,'ai');
+
+    } catch(err){
+        addMessage(`Error: ${err.message}`,'ai');
+    } finally {
+        sendBtn.disabled = false;
+        if(loadingDiv.parentNode) loadingDiv.remove();
+    }
+});
+</script>
+
+{% endblock %}

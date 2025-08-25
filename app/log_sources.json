@@ -1,0 +1,7 @@
+{
+    "local": {
+        "Auth Log": "/app/logs/auth.log",
+        "Boot Log": "/app/logs/boot.log",
+        "DPKG Log": "/app/logs/dpkg.log"
+    }
+}

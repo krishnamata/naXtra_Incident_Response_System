@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Authentication Alerts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 1.5rem;
+            background-color: #f7f9fb;
+        }
+        h1 {
+            color: #333;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Authentication Alerts (Last 20 lines)</h1>
+    <pre>
+{% for line in logs %}
+{{ line }}
+{% endfor %}
+    </pre>
+</body>
+</html>

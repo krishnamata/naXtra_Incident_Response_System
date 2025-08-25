@@ -1,0 +1,12 @@
+id: mistral-failure-playbook
+title: Investigate Mistral Failure - Failed to Load Data
+trigger_rule_id: 750001
+steps:
+  - step: Check Mistral system logs for GPU/memory issues
+  - step: Verify llama.cpp is correctly configured
+  - step: Check if model path is correct and accessible
+  - step: Restart the Mistral model service
+  - step: Escalate to engineer if recurring
+automation:
+  - command: "systemctl restart mistral-model"
+    user_role: "admin"

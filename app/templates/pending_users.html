@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Pending Users{% endblock %}
+
+{% block content %}
+ <a href="{{ url_for('auth.manage_users') }}" class="btn btn-secondary mb-3">← Back to User Management</a>
+
+  {% if users %}
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.status }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('auth.approve_user', user_id=user.id) }}" style="display:inline;">
+             <a href="{{ url_for('auth.pre_approve_user', user_id=user.id) }}" class="btn btn-primary btn-sm">Pre-Approve</a>
+
+            </form>
+            <form method="POST" action="{{ url_for('auth.reject_user', user_id=user.id) }}" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>All users are approved.</p>
+
+  {% endif %}
+{% endblock %}

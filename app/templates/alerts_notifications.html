@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Tasks - New Alerts{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>New Alert Notifications</h1>
+    {% if alerts %}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Rule ID</th>
+                <th>Rule Title</th>
+                <th>Severity</th>
+                <th>Agent Name</th>
+                <th>Log Type</th>
+                <th>Detected Time</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for alert in alerts %}
+            <tr>
+                <td>{{ alert.id }}</td>
+                <td>{{ alert.rule_id }}</td>
+                <td>{{ alert.rule_title }}</td>
+                <td>{{ alert.severity }}</td>
+                <td>{{ alert.agent_name }}</td>
+                <td>{{ alert.matched_log.log_type if alert.matched_log else 'N/A' }}</td>
+                <td>{{ alert.detected_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ alert.description }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No new alerts found.</p>
+    {% endif %}
+</div>
+{% endblock %}

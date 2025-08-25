@@ -1,0 +1,25 @@
+roles:
+  admin:
+    can_manage_users: true
+    can_assign_alerts: true
+    can_view_alerts: true
+    can_run_playbooks: true
+    can_manage_playbooks: true
+    can_view_mitre: true
+    can_generate_billing: true
+    can_view_reports: true
+
+  senior_analyst:
+    can_view_alerts: true
+    can_assign_alerts: true
+    can_run_playbooks: true
+    can_manage_playbooks: true
+    can_view_mitre: true
+    can_generate_reports: true
+
+  analyst:
+    can_view_alerts: true
+    can_run_playbooks: true
+    can_view_mitre: true
+    can_submit_findings: true
+    can_request_escalation: true

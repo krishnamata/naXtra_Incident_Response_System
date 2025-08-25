@@ -1,0 +1,30 @@
+<ul class="list-unstyled mb-0" id="alert-{{ alert.id }}-steps">
+  {% for step in alert.step_summaries %}
+  <li class="mb-2">
+    <strong>{{ step.nist_phase }} - {{ step.sub_step }}:</strong>
+    <button class="btn btn-sm btn-outline-primary ms-2 step-btn"
+            data-bs-toggle="modal" data-bs-target="#stepModal"
+            data-alert="{{ alert.id }}"
+            data-step-id="{{ step.step_id }}"
+            data-step-name="{{ step.sub_step }}">
+      {{ step.status }}
+      {% if step.evidence_count > 0 %}
+        ({{ step.evidence_count }} evidence)
+      {% endif %}
+    </button>
+    <br>
+    <small>
+      By: {{ step.updated_by or "-" }}, {{ step.updated_at or "-" }}
+    </small>
+    {% if step.status != "pending" and session.get('role') in ['admin', 'senior_analyst'] %}
+<form method="POST" class="d-inline restore-form" 
+      data-alert-id="{{ alert.id }}" 
+      action="{{ url_for('alerts.restore_alert_step', alert_id=alert.id, step_id=step.step_id) }}">
+  <button class="btn btn-sm btn-secondary ms-2">Restore</button>
+</form>
+
+
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>

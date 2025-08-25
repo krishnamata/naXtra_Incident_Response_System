@@ -1,0 +1,122 @@
+{
+  "5715": {
+    "rule_name": "SSH Brute Force Attempt",
+    "mitre_attack": "T1110",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "N", "C": "N", "I": "L", "A": "N" }
+  },
+  "5716": {
+    "rule_name": "SSH Authenticated After Brute Force",
+    "mitre_attack": "T1110",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "N", "C": "H", "I": "H", "A": "N" }
+  },
+  "100201": {
+    "rule_name": "SQL Injection Attempt",
+    "mitre_attack": "T1190",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "R", "C": "H", "I": "H", "A": "L" }
+  },
+  "31002": {
+    "rule_name": "Privilege Escalation Detected",
+    "mitre_attack": "T1068",
+    "metrics": { "AV": "L", "AC": "L", "PR": "L", "UI": "N", "C": "H", "I": "H", "A": "H" }
+  },
+  "23502": {
+    "rule_name": "Malware Detected",
+    "mitre_attack": "T1059",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "R", "C": "H", "I": "H", "A": "H" }
+  },
+  "31101": {
+    "rule_name": "Web Shell Activity",
+    "mitre_attack": "T1505.003",
+    "metrics": { "AV": "N", "AC": "L", "PR": "L", "UI": "N", "C": "H", "I": "H", "A": "H" }
+  },
+  "25202": {
+    "rule_name": "Port Scan / Reconnaissance",
+    "mitre_attack": "T1046",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "N", "C": "N", "I": "N", "A": "N" }
+  },
+  "60105": {
+    "rule_name": "Suspicious PowerShell Execution",
+    "mitre_attack": "T1059.001",
+    "metrics": { "AV": "L", "AC": "L", "PR": "N", "UI": "N", "C": "H", "I": "H", "A": "L" }
+  },
+  "5502": {
+    "rule_name": "Unauthorized File Access",
+    "mitre_attack": "T1005",
+    "metrics": { "AV": "L", "AC": "L", "PR": "L", "UI": "N", "C": "H", "I": "L", "A": "N" }
+  },
+  "29200": {
+    "rule_name": "Ransomware Behavior Detected",
+    "mitre_attack": "T1486",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "N", "C": "H", "I": "H", "A": "H" }
+  },
+  "26501": {
+    "rule_name": "Denial of Service Attack",
+    "mitre_attack": "T1499",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "N", "C": "N", "I": "N", "A": "H" }
+  },
+  "35001": {
+    "rule_name": "Persistence – Registry Run Key",
+    "mitre_attack": "T1547.001",
+    "metrics": { "AV": "L", "AC": "L", "PR": "L", "UI": "N", "C": "N", "I": "L", "A": "N" }
+  },
+  "45001": {
+    "rule_name": "C2 Beacon Detected",
+    "mitre_attack": "T1071",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "N", "C": "H", "I": "H", "A": "H" }
+  },
+  "33102": {
+    "rule_name": "Suspicious Service Creation",
+    "mitre_attack": "T1543.003",
+    "metrics": { "AV": "L", "AC": "L", "PR": "L", "UI": "N", "C": "H", "I": "H", "A": "L" }
+  },
+  "61101": {
+    "rule_name": "Mimikatz Detected (Credential Dumping)",
+    "mitre_attack": "T1003.001",
+    "metrics": { "AV": "L", "AC": "L", "PR": "L", "UI": "N", "C": "H", "I": "N", "A": "N" }
+  },
+  "50001": {
+    "rule_name": "Suspicious Scheduled Task Creation",
+    "mitre_attack": "T1053.005",
+    "metrics": { "AV": "L", "AC": "L", "PR": "L", "UI": "N", "C": "N", "I": "H", "A": "N" }
+  },
+  "27201": {
+    "rule_name": "Traffic to Rare IP Detected",
+    "mitre_attack": "T1071.004",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "N", "C": "L", "I": "L", "A": "N" }
+  },
+  "32002": {
+    "rule_name": "Buffer Overflow Exploit Attempt",
+    "mitre_attack": "T1203",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "N", "C": "H", "I": "H", "A": "H" }
+  },
+  "5802": {
+    "rule_name": "Unauthorized Admin Access Attempt",
+    "mitre_attack": "T1078",
+    "metrics": { "AV": "N", "AC": "L", "PR": "H", "UI": "N", "C": "H", "I": "H", "A": "N" }
+  },
+  "64005": {
+    "rule_name": "Suspicious WMI Execution",
+    "mitre_attack": "T1047",
+    "metrics": { "AV": "L", "AC": "L", "PR": "L", "UI": "N", "C": "H", "I": "H", "A": "N" }
+  },
+  "72001": {
+    "rule_name": "DLL Injection Detected",
+    "mitre_attack": "T1055",
+    "metrics": { "AV": "L", "AC": "L", "PR": "L", "UI": "N", "C": "H", "I": "H", "A": "H" }
+  },
+  "18001": {
+    "rule_name": "Unusual Login Time Detected",
+    "mitre_attack": "T1078.004",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "N", "C": "L", "I": "N", "A": "N" }
+  },
+  "21102": {
+    "rule_name": "Suspicious Email Attachment",
+    "mitre_attack": "T1566.001",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "R", "C": "H", "I": "H", "A": "L" }
+  },
+  "29101": {
+    "rule_name": "Ransomware File Encryption",
+    "mitre_attack": "T1486",
+    "metrics": { "AV": "N", "AC": "L", "PR": "N", "UI": "N", "C": "H", "I": "H", "A": "H" }
+  }
+}

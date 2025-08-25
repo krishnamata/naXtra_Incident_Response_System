@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% block title %}User Management - naXtraSOAR{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>User Management</h2>
+<form id="addUserForm"  method="POST" action="{{ url_for('auth.add_user') }}" class="row g-3 mb-4">
+    <div class="col-md-5">
+        <input type="text" name="username" class="form-control" placeholder="Username" required>
+    </div>
+    <div class="col-md-5">
+        <input type="password" name="password" class="form-control" placeholder="Password" required>
+    </div>
+    <div class="col-md-2">
+        <select name="role" class="form-select" required>
+            {% for role in roles %}
+                <option value="{{ role }}">{{ role }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-success w-100">Add User</button>
+    </div>
+</form>
+
+    <hr>
+
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td class="username-cell">{{ user.username }}</td>
+                <td class="role-cell">{{ user.role }}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateUserModal-{{ user.id }}">Update</button>
+                    <form action="{{ url_for('auth.delete_user', user_id=user.id) }}" method="post" style="display:inline;">
+                        <input type="hidden" name="username" value="{{ user.username }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+
+            <!-- Update User Modal -->
+            <div class="modal fade" id="updateUserModal-{{ user.id }}" tabindex="-1" aria-labelledby="updateUserModalLabel-{{ user.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ url_for('auth.update_user', user_id=user.id) }}" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateUserModalLabel-{{ user.id }}">Update User: {{ user.username }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="original_username" value="{{ user.username }}">
+                                <div class="mb-3">
+                                    <label for="new_username-{{ user.id }}" class="form-label">New Username</label>
+                                    <input type="text" class="form-control" id="new_username-{{ user.id }}" name="new_username" value="{{ user.username }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new_role-{{ user.id }}" class="form-label">New Role</label>
+                                    <select class="form-select" id="new_role-{{ user.id }}" name="new_role" required>
+                                        {% for role in roles %}
+                                        <option value="{{ role }}" {% if role == user.role %}selected{% endif %}>{{ role }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+<script>
+    // No need for localStorage token anymore, JWT is in HttpOnly cookie
+
+    // Add user
+    $('#addUserForm').on('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch('{{ url_for("auth.add_user") }}', {
+            method: 'POST',
+            credentials: 'include',               // send cookies
+            body: formData                       // FormData sets appropriate Content-Type automatically
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                response.json().then(data => alert(data.error || 'Failed to add user'));
+            }
+        });
+    });
+
+    // Delete user
+    $('.delete-btn').click(function () {
+        const userId = $(this).data('user-id');
+        fetch(`/users/delete/${userId}`, {
+            method: 'POST',
+            credentials: 'include'               // send cookies
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                response.json().then(data => alert(data.error || 'Failed to delete user'));
+            }
+        });
+    });
+
+    // Reset password
+    $('.reset-btn').click(function () {
+        const userId = $(this).data('user-id');
+        fetch(`/users/reset/${userId}`, {
+            method: 'POST',
+            credentials: 'include'               // send cookies
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                response.json().then(data => alert(data.error || 'Failed to reset password'));
+            }
+        });
+    });
+
+    // Edit user - updates row without page reload
+    $('.updateUserForm').submit(function (e) {
+        e.preventDefault();
+        const userId = $(this).data('user-id');
+        const formData = new FormData(this);
+
+        // Convert FormData to URLSearchParams for simpler encoding
+        const params = new URLSearchParams();
+        for (const pair of formData.entries()) {
+            params.append(pair[0], pair[1]);
+        }
+
+        fetch(`/users/update/${userId}`, {
+            method: 'POST',
+            credentials: 'include',             // send cookies
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params.toString()
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                // Update the table row values
+                const row = $(`button[data-user-id="${userId}"]`).closest('tr');
+                row.find('td').eq(1).text(formData.get('new_username'));  // username cell
+                row.find('td').eq(2).text(formData.get('new_role'));      // role cell
+
+                // Hide the modal
+                $(`#updateUserModalLabel-${userId}`).modal('hide');
+            } else {
+                alert(data.error || 'Update failed');
+            }
+        })
+        .catch(() => alert('An error occurred while updating user'));
+    });
+
+    // Initialize DataTables plugin after DOM ready
+    $(document).ready(function () {
+        $('#userTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            scrollX: true
+        });
+    });
+</script>
+

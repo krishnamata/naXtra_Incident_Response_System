@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% block title %}User Management - naXtraSOAR{% endblock %}
+
+{% block content %}
+<style>
+  .form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px; /* space between label and input */
+  }
+
+  .form-row label {
+    min-width: 80px; /* fixed label width for alignment */
+  }
+
+  .form-row select,
+  .form-row input {
+    flex: 1; /* input/select fills the rest */
+  }
+</style>
+<div class="container mt-4">
+  <h2>User Management</h2>
+
+  <!-- Add User Form -->
+<!-- Add User Form -->
+<form method="POST" action="{{ url_for('auth.add_user') }}">
+  {{ form.hidden_tag() }}
+
+  <div class="form-row">
+    <label for="username">Username</label>
+    <input id="username" type="text" name="username" placeholder="Enter username" required value="{{ form.username.data or '' }}">
+  </div>
+  {% for error in form.username.errors %}
+    <span class="text-danger">{{ error }}</span>
+  {% endfor %}
+
+  <div class="form-row">
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" placeholder="Enter password" required value="{{ form.password.data or '' }}">
+  </div>
+  {% for error in form.password.errors %}
+    <span class="text-danger">{{ error }}</span>
+  {% endfor %}
+
+  <div class="form-row">
+    <label for="email">Office Email</label>
+    <input id="office_email" type="email" name="office_email" placeholder="Enter office email" value="{{ form.office_email.data or '' }}">
+  </div>
+  {% for error in form.office_email.errors %}
+    <span class="text-danger">{{ error }}</span>
+  {% endfor %}
+
+  <div class="form-row">
+    <label for="contact_number">Contact Number</label>
+    <input id="contact_number" type="text" name="contact_number" placeholder="Enter contact number" value="{{ form.contact_number.data or '' }}">
+  </div>
+  {% for error in form.contact_number.errors %}
+    <span class="text-danger">{{ error }}</span>
+  {% endfor %}
+
+  <div class="form-row">
+    <label for="role">Role</label>
+    <select id="role" name="role">
+      {% for role_name in roles|reverse %}
+        <option value="{{ role_name }}" {% if form.role.data == role_name %}selected{% endif %}>{{ role_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% for error in form.role.errors %}
+    <span class="text-danger">{{ error }}</span>
+  {% endfor %}
+
+  <button type="submit">Add User</button>
+</form>
+
+
+
+
+
+
+  <table class="table table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.role }}</td>
+        <td>
+          <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ user.id }}">Edit</button>
+          <form method="POST" action="{{ url_for('auth.reset_password', user_id=user.id) }}" class="d-inline">
+            <button class="btn btn-warning btn-sm" type="submit">Reset</button>
+          </form>
+          {% if user.username == 'admin' %}
+            <button class="btn btn-danger btn-sm" disabled>Delete</button>
+          {% else %}
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ user.id }}">Delete</button>
+          {% endif %}
+        </td>
+      </tr>
+
+      <!-- Edit Modal -->
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal{{ user.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ user.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ url_for('auth.update_user', user_id=user.id) }}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="original_username" value="{{ user.username }}">
+
+          <div class="mb-3">
+            <label>New Username</label>
+            <input type="text" class="form-control" name="new_username" value="{{ user.username }}">
+          </div>
+
+          <div class="mb-3">
+            <label>New Role</label>
+            <select class="form-select" name="new_role" required>
+              {% for role in roles %}
+                <option value="{{ role }}" {% if role == user.role %}selected{% endif %}>{{ role }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+  <div class="mb-3">
+  <label>Status</label>
+  <select class="form-select" name="new_status" required>
+    <option value="active" {% if user.status == 'active' %}selected{% endif %}>Active</option>
+    <option value="disabled" {% if user.status == 'disabled' %}selected{% endif %}>Disabled</option>
+    <option value="pending" {% if user.status == 'pending' %}selected{% endif %}>Pending</option>
+  </select>
+</div>
+          <div class="mb-3">
+            <label>Office Email</label>
+            <input type="email" class="form-control" name="new_email" value="{{ user.office_email or '' }}">
+          </div>
+
+          <div class="mb-3">
+            <label>Contact Number</label>
+            <input type="text" class="form-control" name="new_contact" value="{{ user.contact_number or '' }}">
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+      <!-- Delete Modal -->
+      <div class="modal fade" id="deleteModal{{ user.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ user.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+          <form method="POST" action="{{ url_for('auth.delete_user', user_id=user.id) }}">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete user <strong>{{ user.username }}</strong>?
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Alerts - naXtraSOAR{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  {% if selected_agent %}
+  <div class="alert alert-info">
+    Showing alerts triggered by rules for agent: <strong>{{ selected_agent }}</strong>
+  </div>
+  {% endif %}
+
+  <!-- Agent & severity filters -->
+  <form id="filterForm" method="get" action="{{ url_for('alerts.view_alerts') }}" class="mb-3">
+    <label for="agent_name">Filter by Agent:</label>
+    <select name="agent_name" id="agent_name">
+      <option value="">-- All Agents --</option>
+      {% for agent in agent_names %}
+        <option value="{{ agent }}" {% if agent == selected_agent %}selected{% endif %}>{{ agent }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="min_level" class="ms-3">Min Level:</label>
+    <input type="number" name="min_level" id="min_level" min="0" max="15" value="{{ min_level or '' }}">
+
+    <label for="max_level" class="ms-3">Max Level:</label>
+    <input type="number" name="max_level" id="max_level" min="0" max="15" value="{{ max_level or '' }}">
+  </form>
+
+  <!-- Sorting -->
+  <form id="sortForm" method="get" action="{{ url_for('alerts.view_alerts') }}" class="mb-3">
+    <label for="sort_by">Sort by:</label>
+    <select name="sort_by" id="sort_by">
+      <option value="severity" {% if request.args.get('sort_by', 'severity') == 'severity' %}selected{% endif %}>Severity</option>
+      <option value="time" {% if request.args.get('sort_by') == 'time' %}selected{% endif %}>Time</option>
+    </select>
+
+    <label for="sort_order" class="ms-3">Order:</label>
+    <select name="sort_order" id="sort_order">
+      <option value="desc" {% if request.args.get('sort_order', 'desc') == 'desc' %}selected{% endif %}>Descending</option>
+      <option value="asc" {% if request.args.get('sort_order') == 'asc' %}selected{% endif %}>Ascending</option>
+    </select>
+  </form>
+
+  <!-- Toggle Alerts -->
+  <div class="mb-3">
+    <button id="normalAlertsBtn" class="btn btn-primary">Normal Alerts</button>
+    <button id="malwareAlertsBtn" class="btn btn-danger">Malware Alerts</button>
+  </div>
+
+  <!-- Alerts Table -->
+  <table id="alertsTable" class="table table-bordered table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>Detected Time</th>
+        <th>Level</th>
+        <th>Description</th>
+        {% if show_malware %}<th>IOC Info</th>{% endif %}
+        <th>Steps</th>
+        <th>Rule ID</th>
+        <th>Mitre ID</th>
+        <th>Assigned To</th>
+        <th>Escalate</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="alertsTableBody">
+      {% include 'alerts_table_rows.html' %}
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <nav aria-label="Page navigation" id="paginationContainer">
+    {% if pagination %}
+    <ul class="pagination">
+      {% if pagination.has_prev %}
+      <li class="page-item">
+        <a class="page-link page-btn" data-page="{{ pagination.prev_num }}">Previous</a>
+      </li>
+      {% endif %}
+      {% for page_num in pagination.iter_pages() %}
+        {% if page_num %}
+          <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+            <a class="page-link page-btn" data-page="{{ page_num }}">{{ page_num }}</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+      {% endfor %}
+      {% if pagination.has_next %}
+      <li class="page-item">
+        <a class="page-link page-btn" data-page="{{ pagination.next_num }}">Next</a>
+      </li>
+      {% endif %}
+    </ul>
+    {% endif %}
+  </nav>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    // Initialize DataTable
+    var table = $('#alertsTable').DataTable({ paging: false, ordering: true, order: [[0, 'desc']] });
+
+    // Helper to reload table via AJAX
+    function reloadAlerts(params={}) {
+        $.get("{{ url_for('alerts.view_alerts') }}", params, function(data){
+            $("#alertsTableBody").html(data);
+            table.destroy();
+            table = $('#alertsTable').DataTable({ paging: false, ordering: true, order: [[0, 'desc']] });
+        });
+    }
+
+    // Filters & sorting
+    $('#agent_name, #min_level, #max_level, #sort_by, #sort_order').change(function(){
+        var params = {
+            agent_name: $('#agent_name').val(),
+            min_level: $('#min_level').val(),
+            max_level: $('#max_level').val(),
+            sort_by: $('#sort_by').val(),
+            sort_order: $('#sort_order').val()
+        };
+        reloadAlerts(params);
+    });
+
+    // Toggle Normal/Malware Alerts
+    $('#normalAlertsBtn').click(function(){ reloadAlerts({malware:false}); });
+    $('#malwareAlertsBtn').click(function(){ reloadAlerts({malware:true}); });
+
+    // Pagination
+    $(document).on('click', '.page-btn', function(e){
+        e.preventDefault();
+        var page = $(this).data('page');
+        var params = {
+            page: page,
+            agent_name: $('#agent_name').val(),
+            min_level: $('#min_level').val(),
+            max_level: $('#max_level').val(),
+            sort_by: $('#sort_by').val(),
+            sort_order: $('#sort_order').val()
+        };
+        reloadAlerts(params);
+    });
+
+    // Handle modal cleanup on manual close (cancel button)
+    $('#stepModal').on('hidden.bs.modal', function () {
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+    });
+});
+
+// Submit step form via AJAX
+$(document).on("submit", ".step-form", function(e){
+    e.preventDefault();
+
+    let form = $(this);
+    let formData = new FormData(this);
+    let alertId = form.data("alert-id");
+
+    $.ajax({
+        url: form.attr("action"),
+        method: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response){
+            showToast(response.message, "success");
+
+            // Close modal and remove lingering backdrop after animation
+            var modalEl = document.getElementById('stepModal');
+            var modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+            setTimeout(function(){
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open');
+            }, 200); // matches bootstrap fade duration
+
+            // Reload just this alert's steps
+            $("#alert-" + alertId + "-steps").load(
+                "/alerts/" + alertId + "/steps_partial"
+            );
+        },
+        error: function(xhr){
+            showToast("Error: " + xhr.responseText, "danger");
+        }
+    });
+});
+</script>
+
+
+{% endblock %}

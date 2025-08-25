@@ -1,0 +1,13 @@
+# app/playbooks/routes.py or dispatcher.py
+from flask_login import current_user
+from flask import abort
+
+@playbooks_bp.route('/isolate/<agent_name>', methods=['POST'])
+@login_required
+def isolate_agent(agent_name):
+    if not current_user.is_admin:
+        abort(403)  # Forbidden
+
+    # Proceed with isolation logic
+    result = run_isolation_playbook(agent_name)
+    return jsonify({'status': 'executed', 'result': result})

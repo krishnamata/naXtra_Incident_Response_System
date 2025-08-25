@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <!-- Connected Agents -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div>Connected Agents</div>
+      <p>Total: {{ total_agents }}</p>
+       <ul>
+         <li>linux - Agent: {{ linux_count }}</li>
+         <li>windows - Agent: {{ windows_count }}</li>
+         <li>mac - Agent: {{ mac_count }}</li>
+         <li>unknown - Agent: {{ unknown_count }}</li>
+       </ul>
+    </div>
+  </div>
+<!-- Agent Tabs -->
+<ul class="nav nav-pills mb-3" id="agentTabs" role="tablist">
+  {% for agent_name in logs %}
+    <li class="nav-item" role="presentation">
+      <a class="nav-link {% if loop.first %}active{% endif %}" 
+         id="agent-tab-{{ loop.index }}"
+         data-agent="{{ agent_name|lower }}"
+         href="#"
+         role="tab"
+         aria-selected="{% if loop.first %}true{% else %}false{% endif %}">
+         {{ agent_name }}
+         {% if alert_counts.get(agent_name|lower) %}
+           <span class="badge bg-danger">{{ alert_counts[agent_name|lower] }}</span>
+         {% endif %}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+  
+  <div>
+  <a href="{{ url_for('alerts.view_alerts', agent_name='some_agent') }}" id="alertsButton" class="btn btn-danger" disabled>
+    View Alerts for Selected Agent
+  </a>
+</div>
+<script>
+  // Enable Alerts button with correct URL when an agent tab is clicked
+  const agentTabs = document.querySelectorAll('#agentTabs .nav-link');
+  const alertsButton = document.getElementById('alertsButton');
+
+  function updateAlertsButton(agentName) {
+    if(agentName) {
+      alertsButton.href = `/alerts?agent_name=${encodeURIComponent(agentName)}`;
+      alertsButton.removeAttribute('disabled');
+    } else {
+      alertsButton.setAttribute('disabled', 'disabled');
+    }
+  }
+
+  // Initialize with first agent
+  if (agentTabs.length >0 && agentTabs[0].dataset.agent) {
+     updateAlertsButton(agentTabs[0].dataset.agent);
+  } else {
+    updateAlertsButton(null);
+  }
+
+  agentTabs.forEach(tab => {
+    tab.addEventListener('click', function(e) {
+      e.preventDefault();
+      // Remove active class from all tabs
+      agentTabs.forEach(t => t.classList.remove('active'));
+      // Set clicked tab as active
+      this.classList.add('active');
+
+      // Update Alerts button link
+      updateAlertsButton(this.dataset.agent);
+    });
+  });
+</script>
+
+
+
+
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+    <div class="mb-2">
+       <button id="downloadPie" class="btn btn-sm btn-primary me-2">Download Donut Chart</button>
+       <button id="downloadBar" class="btn btn-sm btn-success">Download Bar Chart</button>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Log Counts by Group</h5>
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-3">
+          <canvas id="logbar"></canvas>
+        </div>
+        <div class="col-md-6 text-center mb-3">
+          <canvas id="logChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Log Viewer -->
+  <div id="agentLogContainer">
+    {% for agent_name, logs in logs.items() %}
+      <div class="agent-logs" id="logs-{{ agent_name }}" style="{% if not loop.first %}display:none;{% endif %}">
+        <ul class="nav nav-tabs" id="tabs-{{ agent_name }}">
+          {% for log_type, content in logs.items() %}
+            <li class="nav-item">
+              <button class="nav-link {% if loop.first %}active{% endif %}"
+                      data-bs-toggle="tab"
+                      data-bs-target="#log-{{ agent_name }}-{{ loop.index }}"
+                      type="button"
+                      aria-selected="{% if loop.first %}true{% else %}false{% endif %}">
+                {{ log_type }}
+              </button>
+            </li>
+          {% endfor %}
+        </ul>
+        <div class="tab-content mt-2">
+          {% for log_type, content in logs.items() %}
+            <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
+                 id="log-{{ agent_name }}-{{ loop.index }}">
+              <h6>{{ log_type }} Log</h6>
+              <table class="table table-bordered table-sm display" id="table-{{ agent_name }}-{{ loop.index }}">
+                <tbody>
+                  {% for line in content.split('\n')|reverse %}
+                    <tr><td>{{ line }}</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Toast -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <div id="agentToast" class="toast bg-success text-white" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMessage"></div>
+        <button type="button" class="btn-close btn-close-white m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+  <script>
+    let pieChart, barChart;
+    let activeAgent;
+    document.addEventListener('DOMContentLoaded', () => {
+      const fullLogCounts = {{ log_counts | tojson | safe }};
+      if (!fullLogCounts || Object.keys(fullLogCounts).length === 0) return;
+
+      let activeAgent = Object.keys(fullLogCounts)[0];
+      updateCharts(activeAgent);
+
+     function updateCharts(agent) {
+        const logCounts = fullLogCounts[agent];
+        if (!logCounts) return;
+
+          const labels = Object.keys(logCounts);
+          const data = Object.values(logCounts);
+          const total = data.reduce((sum, val) => sum + val, 0);
+
+        if (pieChart) pieChart.destroy();
+        if (barChart) barChart.destroy();
+
+          const ctxPie = document.getElementById('logChart').getContext('2d');
+          const ctxBar = document.getElementById('logbar').getContext('2d');
+
+        pieChart = new Chart(ctxPie, {
+          type: 'doughnut',
+          data: {
+             labels,
+             datasets: [{
+               data,
+               backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d']
+             }]
+          },
+          options: {
+             responsive: true,
+             plugins: {
+               datalabels: {
+                 formatter: (value) => `${((value / total) * 100).toFixed(1)}%`,
+                 color: '#fff',
+                 font: {
+                   weight: 'bold'
+                 }
+               },
+               legend: { position: 'right' },
+               title: {
+                 display: true,
+                 text: 'Log % by Group'
+               },
+               tooltip: {
+                 callbacks: {
+                   label: (ctx) => `${ctx.label}: ${ctx.raw} logs (${((ctx.raw / total) * 100).toFixed(1)}%)`
+                 }
+               }
+            }
+          },
+          plugins: [ChartDataLabels]
+          });
+
+  barChart = new Chart(ctxBar, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Log Count',
+        data,
+        backgroundColor: '#007bff'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        datalabels: {
+          anchor: 'end',
+          align: 'top',
+          color: '#000',
+          font: { weight: 'bold' }
+        },
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Log Count by Group'
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.label}: ${ctx.raw} logs`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { autoSkip: true }
+        }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+}
+
+
+      $('#agentTabs a.nav-link').on('click', function (e) {
+        e.preventDefault();
+        const agent = $(this).data('agent');
+        $('#agentTabs a').removeClass('active');
+        $(this).addClass('active');
+        $('.agent-logs').hide();
+        $('#logs-' + agent).show();
+        updateCharts(agent);
+      });
+    });
+
+    $(document).ready(function () {
+      $('table.display').DataTable();
+    });
+
+    document.getElementById('downloadPie').addEventListener('click', () => {
+       const canvas = document.getElementById('logChart');
+       const link = document.createElement('a');
+       link.download = `${activeAgent}_log_donut_chart.png`;
+       link.href = canvas.toDataURL('image/png');
+       link.click();
+    });
+
+    document.getElementById('downloadBar').addEventListener('click', () => {
+       const canvas = document.getElementById('logbar');
+       const link = document.createElement('a');
+       link.download = `${activeAgent}_log_bar_chart.png`;
+       link.href = canvas.toDataURL('image/png');
+       link.click();
+    });
+
+  </script>
+{% endblock %}

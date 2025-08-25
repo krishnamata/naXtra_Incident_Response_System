@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+  <!-- Root element wrapping multiple groups -->
+  <xs:element name="ruleset">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="var" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="group" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="rule" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="if_sid" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="if_matched_sid" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="field" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute name="name" type="xs:string" use="required"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="options" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="mitre" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="frequency" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="timeframe" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                  </xs:sequence>
+                  <xs:attribute name="id" type="xs:string" use="required"/>
+                  <xs:attribute name="level" type="xs:integer" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

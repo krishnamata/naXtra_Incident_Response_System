@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="POST" action="/user/search">
+  <h2>Search Rules and Decoders</h2>
+
+  <div>
+    <input type="radio" id="rules" name="search_type" value="rule" {% if search_type == 'rule' %}checked{% endif %}>
+    <label for="rules">Rules</label>
+
+    <input type="radio" id="decoders" name="search_type" value="decoder" {% if search_type == 'decoder' %}checked{% endif %}>
+    <label for="decoders">Decoders</label>
+  </div>
+
+  <input type="text" name="search_query" value="{{ search_query }}" placeholder="Search by ID or keyword">
+  <button type="submit">Search</button>
+</form>
+
+<a href="{{ url_for('alerts.view_alerts') }}">
+  <button type="button">Back to Alerts</button>
+</a>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Keywords</th>
+      <th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in results %}
+    <tr>
+      <td>{{ item.rule_id }}</td>
+      <td>{{ item.title }}</td>
+      <td>{{ item.keywords|truncate(50) }}</td>
+      <td>{{ item.type }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">No results found</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if pagination %}
+<div class="pagination">
+  {% if pagination.has_prev %}
+    <a href="{{ url_for('search.search_view', page=pagination.prev_num, search_type=search_type, search_query=search_query) }}">&laquo; Prev</a>
+  {% endif %}
+  
+  Page {{ pagination.page }} of {{ pagination.pages }}
+
+  {% if pagination.has_next %}
+    <a href="{{ url_for('search.search_view', page=pagination.next_num, search_type=search_type, search_query=search_query) }}">Next &raquo;</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

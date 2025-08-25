@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <main class="main-content">
+        <section class="report-section">
+            <h2>Security Operation (SECOPS) Report</h2>
+
+            <!-- 1️⃣ Preparation -->
+            <div class="card p-3 mb-4">
+                <h3>Preparation</h3>
+                <p>Total Logs Ingested: {{ report.logs_count }}</p>
+                <p>Total Agents Reporting: {{ report.agents_count }}</p>
+                <p>Log Types Distribution:</p>
+                <ul>
+                    {% for type, count in report.log_types.items() %}
+                        <li>{{ type }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- 2️⃣ Detection & Analysis -->
+            <div class="card p-3 mb-4">
+                <h3>Detection & Analysis</h3>
+                <p>Total Alerts Generated: {{ report.alerts_count }}</p>
+                <p>Severity Breakdown:</p>
+                <ul>
+                    {% for severity, count in report.severity_counts.items() %}
+                        <li>{{ severity }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+
+                <p>MITRE Techniques Observed:</p>
+                <ul>
+                    {% for technique in report.mitre_techniques %}
+                        <li>{{ technique.technique_id }} - {{ technique.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- 3️⃣ Containment, Eradication & Recovery -->
+            <div class="card p-3 mb-4">
+                <h3>Remediation Tasks</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Task ID</th>
+                            <th>Type</th>
+                            <th>Content ID</th>
+                            <th>Assigned To</th>
+                            <th>Status</th>
+                            <th>Steps Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in report.tasks %}
+                        <tr>
+                            <td>{{ task.task_id }}</td>
+                            <td>{{ task.type }}</td>
+                            <td>{{ task.content_id }}</td>
+                            <td>{{ task.assigned_user or '-' }}</td>
+                            <td>{{ task.status }}</td>
+                            <td>{{ task.steps_completed }}/{{ task.total_steps }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 4️⃣ Post-Incident Activity -->
+            <div class="card p-3 mb-4">
+                <h3>Endpoint Risk</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Endpoint</th>
+                            <th>Risk Score</th>
+                            <th>Components</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for endpoint in report.endpoints %}
+                        <tr>
+                            <td>{{ endpoint.name }}</td>
+                            <td>{{ endpoint.risk_score }}</td>
+                            <td>
+                                <ul>
+                                    {% for comp, val in endpoint.risk_components.items() %}
+                                        <li>{{ comp }}: {{ val }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <h3>Behavior Patterns</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Pattern</th>
+                            <th>Frequency</th>
+                            <th>Affected Endpoints</th>
+                            <th>Recommended Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for behavior in report.behaviors %}
+                        <tr>
+                            <td>{{ behavior.pattern }}</td>
+                            <td>{{ behavior.frequency }}</td>
+                            <td>{{ behavior.endpoints | join(', ') }}</td>
+                            <td>{{ behavior.recommendation }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <h3>Visual Trends</h3>
+                <canvas id="riskChart" width="400" height="200"></canvas>
+                <canvas id="alertTrendChart" width="400" height="200" class="mt-4"></canvas>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const riskCtx = document.getElementById('riskChart').getContext('2d');
+    const alertCtx = document.getElementById('alertTrendChart').getContext('2d');
+
+    new Chart(riskCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ report.endpoints | map(attribute='name') | list | safe }},
+            datasets: [{
+                label: 'Endpoint Risk Score',
+                data: {{ report.endpoints | map(attribute='risk_score') | list | safe }},
+                backgroundColor: 'rgba(255,99,132,0.6)'
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    new Chart(alertCtx, {
+        type: 'line',
+        data: {
+            labels: {{ report.alert_trend.labels | safe }},
+            datasets: [{
+                label: 'Alerts over Time',
+                data: {{ report.alert_trend.values | safe }},
+                borderColor: 'rgba(54,162,235,1)',
+                fill: false,
+                tension: 0.1
+            }]
+        },
+        options: { responsive: true }
+    });
+});
+</script>
+{% endblock %}
