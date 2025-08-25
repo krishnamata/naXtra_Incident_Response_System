@@ -15,11 +15,14 @@
   <td title="{{ alert.description|striptags }}">{{ alert.description|safe or '-' }}</td>
 
   <!-- Steps -->
-  <td>
-    <ul class="list-unstyled mb-0" id="alert-{{ alert.id }}-steps">
-      {% include 'alerts_steps_partial.html' %}
-    </ul>
-  </td>
+<td>
+  <ul class="list-unstyled mb-0" id="alert-{{ alert.id }}-steps">
+    {% for step in alert.step_summaries %}
+      {% include 'alerts_steps_partial.html' with context %}
+    {% endfor %}
+  </ul>
+</td>
+
 
   <td>
     {% if alert.rule_id %}
@@ -118,82 +121,88 @@
 <!-- JS -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  var stepModalEl = document.getElementById('stepModal');
-  var stepForm = document.getElementById('stepWorkForm');
-  var stepModal = new bootstrap.Modal(stepModalEl);
+    const stepModalEl = document.getElementById('stepModal');
+    const stepForm = document.getElementById('stepWorkForm');
+    const stepModal = new bootstrap.Modal(stepModalEl);
+    const toastEl = document.getElementById('stepToast');
+    const toast = new bootstrap.Toast(toastEl);
 
-  // Open modal
-  document.addEventListener('click', function(e) {
-    if(e.target && e.target.classList.contains('step-btn')) {
-      var btn = e.target;
-      var stepId = btn.dataset.stepId;
-      var alertId = btn.dataset.alert;
-      var stepName = btn.dataset.stepName;
-
-      if(!stepId || stepId === "None") { alert("Step ID not available."); return; }
-
-      document.getElementById('modalStepName').value = stepName;
-      document.getElementById('modalAlertId').value = alertId;
-      document.getElementById('modalStepId').value = stepId;
-      document.getElementById('stepModalLabel').textContent = "Work on Step: " + stepName;
-      stepForm.action = `/alerts/${alertId}/step/${stepId}/add_evidence`;
-
-      stepForm.reset();
-      stepModal.show();
+    function showToast(message, type="success") {
+        toastEl.classList.remove('text-bg-success', 'text-bg-danger');
+        toastEl.classList.add(type === "success" ? 'text-bg-success' : 'text-bg-danger');
+        toastEl.querySelector('.toast-body').textContent = message;
+        toast.show();
     }
-  });
 
-  // Submit modal form
-  stepForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var formData = new FormData(stepForm);
-    var alertId = document.getElementById('modalAlertId').value;
+    // Open modal on step button click
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('step-btn')) {
+            const btn = e.target;
+            const stepId = btn.dataset.stepId;
+            const alertId = btn.dataset.alert;
+            const stepName = btn.dataset.stepName;
 
-    fetch(stepForm.action, { method: 'POST', body: formData })
-      .then(resp => resp.json())
-      .then(data => {
-        stepModal.hide();
+            if (!stepId || stepId === "None") {
+                showToast("Step ID not available.", "danger");
+                return;
+            }
 
-        stepModalEl.addEventListener('hidden.bs.modal', function handler() {
-          stepModalEl.removeEventListener('hidden.bs.modal', handler);
+            // Populate modal fields
+            document.getElementById('modalStepName').value = stepName;
+            document.getElementById('modalAlertId').value = alertId;
+            document.getElementById('modalStepId').value = stepId;
+            document.getElementById('stepModalLabel').textContent = "Work on Step: " + stepName;
 
-          document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-          document.body.classList.remove('modal-open');
+            // Set form action dynamically
+            stepForm.action = `/alerts/${alertId}/step/${stepId}/add_evidence`;
 
-          var toastEl = document.getElementById('stepToast');
-          toastEl.querySelector('.toast-body').textContent = data.message || "Evidence added successfully!";
-          new bootstrap.Toast(toastEl).show();
+            stepModal.show();
+        }
+    });
 
-          fetch(`/alerts/${alertId}/steps_partial`)
-            .then(resp => resp.text())
-            .then(html => {
-              document.getElementById(`alert-${alertId}-steps`).innerHTML = html;
-            })
-            .catch(err => console.error(err));
-        });
-      })
-      .catch(err => { alert("Error submitting step work."); console.error(err); });
-  });
+    // Submit modal form
+    stepForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const submitButton = stepForm.querySelector("button[type='submit']");
+        submitButton.disabled = true;
 
-  // Restore steps
-  document.addEventListener('submit', function(e) {
-    if(e.target && e.target.classList.contains('restore-form')) {
-      e.preventDefault();
-      var form = e.target;
-      var alertId = form.dataset.alertId;
+        const formData = new FormData(stepForm);
+        const alertId = document.getElementById('modalAlertId').value;
 
-      fetch(form.action, { method: 'POST' })
+        fetch(stepForm.action, {
+            method: 'POST',
+            body: formData
+        })
         .then(resp => resp.json())
         .then(data => {
-          if(data.success) {
+            if (data.success) {
+                showToast(data.message, "success");
+            } else {
+                showToast(data.message || "Error submitting step work.", "danger");
+            }
+
+            stepModal.hide();
+
+            // Refresh step list
             fetch(`/alerts/${alertId}/steps_partial`)
-              .then(resp => resp.text())
-              .then(html => {
-                document.getElementById(`alert-${alertId}-steps`).innerHTML = html;
-              });
-          } else alert(data.message);
+                .then(resp => resp.text())
+                .then(html => {
+                    document.getElementById(`alert-${alertId}-steps`).innerHTML = html;
+                });
+        })
+        .catch(err => {
+            console.error(err);
+            showToast("Unexpected error occurred.", "danger");
+        })
+        .finally(() => {
+            submitButton.disabled = false;
         });
-    }
-  });
+    });
+
+    // Cleanup modal backdrop
+    stepModalEl.addEventListener('hidden.bs.modal', function () {
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        document.body.classList.remove('modal-open');
+    });
 });
 </script>

@@ -34,57 +34,65 @@ def allowed_file(filename):
 
 @alerts_bp.route("/<int:alert_id>/step/<int:step_id>/add_evidence", methods=["POST"])
 def add_alert_evidence(alert_id, step_id):
-    if 'user_id' not in session:
-        return jsonify({"success": False, "message": "Login required"}), 403
+    try:
+        if 'user_id' not in session:
+            return jsonify({"success": False, "message": "Login required"}), 403
 
-    step = AlertStepWork.query.filter_by(id=step_id, alert_id=alert_id).first()
-    if not step:
-        return jsonify({"success": False, "message": "Step not found"}), 404
+        step = AlertStepWork.query.filter_by(id=step_id, alert_id=alert_id).first()
+        if not step:
+            return jsonify({"success": False, "message": "Step not found"}), 404
 
-    evidence_text = request.form.get("notes")
-    file = request.files.get("file")
-    file_path, file_hash = None, None
+        evidence_text = request.form.get("notes")
+        file = request.files.get("file")
+        file_path, file_hash = None, None
 
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        # Add timestamp to filename: YYYYMMDD_HHMMSS_filename
-        timestamp = time.strftime("%Y%m%d_%H%M%S")
-        filename = f"{timestamp}_{filename}"
+        if file:
+            filename = secure_filename(file.filename)
+            if not allowed_file(filename):
+                return jsonify({"success": False, "message": "File type not allowed"}), 400
 
-        upload_folder = os.path.join("uploads", "alert_evidence", str(alert_id))
-        os.makedirs(upload_folder, exist_ok=True)
-        file_path = os.path.join(upload_folder, filename)
-        file.save(file_path)
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            filename = f"{timestamp}_{filename}"
 
-        # Calculate SHA256 hash
-        with open(file_path, "rb") as f:
-            file_hash = hashlib.sha256(f.read()).hexdigest()
+            upload_folder = os.path.join("uploads", "alert_evidence", str(alert_id))
+            os.makedirs(upload_folder, exist_ok=True)
+            file_path = os.path.join(upload_folder, filename)
+            file.save(file_path)
 
-    # Save evidence
-    evidence = AlertEvidence(
-        step_id=step.id,
-        evidence_text=evidence_text,
-        file_path=file_path,
-        file_hash=file_hash,
-        uploaded_by=session['user_id']
-    )
-    db.session.add(evidence)
+            with open(file_path, "rb") as f:
+                file_hash = hashlib.sha256(f.read()).hexdigest()
 
-    # Audit trail
-    details = f"Evidence added to step {step.sub_step}"
-    if file_path:
-        details += f" | File: {file_path} | Hash: {file_hash}"
+        # Save evidence
+        evidence = AlertEvidence(
+            step_id=step.id,
+            evidence_text=evidence_text,
+            file_path=file_path,
+            file_hash=file_hash,
+            uploaded_by=session['user_id']
+        )
+        db.session.add(evidence)
 
-    history = AlertHistory(
-        alert_id=alert_id,
-        action="added_evidence",
-        details=details,
-        performed_by=session['user_id']
-    )
-    db.session.add(history)
-    db.session.commit()
+        # Audit trail
+        details = f"Evidence added to step {step.sub_step}"
+        if file_path:
+            details += f" | File: {file_path} | Hash: {file_hash}"
 
-    return jsonify({"success": True, "message": f"Evidence added to step '{step.sub_step}'"})
+        history = AlertHistory(
+            alert_id=alert_id,
+            action="added_evidence",
+            details=details,
+            performed_by=session['user_id']
+        )
+        db.session.add(history)
+        db.session.commit()
+
+        return jsonify({"success": True, "message": f"Evidence added to step '{step.sub_step}'"})
+
+    except Exception as e:
+        # Log full exception
+        logger.exception(f"Error adding evidence for alert {alert_id}, step {step_id}: {e}")
+        return jsonify({"success": False, "message": "An unexpected error occurred. Please try again."}), 500
+
 
 
 
