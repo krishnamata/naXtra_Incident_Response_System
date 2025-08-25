@@ -1,0 +1,51 @@
+[32mglx-alternative-nvidia[0m/kali-rolling 1.2.2 amd64
+  allows the selection of NVIDIA as GLX provider
+
+[32mlibegl-nvidia0[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA binary EGL library
+
+[32mlibgl1-nvidia-glvnd-glx[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA binary OpenGL/GLX library (GLVND variant)
+
+[32mlibgles-nvidia1[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA binary OpenGL|ES 1.x library
+
+[32mlibgles-nvidia2[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA binary OpenGL|ES 2.x library
+
+[32mlibglx-nvidia0[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA binary GLX library
+
+[32mnvidia-alternative[0m/kali-rolling 550.163.01-2 amd64
+  allows the selection of NVIDIA as GLX provider
+
+[32mnvidia-detect[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA GPU detection utility
+
+[32mnvidia-driver[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA metapackage
+
+[32mnvidia-driver-bin[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA driver support binaries
+
+[32mnvidia-driver-full[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA metapackage (all components)
+
+[32mnvidia-driver-libs[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA metapackage (OpenGL/GLX/EGL/GLES libraries)
+
+[32mnvidia-kernel-dkms[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA binary kernel module DKMS source
+
+[32mnvidia-kernel-source[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA binary kernel module source
+
+[32mnvidia-open-kernel-dkms[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA open kernel module DKMS source
+
+[32mnvidia-open-kernel-source[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA open kernel module source
+
+[32mxserver-xorg-video-nvidia[0m/kali-rolling 550.163.01-2 amd64
+  NVIDIA binary Xorg driver
+

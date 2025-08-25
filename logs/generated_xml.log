@@ -1,0 +1,5 @@
+2025-08-14 14:13:22,611 - INFO - Type: rule | Log: Critical: Unexpected system reboot detected on server-x severity=8 | XML chunk: <ruleset>
+2025-08-14 14:13:22,613 - INFO - Type: rule | Log: Critical: Unexpected system reboot detected on server-x severity=8 | XML chunk:   <group name="custom_group">
+2025-08-14 14:13:22,613 - INFO - Type: rule | Log: Critical: Unexpected system reboot detected on server-x severity=8 | XML chunk:     <rule id="r100000"><description>Auto-generated description</description></rule>
+2025-08-14 14:13:22,613 - INFO - Type: rule | Log: Critical: Unexpected system reboot detected on server-x severity=8 | XML chunk:   </group>
+2025-08-14 14:13:22,614 - INFO - Type: rule | Log: Critical: Unexpected system reboot detected on server-x severity=8 | XML chunk: </ruleset>

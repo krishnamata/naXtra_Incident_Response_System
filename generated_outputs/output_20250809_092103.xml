@@ -1,0 +1,32 @@
+You are a security automation assistant for a SOAR platform.
+
+Given the following user input, determine what the user is asking:
+- If the input is a raw log (single-line or multi-line), generate an appropriate decoder XML for it, following Wazuh style.
+- If the input already contains decoder XML content, validate and improve it if needed.
+- If the input appears to be a request to create a rule, generate a Wazuh-style XML rule based on provided conditions.
+
+Your output should follow this structure:
+1. Type of Request: (Decoder | Rule | Log Sample)
+2. Summary of Intent
+3. Generated Output (XML for decoder or rule)
+4. Explanation of your logic briefly
+
+Input:
+"""Generate rule for this log:
+TimeCreated : 5/08/2025 8:47:47 PM ProviderName : Microsoft-Windows-IsolatedUserMode Id : 2 Message : Secure Trustlet Id 6 and Pid 6760 stopped"""
+
+Type of Request: Rule
+Summary of Intent: The user wants to create a rule for a log message.
+Generated Output:
+<rule name="Secure Trustlet Id 6 and Pid 6760 stopped">
+    <condition>
+        <severity level="1">
+            <rule_id>10001</rule_id>
+            <subject>Secure Trustlet Id</subject>
+            <message>6 and Pid 6760 stopped</message>
+        </severity>
+    </condition>
+</rule>
+
+Explanation:
+The user's input seems to be a request to create a rule. You parse the input to understand the rule conditions and generate a Wazuh-style rule XML based on the provided information. In this case, the rule will trigger when a log message with severity level 1 (rule_id 10001) containing "Secure Trustlet Id" and "6 and Pid 6760 stopped" appears in the log. [end of text]

@@ -1,0 +1,592 @@
+2025-07-10_19-21-53 - Jul 10 19:21:32 kali dockerd[1096]: time="2025-07-10T19:21:32.694009317+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_19-21-58 - Jul 10 19:21:32 kali kernel: br-56abf95250c1: port 1(veth3e2428c) entered disabled state
+2025-07-10_19-22-03 - Jul 10 19:21:32 kali kernel: vetheb6f7a0: renamed from eth0
+2025-07-10_19-22-13 - Jul 10 19:21:32 kali NetworkManager[782]: <info>  [1752154592.8618] manager: (vetheb6f7a0): new Veth device (/org/freedesktop/NetworkManager/Devices/1674)
+2025-07-10_19-22-18 - Jul 10 19:21:32 kali kernel: veth3e2428c (unregistering): left allmulticast mode
+2025-07-10_19-22-23 - Jul 10 19:21:32 kali kernel: veth3e2428c (unregistering): left promiscuous mode
+2025-07-10_19-22-33 - Jul 10 19:21:32 kali systemd[1]: run-docker-netns-d5b484b95b1c.mount: Deactivated successfully.
+2025-07-10_19-22-38 - Jul 10 19:21:32 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_19-22-43 - Jul 10 19:22:32 kali NetworkManager[782]: <info>  [1752154652.7091] manager: (veth566fd4b): new Veth device (/org/freedesktop/NetworkManager/Devices/1675)
+2025-07-10_19-22-48 - Jul 10 19:22:32 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_19-22-53 - Jul 10 19:22:32 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-23-03 - Jul 10 19:22:32 kali NetworkManager[782]: <info>  [1752154652.7099] manager: (veth1f1f759): new Veth device (/org/freedesktop/NetworkManager/Devices/1676)
+2025-07-10_19-24-33 - Jul 10 19:22:32 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:23:02 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-24-38 - Jul 10 19:22:32 kali kernel: br-56abf95250c1: port 1(veth1f1f759) entered blocking state
+2025-07-10_19-24-43 - Jul 10 19:22:32 kali kernel: br-56abf95250c1: port 1(veth1f1f759) entered disabled state
+2025-07-10_19-24-48 - Jul 10 19:22:32 kali kernel: veth1f1f759: entered allmulticast mode
+2025-07-10_19-24-53 - Jul 10 19:22:32 kali kernel: veth1f1f759: entered promiscuous mode
+2025-07-10_19-24-58 - Jul 10 19:22:32 kali containerd[905]: time="2025-07-10T19:22:32.758021809+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_19-25-03 - Jul 10 19:22:32 kali containerd[905]: time="2025-07-10T19:22:32.758061418+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_19-25-08 - Jul 10 19:22:32 kali containerd[905]: time="2025-07-10T19:22:32.758069361+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-25-13 - Jul 10 19:22:32 kali containerd[905]: time="2025-07-10T19:22:32.758127144+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-25-18 - Jul 10 19:22:32 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_19-25-23 - Jul 10 19:22:32 kali kernel: eth0: renamed from veth566fd4b
+2025-07-10_19-25-33 - Jul 10 19:22:32 kali kernel: br-56abf95250c1: port 1(veth1f1f759) entered forwarding state
+2025-07-10_19-25-38 - Jul 10 19:22:32 kali NetworkManager[782]: <info>  [1752154652.9445] device (veth1f1f759): carrier: link connected
+2025-07-10_19-25-43 - Jul 10 19:22:32 kali NetworkManager[782]: <info>  [1752154652.9450] device (br-56abf95250c1): carrier: link connected
+2025-07-10_19-25-48 - Jul 10 19:22:33 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_19-25-53 - Jul 10 19:22:33 kali containerd[905]: time="2025-07-10T19:22:33.293687307+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-25-58 - Jul 10 19:22:33 kali containerd[905]: time="2025-07-10T19:22:33.293730606+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-26-03 - Jul 10 19:22:33 kali containerd[905]: time="2025-07-10T19:22:33.293743212+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_19-26-08 - Jul 10 19:22:33 kali dockerd[1096]: time="2025-07-10T19:22:33.293751414+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_19-26-13 - Jul 10 19:22:33 kali kernel: br-56abf95250c1: port 1(veth1f1f759) entered disabled state
+2025-07-10_19-26-19 - Jul 10 19:22:33 kali kernel: veth566fd4b: renamed from eth0
+2025-07-10_19-26-24 - Jul 10 19:22:33 kali NetworkManager[782]: <info>  [1752154653.4824] manager: (veth566fd4b): new Veth device (/org/freedesktop/NetworkManager/Devices/1677)
+2025-07-10_19-26-34 - Jul 10 19:22:33 kali kernel: veth1f1f759 (unregistering): left allmulticast mode
+2025-07-10_19-26-39 - Jul 10 19:22:33 kali kernel: veth1f1f759 (unregistering): left promiscuous mode
+2025-07-10_19-26-49 - Jul 10 19:22:33 kali systemd[1]: run-docker-netns-075bd7005bee.mount: Deactivated successfully.
+2025-07-10_19-26-54 - Jul 10 19:22:33 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_19-26-59 - Jul 10 19:23:33 kali kernel: br-56abf95250c1: port 1(veth59750c2) entered blocking state
+2025-07-10_19-27-04 - Jul 10 19:23:33 kali kernel: br-56abf95250c1: port 1(veth59750c2) entered disabled state
+2025-07-10_19-27-09 - Jul 10 19:23:33 kali kernel: veth59750c2: entered allmulticast mode
+2025-07-10_19-27-14 - Jul 10 19:23:33 kali kernel: veth59750c2: entered promiscuous mode
+2025-07-10_19-27-19 - Jul 10 19:23:33 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_19-27-24 - Jul 10 19:23:33 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-27-29 - Jul 10 19:23:33 kali NetworkManager[782]: <info>  [1752154713.3119] manager: (veth5d181e4): new Veth device (/org/freedesktop/NetworkManager/Devices/1678)
+2025-07-10_19-28-04 - Jul 10 19:23:33 kali NetworkManager[782]: <info>  [1752154713.3126] manager: (veth59750c2): new Veth device (/org/freedesktop/NetworkManager/Devices/1679)
+2025-07-10_19-29-49 - Jul 10 19:23:33 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:24:03 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-29-54 - Jul 10 19:23:33 kali containerd[905]: time="2025-07-10T19:23:33.362174742+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_19-29-59 - Jul 10 19:23:33 kali containerd[905]: time="2025-07-10T19:23:33.362208625+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_19-30-04 - Jul 10 19:23:33 kali containerd[905]: time="2025-07-10T19:23:33.362216092+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-30-09 - Jul 10 19:23:33 kali containerd[905]: time="2025-07-10T19:23:33.362291193+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-30-14 - Jul 10 19:23:33 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_19-30-19 - Jul 10 19:23:33 kali kernel: eth0: renamed from veth5d181e4
+2025-07-10_19-30-29 - Jul 10 19:23:33 kali kernel: br-56abf95250c1: port 1(veth59750c2) entered forwarding state
+2025-07-10_19-30-34 - Jul 10 19:23:33 kali NetworkManager[782]: <info>  [1752154713.5653] device (veth59750c2): carrier: link connected
+2025-07-10_19-30-39 - Jul 10 19:23:33 kali NetworkManager[782]: <info>  [1752154713.5661] device (br-56abf95250c1): carrier: link connected
+2025-07-10_19-30-44 - Jul 10 19:23:33 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_19-30-49 - Jul 10 19:23:33 kali containerd[905]: time="2025-07-10T19:23:33.952450579+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-30-54 - Jul 10 19:23:33 kali containerd[905]: time="2025-07-10T19:23:33.952522284+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-30-59 - Jul 10 19:23:33 kali containerd[905]: time="2025-07-10T19:23:33.952533123+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_19-31-04 - Jul 10 19:23:33 kali dockerd[1096]: time="2025-07-10T19:23:33.952733037+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_19-31-09 - Jul 10 19:23:34 kali kernel: br-56abf95250c1: port 1(veth59750c2) entered disabled state
+2025-07-10_19-31-14 - Jul 10 19:23:34 kali kernel: veth5d181e4: renamed from eth0
+2025-07-10_19-31-19 - Jul 10 19:23:34 kali NetworkManager[782]: <info>  [1752154714.1215] manager: (veth5d181e4): new Veth device (/org/freedesktop/NetworkManager/Devices/1680)
+2025-07-10_19-31-29 - Jul 10 19:23:34 kali kernel: veth59750c2 (unregistering): left allmulticast mode
+2025-07-10_19-31-34 - Jul 10 19:23:34 kali kernel: veth59750c2 (unregistering): left promiscuous mode
+2025-07-10_19-31-44 - Jul 10 19:23:34 kali systemd[1]: run-docker-netns-857d6a5a3120.mount: Deactivated successfully.
+2025-07-10_19-31-49 - Jul 10 19:23:34 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_19-31-54 - Jul 10 19:24:33 kali NetworkManager[782]: <info>  [1752154773.9695] manager: (vethad89955): new Veth device (/org/freedesktop/NetworkManager/Devices/1681)
+2025-07-10_19-31-59 - Jul 10 19:24:33 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_19-32-04 - Jul 10 19:24:33 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-32-19 - Jul 10 19:24:33 kali NetworkManager[782]: <info>  [1752154773.9705] manager: (veth403a1d6): new Veth device (/org/freedesktop/NetworkManager/Devices/1682)
+2025-07-10_19-33-44 - Jul 10 19:24:33 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:25:03 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-33-49 - Jul 10 19:24:33 kali kernel: br-56abf95250c1: port 1(veth403a1d6) entered blocking state
+2025-07-10_19-33-54 - Jul 10 19:24:33 kali kernel: br-56abf95250c1: port 1(veth403a1d6) entered disabled state
+2025-07-10_19-33-59 - Jul 10 19:24:33 kali kernel: veth403a1d6: entered allmulticast mode
+2025-07-10_19-34-04 - Jul 10 19:24:33 kali kernel: veth403a1d6: entered promiscuous mode
+2025-07-10_19-34-09 - Jul 10 19:24:34 kali containerd[905]: time="2025-07-10T19:24:34.008856581+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_19-34-14 - Jul 10 19:24:34 kali containerd[905]: time="2025-07-10T19:24:34.008892246+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_19-34-19 - Jul 10 19:24:34 kali containerd[905]: time="2025-07-10T19:24:34.008944373+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-34-24 - Jul 10 19:24:34 kali containerd[905]: time="2025-07-10T19:24:34.009416341+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-34-29 - Jul 10 19:24:34 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_19-34-34 - Jul 10 19:24:34 kali kernel: eth0: renamed from vethad89955
+2025-07-10_19-34-39 - Jul 10 19:24:34 kali kernel: br-56abf95250c1: port 1(veth403a1d6) entered blocking state
+2025-07-10_19-34-44 - Jul 10 19:24:34 kali kernel: br-56abf95250c1: port 1(veth403a1d6) entered forwarding state
+2025-07-10_19-34-49 - Jul 10 19:24:34 kali NetworkManager[782]: <info>  [1752154774.1813] device (veth403a1d6): carrier: link connected
+2025-07-10_19-34-54 - Jul 10 19:24:34 kali NetworkManager[782]: <info>  [1752154774.1822] device (br-56abf95250c1): carrier: link connected
+2025-07-10_19-34-59 - Jul 10 19:24:34 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_19-35-04 - Jul 10 19:24:34 kali containerd[905]: time="2025-07-10T19:24:34.603944725+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-35-09 - Jul 10 19:24:34 kali containerd[905]: time="2025-07-10T19:24:34.603971976+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-35-14 - Jul 10 19:24:34 kali containerd[905]: time="2025-07-10T19:24:34.603983296+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_19-35-19 - Jul 10 19:24:34 kali dockerd[1096]: time="2025-07-10T19:24:34.604069678+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_19-35-24 - Jul 10 19:24:34 kali kernel: br-56abf95250c1: port 1(veth403a1d6) entered disabled state
+2025-07-10_19-35-29 - Jul 10 19:24:34 kali kernel: vethad89955: renamed from eth0
+2025-07-10_19-35-34 - Jul 10 19:24:34 kali NetworkManager[782]: <info>  [1752154774.7939] manager: (vethad89955): new Veth device (/org/freedesktop/NetworkManager/Devices/1683)
+2025-07-10_19-35-44 - Jul 10 19:24:34 kali kernel: veth403a1d6 (unregistering): left allmulticast mode
+2025-07-10_19-35-49 - Jul 10 19:24:34 kali kernel: veth403a1d6 (unregistering): left promiscuous mode
+2025-07-10_19-35-59 - Jul 10 19:24:34 kali systemd[1]: run-docker-netns-eeede0a4d0e2.mount: Deactivated successfully.
+2025-07-10_19-36-04 - Jul 10 19:24:34 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_19-36-09 - Jul 10 19:25:01 kali CRON[399567]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+2025-07-10_19-36-14 - Jul 10 19:25:01 kali CRON[399569]: (root) CMD (command -v debian-sa1 > /dev/null && debian-sa1 1 1)
+2025-07-10_19-36-19 - Jul 10 19:25:01 kali CRON[399567]: pam_unix(cron:session): session closed for user root
+2025-07-10_19-36-24 - Jul 10 19:25:34 kali kernel: br-56abf95250c1: port 1(veth507dc36) entered blocking state
+2025-07-10_19-36-29 - Jul 10 19:25:34 kali kernel: br-56abf95250c1: port 1(veth507dc36) entered disabled state
+2025-07-10_19-36-34 - Jul 10 19:25:34 kali kernel: veth507dc36: entered allmulticast mode
+2025-07-10_19-36-39 - Jul 10 19:25:34 kali kernel: veth507dc36: entered promiscuous mode
+2025-07-10_19-36-44 - Jul 10 19:25:34 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_19-36-49 - Jul 10 19:25:34 kali NetworkManager[782]: <info>  [1752154834.6195] manager: (veth40636da): new Veth device (/org/freedesktop/NetworkManager/Devices/1684)
+2025-07-10_19-36-54 - Jul 10 19:25:34 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-36-59 - Jul 10 19:25:34 kali NetworkManager[782]: <info>  [1752154834.6203] manager: (veth507dc36): new Veth device (/org/freedesktop/NetworkManager/Devices/1685)
+2025-07-10_19-39-14 - Jul 10 19:25:34 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:26:04 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-39-19 - Jul 10 19:25:34 kali containerd[905]: time="2025-07-10T19:25:34.659585799+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_19-39-24 - Jul 10 19:25:34 kali containerd[905]: time="2025-07-10T19:25:34.659621690+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_19-39-29 - Jul 10 19:25:34 kali containerd[905]: time="2025-07-10T19:25:34.659634258+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-39-34 - Jul 10 19:25:34 kali containerd[905]: time="2025-07-10T19:25:34.659710982+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-39-39 - Jul 10 19:25:34 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_19-39-44 - Jul 10 19:25:34 kali kernel: eth0: renamed from veth40636da
+2025-07-10_19-39-54 - Jul 10 19:25:34 kali kernel: br-56abf95250c1: port 1(veth507dc36) entered forwarding state
+2025-07-10_19-39-59 - Jul 10 19:25:34 kali NetworkManager[782]: <info>  [1752154834.8612] device (veth507dc36): carrier: link connected
+2025-07-10_19-40-04 - Jul 10 19:25:34 kali NetworkManager[782]: <info>  [1752154834.8616] device (br-56abf95250c1): carrier: link connected
+2025-07-10_19-40-09 - Jul 10 19:25:35 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_19-40-14 - Jul 10 19:25:35 kali containerd[905]: time="2025-07-10T19:25:35.241560586+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-40-19 - Jul 10 19:25:35 kali containerd[905]: time="2025-07-10T19:25:35.241622600+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-40-24 - Jul 10 19:25:35 kali containerd[905]: time="2025-07-10T19:25:35.241630378+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_19-40-29 - Jul 10 19:25:35 kali dockerd[1096]: time="2025-07-10T19:25:35.242011805+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_19-40-34 - Jul 10 19:25:35 kali kernel: br-56abf95250c1: port 1(veth507dc36) entered disabled state
+2025-07-10_19-40-39 - Jul 10 19:25:35 kali kernel: veth40636da: renamed from eth0
+2025-07-10_19-40-44 - Jul 10 19:25:35 kali NetworkManager[782]: <info>  [1752154835.4231] manager: (veth40636da): new Veth device (/org/freedesktop/NetworkManager/Devices/1686)
+2025-07-10_19-40-54 - Jul 10 19:25:35 kali kernel: veth507dc36 (unregistering): left allmulticast mode
+2025-07-10_19-40-59 - Jul 10 19:25:35 kali kernel: veth507dc36 (unregistering): left promiscuous mode
+2025-07-10_19-41-09 - Jul 10 19:25:35 kali systemd[1]: run-docker-netns-b92d7331aae4.mount: Deactivated successfully.
+2025-07-10_19-41-14 - Jul 10 19:25:35 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_19-41-19 - Jul 10 19:26:35 kali kernel: br-56abf95250c1: port 1(vethdada931) entered blocking state
+2025-07-10_19-41-24 - Jul 10 19:26:35 kali kernel: br-56abf95250c1: port 1(vethdada931) entered disabled state
+2025-07-10_19-41-29 - Jul 10 19:26:35 kali kernel: vethdada931: entered allmulticast mode
+2025-07-10_19-41-34 - Jul 10 19:26:35 kali kernel: vethdada931: entered promiscuous mode
+2025-07-10_19-41-39 - Jul 10 19:26:35 kali NetworkManager[782]: <info>  [1752154895.2555] manager: (veth3eafdf7): new Veth device (/org/freedesktop/NetworkManager/Devices/1687)
+2025-07-10_19-41-44 - Jul 10 19:26:35 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_19-41-49 - Jul 10 19:26:35 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-41-59 - Jul 10 19:26:35 kali NetworkManager[782]: <info>  [1752154895.2571] manager: (vethdada931): new Veth device (/org/freedesktop/NetworkManager/Devices/1688)
+2025-07-10_19-44-09 - Jul 10 19:26:35 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:27:05 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-44-14 - Jul 10 19:26:35 kali containerd[905]: time="2025-07-10T19:26:35.303630583+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_19-44-19 - Jul 10 19:26:35 kali containerd[905]: time="2025-07-10T19:26:35.303963585+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_19-44-24 - Jul 10 19:26:35 kali containerd[905]: time="2025-07-10T19:26:35.303974514+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-44-29 - Jul 10 19:26:35 kali containerd[905]: time="2025-07-10T19:26:35.304049823+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-44-34 - Jul 10 19:26:35 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_19-44-39 - Jul 10 19:26:35 kali kernel: eth0: renamed from veth3eafdf7
+2025-07-10_19-44-49 - Jul 10 19:26:35 kali kernel: br-56abf95250c1: port 1(vethdada931) entered forwarding state
+2025-07-10_19-44-54 - Jul 10 19:26:35 kali NetworkManager[782]: <info>  [1752154895.5767] device (vethdada931): carrier: link connected
+2025-07-10_19-44-59 - Jul 10 19:26:35 kali NetworkManager[782]: <info>  [1752154895.5771] device (br-56abf95250c1): carrier: link connected
+2025-07-10_19-45-04 - Jul 10 19:26:35 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_19-45-09 - Jul 10 19:26:35 kali containerd[905]: time="2025-07-10T19:26:35.954792531+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-45-14 - Jul 10 19:26:35 kali containerd[905]: time="2025-07-10T19:26:35.954832808+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-45-19 - Jul 10 19:26:35 kali containerd[905]: time="2025-07-10T19:26:35.954841803+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_19-45-24 - Jul 10 19:26:35 kali dockerd[1096]: time="2025-07-10T19:26:35.954916667+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_19-45-29 - Jul 10 19:26:36 kali kernel: br-56abf95250c1: port 1(vethdada931) entered disabled state
+2025-07-10_19-45-34 - Jul 10 19:26:36 kali kernel: veth3eafdf7: renamed from eth0
+2025-07-10_19-45-39 - Jul 10 19:26:36 kali NetworkManager[782]: <info>  [1752154896.1457] manager: (veth3eafdf7): new Veth device (/org/freedesktop/NetworkManager/Devices/1689)
+2025-07-10_19-45-49 - Jul 10 19:26:36 kali kernel: vethdada931 (unregistering): left allmulticast mode
+2025-07-10_19-45-54 - Jul 10 19:26:36 kali kernel: vethdada931 (unregistering): left promiscuous mode
+2025-07-10_19-46-04 - Jul 10 19:26:36 kali systemd[1]: run-docker-netns-ee389d0cdccf.mount: Deactivated successfully.
+2025-07-10_19-46-09 - Jul 10 19:26:36 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_19-46-14 - Jul 10 19:27:35 kali NetworkManager[782]: <info>  [1752154955.9667] manager: (veth7a26dd4): new Veth device (/org/freedesktop/NetworkManager/Devices/1690)
+2025-07-10_19-46-19 - Jul 10 19:27:35 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_19-46-24 - Jul 10 19:27:35 kali kernel: br-56abf95250c1: port 1(veth598c88b) entered blocking state
+2025-07-10_19-46-29 - Jul 10 19:27:35 kali kernel: br-56abf95250c1: port 1(veth598c88b) entered disabled state
+2025-07-10_19-46-34 - Jul 10 19:27:35 kali kernel: veth598c88b: entered allmulticast mode
+2025-07-10_19-46-39 - Jul 10 19:27:35 kali kernel: veth598c88b: entered promiscuous mode
+2025-07-10_19-46-44 - Jul 10 19:27:35 kali NetworkManager[782]: <info>  [1752154955.9675] manager: (veth598c88b): new Veth device (/org/freedesktop/NetworkManager/Devices/1691)
+2025-07-10_19-46-49 - Jul 10 19:27:35 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-48-24 - Jul 10 19:27:35 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:28:05 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-48-29 - Jul 10 19:27:36 kali containerd[905]: time="2025-07-10T19:27:36.011578533+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_19-48-34 - Jul 10 19:27:36 kali containerd[905]: time="2025-07-10T19:27:36.011662387+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_19-48-39 - Jul 10 19:27:36 kali containerd[905]: time="2025-07-10T19:27:36.011670763+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-48-44 - Jul 10 19:27:36 kali containerd[905]: time="2025-07-10T19:27:36.011766060+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-48-49 - Jul 10 19:27:36 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_19-48-54 - Jul 10 19:27:36 kali NetworkManager[782]: <info>  [1752154956.1490] device (veth598c88b): carrier: link connected
+2025-07-10_19-48-59 - Jul 10 19:27:36 kali NetworkManager[782]: <info>  [1752154956.1491] device (br-56abf95250c1): carrier: link connected
+2025-07-10_19-49-04 - Jul 10 19:27:36 kali kernel: eth0: renamed from veth7a26dd4
+2025-07-10_19-49-09 - Jul 10 19:27:36 kali kernel: br-56abf95250c1: port 1(veth598c88b) entered blocking state
+2025-07-10_19-49-14 - Jul 10 19:27:36 kali kernel: br-56abf95250c1: port 1(veth598c88b) entered forwarding state
+2025-07-10_19-49-19 - Jul 10 19:27:36 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_19-49-24 - Jul 10 19:27:36 kali containerd[905]: time="2025-07-10T19:27:36.518407132+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-49-29 - Jul 10 19:27:36 kali containerd[905]: time="2025-07-10T19:27:36.518457444+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-49-34 - Jul 10 19:27:36 kali containerd[905]: time="2025-07-10T19:27:36.518471805+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_19-49-39 - Jul 10 19:27:36 kali dockerd[1096]: time="2025-07-10T19:27:36.518451301+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_19-49-44 - Jul 10 19:27:36 kali kernel: br-56abf95250c1: port 1(veth598c88b) entered disabled state
+2025-07-10_19-49-49 - Jul 10 19:27:36 kali kernel: veth7a26dd4: renamed from eth0
+2025-07-10_19-49-54 - Jul 10 19:27:36 kali NetworkManager[782]: <info>  [1752154956.6657] manager: (veth7a26dd4): new Veth device (/org/freedesktop/NetworkManager/Devices/1692)
+2025-07-10_19-50-04 - Jul 10 19:27:36 kali kernel: veth598c88b (unregistering): left allmulticast mode
+2025-07-10_19-50-09 - Jul 10 19:27:36 kali kernel: veth598c88b (unregistering): left promiscuous mode
+2025-07-10_19-50-19 - Jul 10 19:27:36 kali systemd[1]: run-docker-netns-d1240e7b29d3.mount: Deactivated successfully.
+2025-07-10_19-50-24 - Jul 10 19:27:36 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_19-50-29 - Jul 10 19:28:36 kali kernel: br-56abf95250c1: port 1(vethad3565c) entered blocking state
+2025-07-10_19-50-34 - Jul 10 19:28:36 kali kernel: br-56abf95250c1: port 1(vethad3565c) entered disabled state
+2025-07-10_19-50-39 - Jul 10 19:28:36 kali kernel: vethad3565c: entered allmulticast mode
+2025-07-10_19-50-44 - Jul 10 19:28:36 kali kernel: vethad3565c: entered promiscuous mode
+2025-07-10_19-50-49 - Jul 10 19:28:36 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_19-50-54 - Jul 10 19:28:36 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-51-14 - Jul 10 19:28:36 kali NetworkManager[782]: <info>  [1752155016.5370] manager: (vethf5ebf94): new Veth device (/org/freedesktop/NetworkManager/Devices/1693)
+2025-07-10_19-51-59 - Jul 10 19:28:36 kali NetworkManager[782]: <info>  [1752155016.5378] manager: (vethad3565c): new Veth device (/org/freedesktop/NetworkManager/Devices/1694)
+2025-07-10_19-53-09 - Jul 10 19:28:36 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:29:06 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-53-14 - Jul 10 19:28:36 kali containerd[905]: time="2025-07-10T19:28:36.580393869+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_19-53-19 - Jul 10 19:28:36 kali containerd[905]: time="2025-07-10T19:28:36.580436886+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_19-53-24 - Jul 10 19:28:36 kali containerd[905]: time="2025-07-10T19:28:36.580449810+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-53-29 - Jul 10 19:28:36 kali containerd[905]: time="2025-07-10T19:28:36.580980207+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-53-34 - Jul 10 19:28:36 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_19-53-39 - Jul 10 19:28:36 kali kernel: eth0: renamed from vethf5ebf94
+2025-07-10_19-53-49 - Jul 10 19:28:36 kali kernel: br-56abf95250c1: port 1(vethad3565c) entered forwarding state
+2025-07-10_19-53-54 - Jul 10 19:28:36 kali NetworkManager[782]: <info>  [1752155016.7651] device (vethad3565c): carrier: link connected
+2025-07-10_19-53-59 - Jul 10 19:28:36 kali NetworkManager[782]: <info>  [1752155016.7655] device (br-56abf95250c1): carrier: link connected
+2025-07-10_19-54-04 - Jul 10 19:28:37 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_19-54-09 - Jul 10 19:28:37 kali containerd[905]: time="2025-07-10T19:28:37.163169472+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-54-15 - Jul 10 19:28:37 kali containerd[905]: time="2025-07-10T19:28:37.163210817+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-54-20 - Jul 10 19:28:37 kali containerd[905]: time="2025-07-10T19:28:37.163222048+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_19-54-25 - Jul 10 19:28:37 kali dockerd[1096]: time="2025-07-10T19:28:37.163195943+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_19-54-30 - Jul 10 19:28:37 kali kernel: br-56abf95250c1: port 1(vethad3565c) entered disabled state
+2025-07-10_19-54-35 - Jul 10 19:28:37 kali kernel: vethf5ebf94: renamed from eth0
+2025-07-10_19-54-45 - Jul 10 19:28:37 kali NetworkManager[782]: <info>  [1752155017.3616] manager: (vethf5ebf94): new Veth device (/org/freedesktop/NetworkManager/Devices/1695)
+2025-07-10_19-54-50 - Jul 10 19:28:37 kali kernel: vethad3565c (unregistering): left allmulticast mode
+2025-07-10_19-54-55 - Jul 10 19:28:37 kali kernel: vethad3565c (unregistering): left promiscuous mode
+2025-07-10_19-55-05 - Jul 10 19:28:37 kali systemd[1]: run-docker-netns-5e6d277ebaf6.mount: Deactivated successfully.
+2025-07-10_19-55-10 - Jul 10 19:28:37 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_19-55-15 - Jul 10 19:29:32 kali NetworkManager[782]: <info>  [1752155072.6323] dhcp4 (wlan0): state changed new lease, address=192.168.18.162
+2025-07-10_19-55-20 - Jul 10 19:29:32 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_19-55-25 - Jul 10 19:29:32 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-57-00 - Jul 10 19:29:32 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:30:02 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_19-57-05 - Jul 10 19:29:32 kali dbus-daemon[732]: [system] Activating via systemd: service name='org.freedesktop.nm_dispatcher' unit='dbus-org.freedesktop.nm-dispatcher.service' requested by ':1.3' (uid=0 pid=782 comm="/usr/sbin/NetworkManager --no-daemon")
+2025-07-10_19-57-10 - Jul 10 19:29:32 kali systemd[1]: Starting NetworkManager-dispatcher.service - Network Manager Script Dispatcher Service...
+2025-07-10_19-57-15 - Jul 10 19:29:32 kali dbus-daemon[732]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+2025-07-10_19-57-20 - Jul 10 19:29:32 kali systemd[1]: Started NetworkManager-dispatcher.service - Network Manager Script Dispatcher Service.
+2025-07-10_19-57-25 - Jul 10 19:29:37 kali kernel: br-56abf95250c1: port 1(vethbfa77a9) entered blocking state
+2025-07-10_19-57-30 - Jul 10 19:29:37 kali kernel: br-56abf95250c1: port 1(vethbfa77a9) entered disabled state
+2025-07-10_19-57-35 - Jul 10 19:29:37 kali kernel: vethbfa77a9: entered allmulticast mode
+2025-07-10_19-57-40 - Jul 10 19:29:37 kali kernel: vethbfa77a9: entered promiscuous mode
+2025-07-10_19-57-45 - Jul 10 19:29:37 kali NetworkManager[782]: <info>  [1752155077.1794] manager: (veth7580261): new Veth device (/org/freedesktop/NetworkManager/Devices/1696)
+2025-07-10_19-57-50 - Jul 10 19:29:37 kali NetworkManager[782]: <info>  [1752155077.1824] manager: (vethbfa77a9): new Veth device (/org/freedesktop/NetworkManager/Devices/1697)
+2025-07-10_19-57-55 - Jul 10 19:29:37 kali containerd[905]: time="2025-07-10T19:29:37.250422497+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_19-58-00 - Jul 10 19:29:37 kali containerd[905]: time="2025-07-10T19:29:37.250459021+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_19-58-05 - Jul 10 19:29:37 kali containerd[905]: time="2025-07-10T19:29:37.250466884+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-58-10 - Jul 10 19:29:37 kali containerd[905]: time="2025-07-10T19:29:37.250541279+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_19-58-15 - Jul 10 19:29:37 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_19-58-20 - Jul 10 19:29:37 kali NetworkManager[782]: <info>  [1752155077.4490] device (vethbfa77a9): carrier: link connected
+2025-07-10_19-58-25 - Jul 10 19:29:37 kali NetworkManager[782]: <info>  [1752155077.4491] device (br-56abf95250c1): carrier: link connected
+2025-07-10_19-58-30 - Jul 10 19:29:37 kali kernel: eth0: renamed from veth7580261
+2025-07-10_19-58-40 - Jul 10 19:29:37 kali kernel: br-56abf95250c1: port 1(vethbfa77a9) entered forwarding state
+2025-07-10_19-58-45 - Jul 10 19:29:37 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_19-58-50 - Jul 10 19:29:37 kali containerd[905]: time="2025-07-10T19:29:37.802735226+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-58-55 - Jul 10 19:29:37 kali containerd[905]: time="2025-07-10T19:29:37.802809373+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_19-59-00 - Jul 10 19:29:37 kali containerd[905]: time="2025-07-10T19:29:37.802820168+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_19-59-05 - Jul 10 19:29:37 kali dockerd[1096]: time="2025-07-10T19:29:37.802838152+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_19-59-15 - Jul 10 19:29:37 kali kernel: veth7580261: renamed from eth0
+2025-07-10_19-59-20 - Jul 10 19:29:38 kali NetworkManager[782]: <info>  [1752155078.0062] manager: (veth7580261): new Veth device (/org/freedesktop/NetworkManager/Devices/1698)
+2025-07-10_19-59-25 - Jul 10 19:29:38 kali kernel: br-56abf95250c1: port 1(vethbfa77a9) entered disabled state
+2025-07-10_19-59-30 - Jul 10 19:29:38 kali kernel: vethbfa77a9 (unregistering): left allmulticast mode
+2025-07-10_19-59-35 - Jul 10 19:29:38 kali kernel: vethbfa77a9 (unregistering): left promiscuous mode
+2025-07-10_19-59-45 - Jul 10 19:29:38 kali systemd[1]: run-docker-netns-e2c2e6fe65ab.mount: Deactivated successfully.
+2025-07-10_19-59-50 - Jul 10 19:29:38 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_19-59-55 - Jul 10 19:29:42 kali systemd[1]: NetworkManager-dispatcher.service: Deactivated successfully.
+2025-07-10_20-00-00 - Jul 10 19:30:37 kali NetworkManager[782]: <info>  [1752155137.8192] manager: (veth70973d3): new Veth device (/org/freedesktop/NetworkManager/Devices/1699)
+2025-07-10_20-00-05 - Jul 10 19:30:37 kali kernel: br-56abf95250c1: port 1(veth83a0a8c) entered blocking state
+2025-07-10_20-00-10 - Jul 10 19:30:37 kali kernel: br-56abf95250c1: port 1(veth83a0a8c) entered disabled state
+2025-07-10_20-00-15 - Jul 10 19:30:37 kali kernel: veth83a0a8c: entered allmulticast mode
+2025-07-10_20-00-20 - Jul 10 19:30:37 kali kernel: veth83a0a8c: entered promiscuous mode
+2025-07-10_20-00-25 - Jul 10 19:30:37 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-00-30 - Jul 10 19:30:37 kali NetworkManager[782]: <info>  [1752155137.8198] manager: (veth83a0a8c): new Veth device (/org/freedesktop/NetworkManager/Devices/1700)
+2025-07-10_20-00-35 - Jul 10 19:30:37 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-02-50 - Jul 10 19:30:37 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:31:07 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-02-55 - Jul 10 19:30:37 kali containerd[905]: time="2025-07-10T19:30:37.869903567+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-03-00 - Jul 10 19:30:37 kali containerd[905]: time="2025-07-10T19:30:37.869943769+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-03-05 - Jul 10 19:30:37 kali containerd[905]: time="2025-07-10T19:30:37.869951596+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-03-10 - Jul 10 19:30:37 kali containerd[905]: time="2025-07-10T19:30:37.870033284+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-03-15 - Jul 10 19:30:37 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-03-20 - Jul 10 19:30:37 kali NetworkManager[782]: <info>  [1752155137.9972] device (veth83a0a8c): carrier: link connected
+2025-07-10_20-03-25 - Jul 10 19:30:37 kali NetworkManager[782]: <info>  [1752155137.9974] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-03-30 - Jul 10 19:30:37 kali kernel: eth0: renamed from veth70973d3
+2025-07-10_20-03-40 - Jul 10 19:30:37 kali kernel: br-56abf95250c1: port 1(veth83a0a8c) entered forwarding state
+2025-07-10_20-03-45 - Jul 10 19:30:38 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_20-03-50 - Jul 10 19:30:38 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Consumed 356ms CPU time, 45.5M memory peak, 10.7M read from disk.
+2025-07-10_20-03-55 - Jul 10 19:30:38 kali containerd[905]: time="2025-07-10T19:30:38.441421487+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-04-00 - Jul 10 19:30:38 kali containerd[905]: time="2025-07-10T19:30:38.441463888+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-04-05 - Jul 10 19:30:38 kali containerd[905]: time="2025-07-10T19:30:38.441475058+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_20-04-10 - Jul 10 19:30:38 kali dockerd[1096]: time="2025-07-10T19:30:38.441536974+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-04-15 - Jul 10 19:30:38 kali kernel: br-56abf95250c1: port 1(veth83a0a8c) entered disabled state
+2025-07-10_20-04-20 - Jul 10 19:30:38 kali kernel: veth70973d3: renamed from eth0
+2025-07-10_20-04-25 - Jul 10 19:30:38 kali NetworkManager[782]: <info>  [1752155138.5734] manager: (veth70973d3): new Veth device (/org/freedesktop/NetworkManager/Devices/1701)
+2025-07-10_20-04-35 - Jul 10 19:30:38 kali kernel: veth83a0a8c (unregistering): left allmulticast mode
+2025-07-10_20-04-40 - Jul 10 19:30:38 kali kernel: veth83a0a8c (unregistering): left promiscuous mode
+2025-07-10_20-04-50 - Jul 10 19:30:38 kali systemd[1]: run-docker-netns-60f74fe9acfc.mount: Deactivated successfully.
+2025-07-10_20-04-55 - Jul 10 19:30:38 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_20-05-00 - Jul 10 19:31:38 kali NetworkManager[782]: <info>  [1752155198.4588] manager: (veth37bcc89): new Veth device (/org/freedesktop/NetworkManager/Devices/1702)
+2025-07-10_20-05-05 - Jul 10 19:31:38 kali kernel: br-56abf95250c1: port 1(veth6c6c2e5) entered blocking state
+2025-07-10_20-05-10 - Jul 10 19:31:38 kali kernel: br-56abf95250c1: port 1(veth6c6c2e5) entered disabled state
+2025-07-10_20-05-15 - Jul 10 19:31:38 kali kernel: veth6c6c2e5: entered allmulticast mode
+2025-07-10_20-05-20 - Jul 10 19:31:38 kali kernel: veth6c6c2e5: entered promiscuous mode
+2025-07-10_20-05-25 - Jul 10 19:31:38 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-05-30 - Jul 10 19:31:38 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-05-50 - Jul 10 19:31:38 kali NetworkManager[782]: <info>  [1752155198.4599] manager: (veth6c6c2e5): new Veth device (/org/freedesktop/NetworkManager/Devices/1703)
+2025-07-10_20-07-10 - Jul 10 19:31:38 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:32:08 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-07-15 - Jul 10 19:31:38 kali containerd[905]: time="2025-07-10T19:31:38.505761528+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-07-20 - Jul 10 19:31:38 kali containerd[905]: time="2025-07-10T19:31:38.506147515+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-07-25 - Jul 10 19:31:38 kali containerd[905]: time="2025-07-10T19:31:38.506156363+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-07-30 - Jul 10 19:31:38 kali containerd[905]: time="2025-07-10T19:31:38.506211040+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-07-35 - Jul 10 19:31:38 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-07-40 - Jul 10 19:31:38 kali NetworkManager[782]: <info>  [1752155198.7143] device (veth6c6c2e5): carrier: link connected
+2025-07-10_20-07-45 - Jul 10 19:31:38 kali NetworkManager[782]: <info>  [1752155198.7145] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-07-50 - Jul 10 19:31:38 kali kernel: eth0: renamed from veth37bcc89
+2025-07-10_20-08-00 - Jul 10 19:31:38 kali kernel: br-56abf95250c1: port 1(veth6c6c2e5) entered forwarding state
+2025-07-10_20-08-05 - Jul 10 19:31:39 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_20-08-10 - Jul 10 19:31:39 kali containerd[905]: time="2025-07-10T19:31:39.079063194+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-08-15 - Jul 10 19:31:39 kali containerd[905]: time="2025-07-10T19:31:39.079107979+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-08-20 - Jul 10 19:31:39 kali containerd[905]: time="2025-07-10T19:31:39.079119677+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_20-08-25 - Jul 10 19:31:39 kali dockerd[1096]: time="2025-07-10T19:31:39.079143142+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-08-30 - Jul 10 19:31:39 kali kernel: br-56abf95250c1: port 1(veth6c6c2e5) entered disabled state
+2025-07-10_20-08-35 - Jul 10 19:31:39 kali kernel: veth37bcc89: renamed from eth0
+2025-07-10_20-08-45 - Jul 10 19:31:39 kali kernel: veth6c6c2e5 (unregistering): left allmulticast mode
+2025-07-10_20-08-50 - Jul 10 19:31:39 kali kernel: veth6c6c2e5 (unregistering): left promiscuous mode
+2025-07-10_20-09-00 - Jul 10 19:31:39 kali systemd[1]: run-docker-netns-c1884e8b9883.mount: Deactivated successfully.
+2025-07-10_20-09-05 - Jul 10 19:31:39 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_20-09-10 - Jul 10 19:32:39 kali NetworkManager[782]: <info>  [1752155259.0911] manager: (vethb9577f7): new Veth device (/org/freedesktop/NetworkManager/Devices/1704)
+2025-07-10_20-09-15 - Jul 10 19:32:39 kali kernel: br-56abf95250c1: port 1(veth07ebf73) entered blocking state
+2025-07-10_20-09-20 - Jul 10 19:32:39 kali kernel: br-56abf95250c1: port 1(veth07ebf73) entered disabled state
+2025-07-10_20-09-25 - Jul 10 19:32:39 kali kernel: veth07ebf73: entered allmulticast mode
+2025-07-10_20-09-30 - Jul 10 19:32:39 kali kernel: veth07ebf73: entered promiscuous mode
+2025-07-10_20-09-35 - Jul 10 19:32:39 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-09-40 - Jul 10 19:32:39 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-09-50 - Jul 10 19:32:39 kali NetworkManager[782]: <info>  [1752155259.0921] manager: (veth07ebf73): new Veth device (/org/freedesktop/NetworkManager/Devices/1705)
+2025-07-10_20-12-00 - Jul 10 19:32:39 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:33:09 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-12-05 - Jul 10 19:32:39 kali containerd[905]: time="2025-07-10T19:32:39.138085029+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-12-10 - Jul 10 19:32:39 kali containerd[905]: time="2025-07-10T19:32:39.138609895+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-12-15 - Jul 10 19:32:39 kali containerd[905]: time="2025-07-10T19:32:39.138623713+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-12-20 - Jul 10 19:32:39 kali containerd[905]: time="2025-07-10T19:32:39.138705558+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-12-25 - Jul 10 19:32:39 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-12-30 - Jul 10 19:32:39 kali NetworkManager[782]: <info>  [1752155259.2811] device (veth07ebf73): carrier: link connected
+2025-07-10_20-12-35 - Jul 10 19:32:39 kali NetworkManager[782]: <info>  [1752155259.2812] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-12-40 - Jul 10 19:32:39 kali kernel: eth0: renamed from vethb9577f7
+2025-07-10_20-12-50 - Jul 10 19:32:39 kali kernel: br-56abf95250c1: port 1(veth07ebf73) entered forwarding state
+2025-07-10_20-12-55 - Jul 10 19:32:39 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_20-13-00 - Jul 10 19:32:39 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Consumed 427ms CPU time, 41.9M memory peak, 7.1M read from disk.
+2025-07-10_20-13-05 - Jul 10 19:32:39 kali containerd[905]: time="2025-07-10T19:32:39.773484969+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-13-10 - Jul 10 19:32:39 kali containerd[905]: time="2025-07-10T19:32:39.773523666+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-13-15 - Jul 10 19:32:39 kali containerd[905]: time="2025-07-10T19:32:39.773534333+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_20-13-20 - Jul 10 19:32:39 kali dockerd[1096]: time="2025-07-10T19:32:39.773569417+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-13-30 - Jul 10 19:32:39 kali kernel: vethb9577f7: renamed from eth0
+2025-07-10_20-13-35 - Jul 10 19:32:39 kali NetworkManager[782]: <info>  [1752155259.9013] manager: (vethb9577f7): new Veth device (/org/freedesktop/NetworkManager/Devices/1706)
+2025-07-10_20-13-45 - Jul 10 19:32:39 kali kernel: veth07ebf73 (unregistering): left allmulticast mode
+2025-07-10_20-13-50 - Jul 10 19:32:39 kali kernel: veth07ebf73 (unregistering): left promiscuous mode
+2025-07-10_20-14-00 - Jul 10 19:32:39 kali systemd[1]: run-docker-netns-4550cfe125af.mount: Deactivated successfully.
+2025-07-10_20-14-05 - Jul 10 19:32:39 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_20-14-10 - Jul 10 19:33:39 kali NetworkManager[782]: <info>  [1752155319.7903] manager: (veth0dcfbbe): new Veth device (/org/freedesktop/NetworkManager/Devices/1707)
+2025-07-10_20-14-15 - Jul 10 19:33:39 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-14-20 - Jul 10 19:33:39 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-14-35 - Jul 10 19:33:39 kali kernel: br-56abf95250c1: port 1(vethaa0c7a9) entered blocking state
+2025-07-10_20-14-40 - Jul 10 19:33:39 kali kernel: br-56abf95250c1: port 1(vethaa0c7a9) entered disabled state
+2025-07-10_20-14-45 - Jul 10 19:33:39 kali kernel: vethaa0c7a9: entered allmulticast mode
+2025-07-10_20-14-50 - Jul 10 19:33:39 kali kernel: vethaa0c7a9: entered promiscuous mode
+2025-07-10_20-15-00 - Jul 10 19:33:39 kali NetworkManager[782]: <info>  [1752155319.7914] manager: (vethaa0c7a9): new Veth device (/org/freedesktop/NetworkManager/Devices/1708)
+2025-07-10_20-16-20 - Jul 10 19:33:39 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:34:09 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-16-25 - Jul 10 19:33:39 kali containerd[905]: time="2025-07-10T19:33:39.830894205+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-16-30 - Jul 10 19:33:39 kali containerd[905]: time="2025-07-10T19:33:39.830934225+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-16-35 - Jul 10 19:33:39 kali containerd[905]: time="2025-07-10T19:33:39.830942271+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-16-40 - Jul 10 19:33:39 kali containerd[905]: time="2025-07-10T19:33:39.831004310+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-16-45 - Jul 10 19:33:39 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-16-50 - Jul 10 19:33:40 kali NetworkManager[782]: <info>  [1752155320.0216] device (vethaa0c7a9): carrier: link connected
+2025-07-10_20-16-55 - Jul 10 19:33:40 kali NetworkManager[782]: <info>  [1752155320.0218] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-17-00 - Jul 10 19:33:40 kali kernel: eth0: renamed from veth0dcfbbe
+2025-07-10_20-17-05 - Jul 10 19:33:40 kali kernel: br-56abf95250c1: port 1(vethaa0c7a9) entered blocking state
+2025-07-10_20-17-10 - Jul 10 19:33:40 kali kernel: br-56abf95250c1: port 1(vethaa0c7a9) entered forwarding state
+2025-07-10_20-17-15 - Jul 10 19:33:40 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_20-17-20 - Jul 10 19:33:40 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Consumed 368ms CPU time, 47.1M memory peak, 12.7M read from disk.
+2025-07-10_20-17-25 - Jul 10 19:33:40 kali containerd[905]: time="2025-07-10T19:33:40.473355888+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-17-30 - Jul 10 19:33:40 kali containerd[905]: time="2025-07-10T19:33:40.473418105+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-17-35 - Jul 10 19:33:40 kali containerd[905]: time="2025-07-10T19:33:40.473452280+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_20-17-40 - Jul 10 19:33:40 kali dockerd[1096]: time="2025-07-10T19:33:40.473727781+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-17-45 - Jul 10 19:33:40 kali kernel: br-56abf95250c1: port 1(vethaa0c7a9) entered disabled state
+2025-07-10_20-17-50 - Jul 10 19:33:40 kali kernel: veth0dcfbbe: renamed from eth0
+2025-07-10_20-18-00 - Jul 10 19:33:40 kali kernel: vethaa0c7a9 (unregistering): left allmulticast mode
+2025-07-10_20-18-05 - Jul 10 19:33:40 kali kernel: vethaa0c7a9 (unregistering): left promiscuous mode
+2025-07-10_20-18-15 - Jul 10 19:33:40 kali systemd[1]: run-docker-netns-6490de74aa09.mount: Deactivated successfully.
+2025-07-10_20-18-20 - Jul 10 19:33:40 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_20-18-25 - Jul 10 19:34:40 kali kernel: br-56abf95250c1: port 1(vethc9d7c7b) entered blocking state
+2025-07-10_20-18-30 - Jul 10 19:34:40 kali kernel: br-56abf95250c1: port 1(vethc9d7c7b) entered disabled state
+2025-07-10_20-18-35 - Jul 10 19:34:40 kali kernel: vethc9d7c7b: entered allmulticast mode
+2025-07-10_20-18-40 - Jul 10 19:34:40 kali kernel: vethc9d7c7b: entered promiscuous mode
+2025-07-10_20-18-45 - Jul 10 19:34:40 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-18-50 - Jul 10 19:34:40 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-18-55 - Jul 10 19:34:40 kali NetworkManager[782]: <info>  [1752155380.4917] manager: (veth5ad5ee1): new Veth device (/org/freedesktop/NetworkManager/Devices/1709)
+2025-07-10_20-19-45 - Jul 10 19:34:40 kali NetworkManager[782]: <info>  [1752155380.4926] manager: (vethc9d7c7b): new Veth device (/org/freedesktop/NetworkManager/Devices/1710)
+2025-07-10_20-21-15 - Jul 10 19:34:40 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:35:10 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-21-20 - Jul 10 19:34:40 kali containerd[905]: time="2025-07-10T19:34:40.539295052+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-21-25 - Jul 10 19:34:40 kali containerd[905]: time="2025-07-10T19:34:40.539666377+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-21-30 - Jul 10 19:34:40 kali containerd[905]: time="2025-07-10T19:34:40.539683258+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-21-35 - Jul 10 19:34:40 kali containerd[905]: time="2025-07-10T19:34:40.539762334+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-21-40 - Jul 10 19:34:40 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-21-45 - Jul 10 19:34:40 kali kernel: eth0: renamed from veth5ad5ee1
+2025-07-10_20-21-55 - Jul 10 19:34:40 kali kernel: br-56abf95250c1: port 1(vethc9d7c7b) entered forwarding state
+2025-07-10_20-22-00 - Jul 10 19:34:40 kali NetworkManager[782]: <info>  [1752155380.7565] device (vethc9d7c7b): carrier: link connected
+2025-07-10_20-22-05 - Jul 10 19:34:40 kali NetworkManager[782]: <info>  [1752155380.7571] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-22-10 - Jul 10 19:34:41 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_20-22-15 - Jul 10 19:34:41 kali containerd[905]: time="2025-07-10T19:34:41.145800637+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-22-20 - Jul 10 19:34:41 kali containerd[905]: time="2025-07-10T19:34:41.145859471+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-22-25 - Jul 10 19:34:41 kali containerd[905]: time="2025-07-10T19:34:41.145870544+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_20-22-30 - Jul 10 19:34:41 kali dockerd[1096]: time="2025-07-10T19:34:41.145909346+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-22-35 - Jul 10 19:34:41 kali kernel: br-56abf95250c1: port 1(vethc9d7c7b) entered disabled state
+2025-07-10_20-22-40 - Jul 10 19:34:41 kali kernel: veth5ad5ee1: renamed from eth0
+2025-07-10_20-22-45 - Jul 10 19:34:41 kali NetworkManager[782]: <info>  [1752155381.3043] manager: (veth5ad5ee1): new Veth device (/org/freedesktop/NetworkManager/Devices/1711)
+2025-07-10_20-22-55 - Jul 10 19:34:41 kali kernel: vethc9d7c7b (unregistering): left allmulticast mode
+2025-07-10_20-23-00 - Jul 10 19:34:41 kali kernel: vethc9d7c7b (unregistering): left promiscuous mode
+2025-07-10_20-23-10 - Jul 10 19:34:41 kali systemd[1]: run-docker-netns-a708150e248d.mount: Deactivated successfully.
+2025-07-10_20-23-15 - Jul 10 19:34:41 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_20-23-20 - Jul 10 19:35:01 kali CRON[406375]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+2025-07-10_20-23-25 - Jul 10 19:35:01 kali CRON[406377]: (root) CMD (command -v debian-sa1 > /dev/null && debian-sa1 1 1)
+2025-07-10_20-23-30 - Jul 10 19:35:01 kali CRON[406375]: pam_unix(cron:session): session closed for user root
+2025-07-10_20-23-35 - Jul 10 19:35:41 kali NetworkManager[782]: <info>  [1752155441.1626] manager: (vethbb273eb): new Veth device (/org/freedesktop/NetworkManager/Devices/1712)
+2025-07-10_20-23-40 - Jul 10 19:35:41 kali kernel: br-56abf95250c1: port 1(veth0336302) entered blocking state
+2025-07-10_20-23-45 - Jul 10 19:35:41 kali kernel: br-56abf95250c1: port 1(veth0336302) entered disabled state
+2025-07-10_20-23-50 - Jul 10 19:35:41 kali kernel: veth0336302: entered allmulticast mode
+2025-07-10_20-23-55 - Jul 10 19:35:41 kali kernel: veth0336302: entered promiscuous mode
+2025-07-10_20-24-00 - Jul 10 19:35:41 kali NetworkManager[782]: <info>  [1752155441.1635] manager: (veth0336302): new Veth device (/org/freedesktop/NetworkManager/Devices/1713)
+2025-07-10_20-24-05 - Jul 10 19:35:41 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-24-10 - Jul 10 19:35:41 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-25-45 - Jul 10 19:35:41 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:36:11 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-25-50 - Jul 10 19:35:41 kali containerd[905]: time="2025-07-10T19:35:41.209143469+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-25-55 - Jul 10 19:35:41 kali containerd[905]: time="2025-07-10T19:35:41.209187124+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-26-00 - Jul 10 19:35:41 kali containerd[905]: time="2025-07-10T19:35:41.209196048+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-26-05 - Jul 10 19:35:41 kali containerd[905]: time="2025-07-10T19:35:41.209255024+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-26-10 - Jul 10 19:35:41 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-26-15 - Jul 10 19:35:41 kali kernel: eth0: renamed from vethbb273eb
+2025-07-10_20-26-25 - Jul 10 19:35:41 kali kernel: br-56abf95250c1: port 1(veth0336302) entered forwarding state
+2025-07-10_20-26-30 - Jul 10 19:35:41 kali NetworkManager[782]: <info>  [1752155441.4082] device (veth0336302): carrier: link connected
+2025-07-10_20-26-36 - Jul 10 19:35:41 kali NetworkManager[782]: <info>  [1752155441.4086] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-26-41 - Jul 10 19:35:41 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_20-26-46 - Jul 10 19:35:41 kali containerd[905]: time="2025-07-10T19:35:41.776839176+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-26-51 - Jul 10 19:35:41 kali containerd[905]: time="2025-07-10T19:35:41.776871778+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-26-56 - Jul 10 19:35:41 kali containerd[905]: time="2025-07-10T19:35:41.776879898+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_20-27-01 - Jul 10 19:35:41 kali dockerd[1096]: time="2025-07-10T19:35:41.776940384+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-27-11 - Jul 10 19:35:41 kali kernel: vethbb273eb: renamed from eth0
+2025-07-10_20-27-16 - Jul 10 19:35:41 kali NetworkManager[782]: <info>  [1752155441.9976] manager: (vethbb273eb): new Veth device (/org/freedesktop/NetworkManager/Devices/1714)
+2025-07-10_20-27-26 - Jul 10 19:35:41 kali kernel: veth0336302 (unregistering): left allmulticast mode
+2025-07-10_20-27-31 - Jul 10 19:35:41 kali kernel: veth0336302 (unregistering): left promiscuous mode
+2025-07-10_20-27-41 - Jul 10 19:35:42 kali systemd[1]: run-docker-netns-36ebe3eadb29.mount: Deactivated successfully.
+2025-07-10_20-27-46 - Jul 10 19:35:42 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_20-27-51 - Jul 10 19:36:32 kali kernel: usb 1-3: USB disconnect, device number 7
+2025-07-10_20-27-56 - Jul 10 19:36:32 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-28-01 - Jul 10 19:36:32 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-29-36 - Jul 10 19:36:32 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:37:02 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-29-41 - Jul 10 19:36:32 kali dbus-daemon[732]: [system] Activating via systemd: service name='org.freedesktop.Avahi' unit='dbus-org.freedesktop.Avahi.service' requested by ':1.2574' (uid=130 pid=407374 comm="/usr/libexec/colord-sane")
+2025-07-10_20-29-46 - Jul 10 19:36:32 kali dbus-daemon[732]: [system] Activation via systemd failed for unit 'dbus-org.freedesktop.Avahi.service': Unit dbus-org.freedesktop.Avahi.service not found.
+2025-07-10_20-29-51 - Jul 10 19:36:32 kali dbus-daemon[732]: [system] Activating via systemd: service name='org.freedesktop.Avahi' unit='dbus-org.freedesktop.Avahi.service' requested by ':1.2575' (uid=130 pid=407374 comm="/usr/libexec/colord-sane")
+2025-07-10_20-30-01 - Jul 10 19:36:41 kali kernel: br-56abf95250c1: port 1(veth5c73bf7) entered blocking state
+2025-07-10_20-30-06 - Jul 10 19:36:41 kali kernel: br-56abf95250c1: port 1(veth5c73bf7) entered disabled state
+2025-07-10_20-30-11 - Jul 10 19:36:41 kali kernel: veth5c73bf7: entered allmulticast mode
+2025-07-10_20-30-16 - Jul 10 19:36:41 kali kernel: veth5c73bf7: entered promiscuous mode
+2025-07-10_20-30-21 - Jul 10 19:36:41 kali NetworkManager[782]: <info>  [1752155501.8009] manager: (veth3a780c0): new Veth device (/org/freedesktop/NetworkManager/Devices/1715)
+2025-07-10_20-30-26 - Jul 10 19:36:41 kali NetworkManager[782]: <info>  [1752155501.8018] manager: (veth5c73bf7): new Veth device (/org/freedesktop/NetworkManager/Devices/1716)
+2025-07-10_20-30-31 - Jul 10 19:36:41 kali containerd[905]: time="2025-07-10T19:36:41.839662253+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-30-36 - Jul 10 19:36:41 kali containerd[905]: time="2025-07-10T19:36:41.839699512+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-30-41 - Jul 10 19:36:41 kali containerd[905]: time="2025-07-10T19:36:41.839708642+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-30-46 - Jul 10 19:36:41 kali containerd[905]: time="2025-07-10T19:36:41.839769269+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-30-51 - Jul 10 19:36:41 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-30-56 - Jul 10 19:36:42 kali kernel: eth0: renamed from veth3a780c0
+2025-07-10_20-31-01 - Jul 10 19:36:42 kali kernel: br-56abf95250c1: port 1(veth5c73bf7) entered blocking state
+2025-07-10_20-31-06 - Jul 10 19:36:42 kali kernel: br-56abf95250c1: port 1(veth5c73bf7) entered forwarding state
+2025-07-10_20-31-11 - Jul 10 19:36:42 kali NetworkManager[782]: <info>  [1752155502.0608] device (veth5c73bf7): carrier: link connected
+2025-07-10_20-31-16 - Jul 10 19:36:42 kali NetworkManager[782]: <info>  [1752155502.0613] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-31-21 - Jul 10 19:36:42 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_20-31-26 - Jul 10 19:36:42 kali containerd[905]: time="2025-07-10T19:36:42.425542276+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-31-31 - Jul 10 19:36:42 kali containerd[905]: time="2025-07-10T19:36:42.425586820+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-31-36 - Jul 10 19:36:42 kali containerd[905]: time="2025-07-10T19:36:42.425598227+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_20-31-41 - Jul 10 19:36:42 kali dockerd[1096]: time="2025-07-10T19:36:42.425595917+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-31-46 - Jul 10 19:36:42 kali kernel: br-56abf95250c1: port 1(veth5c73bf7) entered disabled state
+2025-07-10_20-31-51 - Jul 10 19:36:42 kali kernel: veth3a780c0: renamed from eth0
+2025-07-10_20-32-01 - Jul 10 19:36:42 kali kernel: veth5c73bf7 (unregistering): left allmulticast mode
+2025-07-10_20-32-06 - Jul 10 19:36:42 kali kernel: veth5c73bf7 (unregistering): left promiscuous mode
+2025-07-10_20-32-16 - Jul 10 19:36:42 kali systemd[1]: run-docker-netns-9501a0d298f8.mount: Deactivated successfully.
+2025-07-10_20-32-21 - Jul 10 19:36:42 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_20-32-26 - Jul 10 19:37:42 kali NetworkManager[782]: <info>  [1752155562.4407] manager: (vethb16c56e): new Veth device (/org/freedesktop/NetworkManager/Devices/1717)
+2025-07-10_20-32-31 - Jul 10 19:37:42 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-32-36 - Jul 10 19:37:42 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-32-41 - Jul 10 19:37:42 kali NetworkManager[782]: <info>  [1752155562.4413] manager: (veth6d4973e): new Veth device (/org/freedesktop/NetworkManager/Devices/1718)
+2025-07-10_20-34-16 - Jul 10 19:37:42 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:38:12 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-34-21 - Jul 10 19:37:42 kali kernel: br-56abf95250c1: port 1(veth6d4973e) entered blocking state
+2025-07-10_20-34-26 - Jul 10 19:37:42 kali kernel: br-56abf95250c1: port 1(veth6d4973e) entered disabled state
+2025-07-10_20-34-31 - Jul 10 19:37:42 kali kernel: veth6d4973e: entered allmulticast mode
+2025-07-10_20-34-36 - Jul 10 19:37:42 kali kernel: veth6d4973e: entered promiscuous mode
+2025-07-10_20-34-41 - Jul 10 19:37:42 kali containerd[905]: time="2025-07-10T19:37:42.482621512+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-34-46 - Jul 10 19:37:42 kali containerd[905]: time="2025-07-10T19:37:42.482661865+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-34-51 - Jul 10 19:37:42 kali containerd[905]: time="2025-07-10T19:37:42.482669668+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-34-56 - Jul 10 19:37:42 kali containerd[905]: time="2025-07-10T19:37:42.482771331+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-35-01 - Jul 10 19:37:42 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-35-06 - Jul 10 19:37:42 kali kernel: eth0: renamed from vethb16c56e
+2025-07-10_20-35-16 - Jul 10 19:37:42 kali kernel: br-56abf95250c1: port 1(veth6d4973e) entered forwarding state
+2025-07-10_20-35-21 - Jul 10 19:37:42 kali NetworkManager[782]: <info>  [1752155562.6718] device (veth6d4973e): carrier: link connected
+2025-07-10_20-35-26 - Jul 10 19:37:42 kali NetworkManager[782]: <info>  [1752155562.6722] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-35-31 - Jul 10 19:37:43 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_20-35-36 - Jul 10 19:37:43 kali dockerd[1096]: time="2025-07-10T19:37:43.032742709+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-35-41 - Jul 10 19:37:43 kali containerd[905]: time="2025-07-10T19:37:43.032795687+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-35-46 - Jul 10 19:37:43 kali containerd[905]: time="2025-07-10T19:37:43.032822334+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-35-51 - Jul 10 19:37:43 kali containerd[905]: time="2025-07-10T19:37:43.032832393+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_20-35-56 - Jul 10 19:37:43 kali kernel: br-56abf95250c1: port 1(veth6d4973e) entered disabled state
+2025-07-10_20-36-01 - Jul 10 19:37:43 kali kernel: vethb16c56e: renamed from eth0
+2025-07-10_20-36-11 - Jul 10 19:37:43 kali kernel: veth6d4973e (unregistering): left allmulticast mode
+2025-07-10_20-36-16 - Jul 10 19:37:43 kali kernel: veth6d4973e (unregistering): left promiscuous mode
+2025-07-10_20-36-26 - Jul 10 19:37:43 kali NetworkManager[782]: <info>  [1752155563.2645] manager: (vethb16c56e): new Veth device (/org/freedesktop/NetworkManager/Devices/1719)
+2025-07-10_20-36-31 - Jul 10 19:37:43 kali systemd[1]: run-docker-netns-07b2898afa42.mount: Deactivated successfully.
+2025-07-10_20-36-36 - Jul 10 19:37:43 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_20-36-41 - Jul 10 19:38:43 kali NetworkManager[782]: <info>  [1752155623.0523] manager: (veth6817046): new Veth device (/org/freedesktop/NetworkManager/Devices/1720)
+2025-07-10_20-36-46 - Jul 10 19:38:43 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-36-51 - Jul 10 19:38:43 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-36-56 - Jul 10 19:38:43 kali NetworkManager[782]: <info>  [1752155623.0529] manager: (vethfc040c1): new Veth device (/org/freedesktop/NetworkManager/Devices/1721)
+2025-07-10_20-38-31 - Jul 10 19:38:43 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:39:13 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-38-36 - Jul 10 19:38:43 kali kernel: br-56abf95250c1: port 1(vethfc040c1) entered blocking state
+2025-07-10_20-38-41 - Jul 10 19:38:43 kali kernel: br-56abf95250c1: port 1(vethfc040c1) entered disabled state
+2025-07-10_20-38-46 - Jul 10 19:38:43 kali kernel: vethfc040c1: entered allmulticast mode
+2025-07-10_20-38-51 - Jul 10 19:38:43 kali kernel: vethfc040c1: entered promiscuous mode
+2025-07-10_20-38-56 - Jul 10 19:38:43 kali containerd[905]: time="2025-07-10T19:38:43.104620711+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-39-01 - Jul 10 19:38:43 kali containerd[905]: time="2025-07-10T19:38:43.104665715+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-39-06 - Jul 10 19:38:43 kali containerd[905]: time="2025-07-10T19:38:43.104679477+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-39-11 - Jul 10 19:38:43 kali containerd[905]: time="2025-07-10T19:38:43.104765750+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-39-16 - Jul 10 19:38:43 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-39-21 - Jul 10 19:38:43 kali NetworkManager[782]: <info>  [1752155623.2894] device (vethfc040c1): carrier: link connected
+2025-07-10_20-39-26 - Jul 10 19:38:43 kali NetworkManager[782]: <info>  [1752155623.2896] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-39-31 - Jul 10 19:38:43 kali kernel: eth0: renamed from veth6817046
+2025-07-10_20-39-41 - Jul 10 19:38:43 kali kernel: br-56abf95250c1: port 1(vethfc040c1) entered forwarding state
+2025-07-10_20-39-46 - Jul 10 19:38:43 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_20-39-51 - Jul 10 19:38:43 kali containerd[905]: time="2025-07-10T19:38:43.643916351+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-39-56 - Jul 10 19:38:43 kali containerd[905]: time="2025-07-10T19:38:43.643954548+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-40-01 - Jul 10 19:38:43 kali containerd[905]: time="2025-07-10T19:38:43.643966643+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_20-40-06 - Jul 10 19:38:43 kali dockerd[1096]: time="2025-07-10T19:38:43.643971905+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-40-16 - Jul 10 19:38:43 kali kernel: veth6817046: renamed from eth0
+2025-07-10_20-40-26 - Jul 10 19:38:43 kali kernel: vethfc040c1 (unregistering): left allmulticast mode
+2025-07-10_20-40-31 - Jul 10 19:38:43 kali kernel: vethfc040c1 (unregistering): left promiscuous mode
+2025-07-10_20-40-41 - Jul 10 19:38:43 kali NetworkManager[782]: <info>  [1752155623.8285] manager: (veth6817046): new Veth device (/org/freedesktop/NetworkManager/Devices/1722)
+2025-07-10_20-40-46 - Jul 10 19:38:43 kali systemd[1]: run-docker-netns-a6e1c6d1b6a2.mount: Deactivated successfully.
+2025-07-10_20-40-51 - Jul 10 19:38:43 kali systemd[1]: var-lib-docker-overlay2-7bba9fa187195294f339f178673026f7cd3a8e8d28cf4a21ebc3ef435d1ad2a0-merged.mount: Deactivated successfully.
+2025-07-10_20-40-56 - Jul 10 19:39:01 kali CRON[409127]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+2025-07-10_20-41-01 - Jul 10 19:39:01 kali CRON[409129]: (root) CMD (  [ -x /usr/lib/php/sessionclean ] && if [ ! -d /run/systemd/system ]; then /usr/lib/php/sessionclean; fi)
+2025-07-10_20-41-06 - Jul 10 19:39:01 kali CRON[409127]: pam_unix(cron:session): session closed for user root
+2025-07-10_20-41-11 - Jul 10 19:39:43 kali NetworkManager[782]: <info>  [1752155683.6632] manager: (vethb19ebd0): new Veth device (/org/freedesktop/NetworkManager/Devices/1723)
+2025-07-10_20-41-16 - Jul 10 19:39:43 kali kernel: br-56abf95250c1: port 1(veth38ec60e) entered blocking state
+2025-07-10_20-41-21 - Jul 10 19:39:43 kali kernel: br-56abf95250c1: port 1(veth38ec60e) entered disabled state
+2025-07-10_20-41-26 - Jul 10 19:39:43 kali kernel: veth38ec60e: entered allmulticast mode
+2025-07-10_20-41-31 - Jul 10 19:39:43 kali kernel: veth38ec60e: entered promiscuous mode
+2025-07-10_20-41-36 - Jul 10 19:39:43 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-41-41 - Jul 10 19:39:43 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-41-46 - Jul 10 19:39:43 kali NetworkManager[782]: <info>  [1752155683.6644] manager: (veth38ec60e): new Veth device (/org/freedesktop/NetworkManager/Devices/1724)
+2025-07-10_20-44-01 - Jul 10 19:39:43 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 19:40:13 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-44-06 - Jul 10 19:39:43 kali systemd[1]: Starting phpsessionclean.service - Clean php session files...
+2025-07-10_20-44-11 - Jul 10 19:39:43 kali containerd[905]: time="2025-07-10T19:39:43.710872409+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-44-16 - Jul 10 19:39:43 kali containerd[905]: time="2025-07-10T19:39:43.710939262+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-44-21 - Jul 10 19:39:43 kali containerd[905]: time="2025-07-10T19:39:43.710963091+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-44-26 - Jul 10 19:39:43 kali containerd[905]: time="2025-07-10T19:39:43.711280419+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-44-31 - Jul 10 19:39:43 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-44-36 - Jul 10 19:39:43 kali systemd[1]: phpsessionclean.service: Deactivated successfully.
+2025-07-10_20-44-41 - Jul 10 19:39:43 kali systemd[1]: Finished phpsessionclean.service - Clean php session files.
+2025-07-10_20-44-46 - Jul 10 19:39:43 kali NetworkManager[782]: <info>  [1752155683.8415] device (veth38ec60e): carrier: link connected
+2025-07-10_20-44-51 - Jul 10 19:39:43 kali NetworkManager[782]: <info>  [1752155683.8418] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-44-56 - Jul 10 19:39:43 kali kernel: eth0: renamed from vethb19ebd0
+2025-07-10_20-45-06 - Jul 10 19:39:43 kali kernel: br-56abf95250c1: port 1(veth38ec60e) entered forwarding state
+2025-07-10_20-45-13 - Jul 10 20:45:01 kali rsyslogd[743]: action 'action-0-builtin:omfile' resumed (module 'builtin:omfile') [v8.2504.0 try https://www.rsyslog.com/e/2359 ]
+2025-07-10_20-45-18 - Jul 10 20:45:01 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), retry 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-45-53 - Jul 10 20:45:01 kali rsyslogd[743]: action 'action-0-builtin:omfile' suspended (module 'builtin:omfile'), next retry is Thu Jul 10 20:45:31 2025, retry nbr 0. There should be messages before this one giving the reason for suspension. [v8.2504.0 try https://www.rsyslog.com/e/2007 ]
+2025-07-10_20-45-58 - Jul 10 20:45:01 kali CRON[456482]: pam_unix(cron:session): session closed for user root
+2025-07-10_20-46-03 - Jul 10 20:45:25 kali kernel: br-56abf95250c1: port 1(veth0cff9ce) entered blocking state
+2025-07-10_20-46-08 - Jul 10 20:45:25 kali kernel: br-56abf95250c1: port 1(veth0cff9ce) entered disabled state
+2025-07-10_20-46-13 - Jul 10 20:45:25 kali kernel: veth0cff9ce: entered allmulticast mode
+2025-07-10_20-46-18 - Jul 10 20:45:25 kali kernel: veth0cff9ce: entered promiscuous mode
+2025-07-10_20-46-23 - Jul 10 20:45:25 kali NetworkManager[782]: <info>  [1752159625.3674] manager: (veth95bb338): new Veth device (/org/freedesktop/NetworkManager/Devices/1914)
+2025-07-10_20-46-28 - Jul 10 20:45:25 kali NetworkManager[782]: <info>  [1752159625.3693] manager: (veth0cff9ce): new Veth device (/org/freedesktop/NetworkManager/Devices/1915)
+2025-07-10_20-46-33 - Jul 10 20:45:25 kali containerd[905]: time="2025-07-10T20:45:25.411000140+05:45" level=info msg="loading plugin \"io.containerd.event.v1.publisher\"..." runtime=io.containerd.runc.v2 type=io.containerd.event.v1
+2025-07-10_20-46-38 - Jul 10 20:45:25 kali containerd[905]: time="2025-07-10T20:45:25.411056485+05:45" level=info msg="loading plugin \"io.containerd.internal.v1.shutdown\"..." runtime=io.containerd.runc.v2 type=io.containerd.internal.v1
+2025-07-10_20-46-43 - Jul 10 20:45:25 kali containerd[905]: time="2025-07-10T20:45:25.411074585+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.task\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-46-48 - Jul 10 20:45:25 kali containerd[905]: time="2025-07-10T20:45:25.411189725+05:45" level=info msg="loading plugin \"io.containerd.ttrpc.v1.pause\"..." runtime=io.containerd.runc.v2 type=io.containerd.ttrpc.v1
+2025-07-10_20-46-53 - Jul 10 20:45:25 kali systemd[1]: Started docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope - libcontainer container 961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.
+2025-07-10_20-46-58 - Jul 10 20:45:25 kali NetworkManager[782]: <info>  [1752159625.5413] device (veth0cff9ce): carrier: link connected
+2025-07-10_20-47-03 - Jul 10 20:45:25 kali NetworkManager[782]: <info>  [1752159625.5415] device (br-56abf95250c1): carrier: link connected
+2025-07-10_20-47-08 - Jul 10 20:45:25 kali kernel: eth0: renamed from veth95bb338
+2025-07-10_20-47-18 - Jul 10 20:45:25 kali kernel: br-56abf95250c1: port 1(veth0cff9ce) entered forwarding state
+2025-07-10_20-47-23 - Jul 10 20:45:25 kali systemd[1]: docker-961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298.scope: Deactivated successfully.
+2025-07-10_20-47-28 - Jul 10 20:45:25 kali containerd[905]: time="2025-07-10T20:45:25.995687744+05:45" level=info msg="shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-47-33 - Jul 10 20:45:25 kali containerd[905]: time="2025-07-10T20:45:25.995746702+05:45" level=warning msg="cleaning up after shim disconnected" id=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 namespace=moby
+2025-07-10_20-47-38 - Jul 10 20:45:25 kali containerd[905]: time="2025-07-10T20:45:25.995758257+05:45" level=info msg="cleaning up dead shim" namespace=moby
+2025-07-10_20-47-43 - Jul 10 20:45:25 kali dockerd[1096]: time="2025-07-10T20:45:25.995778655+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-47-48 - Jul 10 20:45:26 kali kernel: br-56abf95250c1: port 1(veth0cff9ce) entered disabled state
+2025-07-10_20-47-53 - Jul 10 20:45:26 kali kernel: veth95bb338: renamed from eth0
+2025-07-10_20-48-03 - Jul 10 20:45:26 kali kernel: veth0cff9ce (unregistering): left allmulticast mode
+2025-07-10_20-48-08 - Jul 10 20:45:26 kali kernel: veth0cff9ce (unregistering): left promiscuous mode
+2025-07-10_20-50-32 - Jul 10 20:50:29 kali dockerd[1096]: time="2025-07-10T20:50:29.260996858+05:45" level=info msg="ignoring event" container=961e33064e903bc93c2de25298e75d0d4a3b7b701666bcd7a38181a17d9e7298 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+2025-07-10_20-50-37 - Jul 10 20:50:29 kali kernel: br-56abf95250c1: port 1(vethc6635fc) entered disabled state
+2025-07-10_20-50-42 - Jul 10 20:50:29 kali kernel: veth1f24c84: renamed from eth0
+2025-07-10_20-50-47 - Jul 10 20:50:29 kali NetworkManager[782]: <info>  [1752159929.4650] manager: (veth1f24c84): new Veth device (/org/freedesktop/NetworkManager/Devices/1930)
+2025-07-10_20-50-57 - Jul 10 20:50:29 kali kernel: vethc6635fc (unregistering): left allmulticast mode

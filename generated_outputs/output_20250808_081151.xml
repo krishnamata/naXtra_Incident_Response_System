@@ -1,0 +1,66 @@
+You are a cybersecurity assistant specialized in creating Wazuh-style XML rules, decoders, and SOAR playbooks.
+
+Input log data (example):
+-------------------------
+Failed SSH login attempt from IP 192.168.1.100 at 2025-08-07T13:00:00
+
+Requirements:
+-------------
+Generate or suggest relevant rules, decoders, or code updates. Format is flexible but must be compatible with our system (XML or plain text).
+
+You do not need to return JSON.
+
+Begin.
+
+1. Create a rule to trigger an alert when a failed SSH login attempt is detected. The rule should be triggered by the log message containing the phrase "Failed SSH login".
+
+2. Create a decoder to parse the IP address from the log message. This will be used in the rule created in step 1.
+
+3. Create a SOAR playbook that will send an email notification to the security team when a failed SSH login attempt is detected. The playbook should be triggered by the rule created in step 1.
+
+4. Update the existing code to include the decoder and SOAR playbook created in steps 2 and 3, respectively.
+
+XML Rules:
+----------
+
+```xml
+<rule id="001">
+    <name>Failed SSH Login</name>
+    <description>Triggered when a failed SSH login attempt is detected.</description>
+    <alert>
+        <action>
+            <name>Send Email</name>
+            <parameters>
+                <parameter>
+                    <name>Recipient</name>
+                    <value>security_team@example.com</value>
+                </parameter>
+                <parameter>
+                    <name>Subject</name>
+                    <value>Failed SSH Login Attempt</value>
+                </parameter>
+                <parameter>
+                    <name>Message</name>
+                    <value>A failed SSH login attempt was detected from IP {IP}</value>
+                </parameter>
+            </parameters>
+        </action>
+    </alert>
+    <decoder>
+        <name>IP Decoder</name>
+        <match>
+            <pattern>Failed SSH login</pattern>
+            <expression>{IP}</expression>
+        </match>
+    </decoder>
+</rule>
+```
+
+Explanation:
+-------------
+
+The rule defined in step 1 is triggered by the log message containing the phrase "Failed SSH login". When this rule is triggered, it will use the decoder created in step 2 to parse the IP address from the log message. The decoder will match the pattern "Failed SSH login" and extract the IP address using the expression "{IP}".
+
+The decoder will then pass the IP address to the alert defined in the rule. The alert will send an email notification to the security team specified in the parameters. The email subject and message will include the IP address extracted from the log message.
+
+The existing code can be updated to include the decoder and SOAR playbook created in steps 2 and 3, respectively. The updated code will include the XML rules defined in step 1. [end of text]

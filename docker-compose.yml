@@ -1,0 +1,35 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: soar-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db     # ✅ Named volume declared here
+
+  redis:
+    image: redis:7
+    container_name: soar-redis
+    ports:
+      - "6379:6379"
+
+  soar-api:
+    build: .
+    container_name: soar-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/app
+      - /var/log/auth.log:/app/log/auth.log:ro
+      - /var/log/boot.log:/app/log/boot.log:ro  # ✅ Syslog mounted read-only
+      - /var/log/dpkg.log:/app/log/dpkg.log:ro # authentication log moun 
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/soar
+      - REDIS_URL=redis://redis:6379/0
+
+volumes:
+  mongo-data:   # ✅ Declare it here!
+

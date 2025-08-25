@@ -1,0 +1,14 @@
+python-dateutil
+flask
+Flask_SQLAlchemy
+requests
+pymongo
+elasticsearch
+python-dotenv
+pyyaml
+celery
+redis
+gunicorn
+Werkzeug
+flask-login
+requests
