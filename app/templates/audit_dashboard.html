@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>naXtra Pulse IR - Audit Dashboard</h2>
+
+    <hr>
+    <h4>System & SOC Metrics</h4>
+
+    <!-- Date range picker -->
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label>Start Date</label>
+            <input type="date" id="metricsStartDate" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label>End Date</label>
+            <input type="date" id="metricsEndDate" class="form-control">
+        </div>
+        <div class="col-md-2 align-self-end">
+            <button class="btn btn-primary" onclick="applyMetricsDateRange()">Apply</button>
+        </div>
+    </div>
+
+    <!-- System Charts -->
+    <div class="row">
+        <div class="col-md-3"><canvas id="cpuChart"></canvas></div>
+        <div class="col-md-3"><canvas id="ramChart"></canvas></div>
+        <div class="col-md-3"><canvas id="cpuTrendChart"></canvas></div>
+        <div class="col-md-3"><canvas id="ramTrendChart"></canvas></div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6"><canvas id="logsChart"></canvas></div>
+        <div class="col-md-6"><canvas id="alertsChart"></canvas></div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-12"><canvas id="logAlertTimeChart"></canvas></div>
+    </div>
+
+    <hr>
+    <h4>Generate Reports</h4>
+
+    <div class="row">
+        <!-- Logs Report -->
+        <div class="col-md-6">
+            <div class="card p-3 mb-3">
+                <h5>Logs Report</h5>
+                <form id="logsReportForm" action="/audit/start_log_report_pdf" method="POST">
+  <input type="hidden" name="start_date" value="2025-09-01">
+  <input type="hidden" name="end_date" value="2025-09-23">
+                    
+                    <div class="mb-2"><label>Agent</label>
+                        <select name="agent" class="form-control">
+                            <option value="">-- All Agents --</option>
+                            {% for agent in agent_names %}<option value="{{ agent }}">{{ agent }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-2"><label>Log Type</label>
+                        <select name="log_type" class="form-control">
+                            <option value="">-- All Log Types --</option>
+                            {% for lt in log_types %}<option value="{{ lt }}">{{ lt }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-2"><label>CVSS Min</label><input type="number" name="cvss_min" class="form-control" min="0" max="10"></div>
+                    <div class="mb-2"><label>Risk Score Min</label><input type="number" name="risk_min" class="form-control" min="0"></div>
+                 
+                    
+
+
+<button type="submit" class="btn btn-primary">Generate Logs Report</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Alerts Report -->
+        <div class="col-md-6">
+            <div class="card p-3 mb-3">
+                <h5>Alerts Report</h5>
+               <form id="alertsReportForm" action="/audit/start_alert_report_pdf" method="POST">
+  <input type="hidden" name="start_date" value="2025-09-01">
+  <input type="hidden" name="end_date" value="2025-09-23">
+                    
+                    <div class="mb-2"><label>Agent</label>
+                        <select name="agent" class="form-control">
+                            <option value="">-- All Agents --</option>
+                            {% for agent in agent_names %}<option value="{{ agent }}">{{ agent }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-2"><label>NIST Phase</label>
+                        <select name="nist_phase" class="form-control">
+                            <option value="">-- All Phases --</option>
+                            {% for phase in nist_phases %}<option value="{{ phase }}">{{ phase }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-2"><label>Rule</label>
+                        <select name="rule_id" class="form-control">
+                            <option value="">-- All Rules --</option>
+                            {% for rule_id, rule_name in rule_options.items() %}
+                                <option value="{{ rule_id }}">{{ rule_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-2"><label>CVSS Min</label><input type="number" name="cvss_min" class="form-control" min="0" max="10"></div>
+                    <div class="mb-2"><label>Risk Score Min</label><input type="number" name="risk_min" class="form-control" min="0"></div>
+                    <div class="mb-2"><label>Malware</label><input type="text" name="malware" class="form-control" placeholder="Optional"></div>
+                    <div class="mb-2"><label>Analyst</label><input type="text" name="analyst" class="form-control" placeholder="Optional"></div>
+                    
+ 
+
+
+
+
+<button type="submit" class="btn btn-primary">Generate Alerts Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Progress bars -->
+<div id="logsProgressContainer" class="progress mb-2" style="display:none;">
+  <div id="logsProgressBar" class="progress-bar" role="progressbar" style="width:0%" aria-valuemin="0" aria-valuemax="100">0%</div>
+</div>
+<div id="alertsProgressContainer" class="progress mb-2" style="display:none;">
+  <div id="alertsProgressBar" class="progress-bar" role="progressbar" style="width:0%" aria-valuemin="0" aria-valuemax="100">0%</div>
+</div>
+
+<!-- Overlay -->
+<div id="reportOverlay" style="
+    display:none; position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.5); z-index:2000; text-align:center; color:white;
+    font-size:1.5rem; padding-top:20%;">
+    <div>
+        <div class="spinner-border text-light" role="status"><span class="visually-hidden">Loading...</span></div>
+        <p>Preparing report, please wait...</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let cpuChartObj, ramChartObj, cpuTrendChart, ramTrendChart;
+let logsChart, alertsChart, logAlertChart;
+let cpuData=[], ramData=[], timeLabels=[];
+let reportFlags = {logs:false, alerts:false};
+
+// Charts helpers
+function createOrUpdateDoughnut(chartVar, ctxId, label, value){
+    const ctx=document.getElementById(ctxId).getContext('2d');
+    if(window[chartVar]){
+        window[chartVar].data.datasets[0].data=[value,100-value];
+        window[chartVar].update();
+    }else{
+        window[chartVar]=new Chart(ctx,{
+            type:'doughnut',
+            data:{labels:['Used','Free'],datasets:[{data:[value,100-value]}]},
+            options:{plugins:{title:{display:true,text:label}}, cutout:'70%'}
+        });
+    }
+}
+
+function drawLineChart(ctxId, labels, data, title){
+    const ctx=document.getElementById(ctxId).getContext('2d');
+    return new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:title,data:data,fill:false}]},options:{plugins:{title:{display:true,text:title}}}});
+}
+
+function drawBarChart(ctxId, labels, data, title){
+    const ctx=document.getElementById(ctxId).getContext('2d');
+    return new Chart(ctx,{type:'bar',data:{labels:labels,datasets:[{label:title,data:data}]},options:{plugins:{title:{display:true,text:title}}}});
+}
+
+// Fetch metrics
+async function refreshMetrics(start=null,end=null){
+    try{
+        let url='/audit/api/system_metrics';
+        if(start&&end) url+=`?start=${start}&end=${end}`;
+        const d=await (await fetch(url)).json();
+
+        createOrUpdateDoughnut('cpuChartObj','cpuChart','CPU Utilization',d.cpu_percent);
+        createOrUpdateDoughnut('ramChartObj','ramChart','RAM Utilization',d.ram_percent);
+
+        // Keep last 30 points
+        const nowLabel = new Date().toLocaleTimeString();
+        if(timeLabels.length>=30){timeLabels.shift(); cpuData.shift(); ramData.shift();}
+        timeLabels.push(nowLabel); cpuData.push(d.cpu_percent); ramData.push(d.ram_percent);
+
+        if(!cpuTrendChart) cpuTrendChart=drawLineChart('cpuTrendChart',timeLabels,cpuData,'CPU % Trend');
+        else{ cpuTrendChart.data.labels=timeLabels; cpuTrendChart.data.datasets[0].data=cpuData; cpuTrendChart.update(); }
+
+        if(!ramTrendChart) ramTrendChart=drawLineChart('ramTrendChart',timeLabels,ramData,'RAM % Trend');
+        else{ ramTrendChart.data.labels=timeLabels; ramTrendChart.data.datasets[0].data=ramData; ramTrendChart.update(); }
+
+        if(!logsChart) logsChart=drawBarChart('logsChart',d.days,d.logs_by_day,'Logs (last period)');
+        else{ logsChart.data.labels=d.days; logsChart.data.datasets[0].data=d.logs_by_day; logsChart.update(); }
+
+        const labels=['Low','Medium','High'];
+        const counts=[d.alerts_by_severity.low,d.alerts_by_severity.medium,d.alerts_by_severity.high];
+        if(!alertsChart) alertsChart=drawBarChart('alertsChart',labels,counts,'Alerts by Severity');
+        else{ alertsChart.data.datasets[0].data=counts; alertsChart.update(); }
+
+        if(!logAlertChart) logAlertChart=drawLineChart('logAlertTimeChart',d.days,d.log_to_alert_avg_by_day,'Avg Log→Alert Time (sec)');
+        else{ logAlertChart.data.labels=d.days; logAlertChart.data.datasets[0].data=d.log_to_alert_avg_by_day; logAlertChart.update(); }
+
+    }catch(err){ console.error('metrics error',err);}
+}
+
+function applyMetricsDateRange(){
+    const start=document.getElementById('metricsStartDate').value;
+    const end=document.getElementById('metricsEndDate').value;
+    if(start&&end) refreshMetrics(start,end);
+}
+
+refreshMetrics();
+setInterval(()=>refreshMetrics(),15000);
+
+// Overlay helpers
+function showOverlay(){ document.getElementById('reportOverlay').style.display='block'; }
+function hideOverlay(){ document.getElementById('reportOverlay').style.display='none'; }
+
+// Track report progress
+function trackProgress(taskId, barId, containerId, flagKey){
+    const bar = document.getElementById(barId);
+    const container = document.getElementById(containerId);
+    container.style.display = 'block';
+    bar.style.width = '0%'; 
+    bar.innerText = '0%';
+    reportFlags[flagKey] = true;
+
+    const interval = setInterval(() => {
+        fetch(`/audit/report_progress/${taskId}`)
+            .then(r => r.json())
+            .then(d => {
+                let p = d.progress;
+                bar.style.width = p + '%';
+                bar.innerText = p + '%';
+                if (p >= 100) {
+                    clearInterval(interval);
+                    if(d.download_url){
+                        const a=document.createElement('a'); a.href=d.download_url; a.download=d.download_url.split('/').pop(); document.body.appendChild(a); a.click(); a.remove();
+                    }
+                    bar.style.width = '0%'; bar.innerText = '0%';
+                    container.style.display='none';
+                    hideOverlay();
+                    reportFlags[flagKey] = false;
+                }
+            }).catch(err => { console.error(err); clearInterval(interval); hideOverlay(); reportFlags[flagKey]=false; });
+    },500);
+}
+
+//handle pdf or excel report
+document.getElementById('logsReportForm').onsubmit = function(e){
+    const format = this.report_format.value;
+    this.action = format === 'pdf' ? '/audit/start_unified_report_pdf' : '/audit/start_unified_report';
+};
+
+document.getElementById('alertsReportForm').onsubmit = function(e){
+    const format = this.report_format.value;
+    this.action = format === 'pdf' ? '/audit/start_unified_report_pdf' : '/audit/start_unified_report';
+};
+
+
+
+</script>
+{% endblock %}

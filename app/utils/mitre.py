@@ -39,3 +39,29 @@ def extract_mitigations(technique_id):
         "Monitor abnormal command-line activity",
         "Apply least privilege on user accounts"
     ]
+
+
+def map_alert_to_mitre(alert_title_or_desc):
+    """
+    Map an alert title or description to MITRE technique info from attack.json.
+    Returns a dict: { 'technique_id': str, 'technique_name': str } or None if no match.
+    """
+    if not alert_title_or_desc:
+        return None
+
+    alert_text = str(alert_title_or_desc).lower()
+    for obj in attack_data.get('objects', []):
+        if obj.get('type') != 'attack-pattern':
+            continue
+        technique_name = obj.get('name', '').lower()
+        if technique_name in alert_text or alert_text in technique_name:
+            # Take first external reference ID
+            ext_refs = obj.get('external_references', [])
+            if ext_refs:
+                ext_id = ext_refs[0].get('external_id')
+                if ext_id:
+                    return {
+                        "technique_id": ext_id,
+                        "technique_name": obj.get('name')
+                    }
+    return None

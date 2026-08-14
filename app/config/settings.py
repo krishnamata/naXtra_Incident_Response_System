@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 load_dotenv()
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+# app/config/settings.py
+AGENT_API_KEY = 'naxtraSOAR-key'
+
 # Core Flask settings
 SECRET_KEY = 'naxtraSOAR-key'
 

@@ -1,0 +1,9 @@
+<network connections='1'>
+  <name>hostonly</name>
+  <uuid>986a5384-c9ac-47e1-9c57-49e1f7154a77</uuid>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <mac address='52:54:00:29:6f:ca'/>
+  <ip address='192.168.1.1' netmask='255.255.0.0'>
+  </ip>
+</network>
+

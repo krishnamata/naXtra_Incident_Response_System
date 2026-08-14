@@ -1,51 +1,26 @@
-{% set canonical_map = {
-  'auth': 'Authentication',
-  'auth.log': 'Authentication',
-  'journal': 'System Journal',
-  'journalctl': 'System Journal',
-  'syslog': 'System Log',
-  'messages': 'System Log',
-  'maillog': 'Mail Log',
-  'sulog': 'SU Log'
-} %}
+{% extends 'base.html' %}
 
-{% set grouped_logs = {} %}
-{% for log_type, content in os_logs.items() %}
-  {% set key = canonical_map.get(log_type.strip().lower(), log_type.strip().capitalize()) %}
-  {% if key in grouped_logs %}
-    {% set _ = grouped_logs.update({key: grouped_logs[key] + '\n' + content}) %}
-  {% else %}
-    {% set _ = grouped_logs.update({key: content}) %}
-  {% endif %}
-{% endfor %}
+{% block content %}
+<div class="container">
+    <h2>Linux Agent Deployment</h2>
 
-<!-- Bootstrap Nav Tabs -->
-<ul class="nav nav-tabs mt-3" role="tablist">
-  {% for log_type, content in grouped_logs.items() %}
-    <li class="nav-item" role="presentation">
-      <a class="nav-link {% if loop.first %}active{% endif %}"
-         id="tab-{{ os_name }}-{{ loop.index }}"
-         data-bs-toggle="tab"
-         href="#log-{{ os_name }}-{{ loop.index }}"
-         role="tab">{{ log_type }}</a>
-    </li>
-  {% endfor %}
-</ul>
+    <ol>
+        <li>
+            Download the Linux agent:
+            <a href="{{ url_for('static', filename='linux_agent.tar.gz') }}">
+                linux_agent.tar.gz
+            </a>
+        </li>
+        <li>Extract the archive:
+            <pre>tar -xzf linux_agent.tar.gz</pre>
+        </li>
+        <li>Run installer:
+            <pre>cd linux_agent && chmod +x install.sh && sudo ./install.sh</pre>
+        </li>
+    </ol>
 
-<!-- Bootstrap Tab Content -->
-<div class="tab-content mt-2">
-  {% for log_type, content in grouped_logs.items() %}
-    <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
-         id="log-{{ os_name }}-{{ loop.index }}"
-         role="tabpanel">
-      <h6 class="mt-3">{{ log_type }} Log</h6>
-      <table class="table table-bordered table-sm">
-        <tbody>
-          {% for line in content.split('\n')|reverse %}
-            <tr><td>{{ line }}</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  {% endfor %}
+    <a href="{{ url_for('agents.index') }}" class="btn btn-secondary">
+        Back to Agent Management
+    </a>
 </div>
+{% endblock %}

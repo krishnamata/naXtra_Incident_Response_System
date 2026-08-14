@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>File Integrity Monitoring Dashboard</h2>
+
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h5>Total Agents</h5>
+                <p>{{ total_agents }}</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h5>Baseline Files</h5>
+                <p>{{ baseline_count }}</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h5>Detected Events</h5>
+                <p>{{ event_count }}</p>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mt-4">Agents</h4>
+    <button id="reset-agent" class="btn btn-sm btn-secondary mb-2">Reset Filter</button>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Agent</th>
+                <th>Unresolved Events</th>
+                <th>Risk Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agent in agents %}
+            <tr>
+                <td><a href="#" class="agent-link" data-agent="{{ agent }}">{{ agent }}</a></td>
+                <td>{{ agent_events[agent]|length }}</td>
+                <td>
+                    {% set unresolved = agent_events[agent]|selectattr("resolved", "equalto", false)|list|length %}
+                    {% if unresolved == 0 %}
+                        Low
+                    {% elif unresolved < 5 %}
+                        Medium
+                    {% else %}
+                        High
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4 class="mt-4">FIM Events</h4>
+    <table class="table table-striped" id="fim-events-table">
+        <thead>
+            <tr>
+                <th>Agent</th>
+                <th>File Path</th>
+                <th>Change Type</th>
+                <th>Old Hash</th>
+                <th>New Hash</th>
+                <th>Status</th>
+                <th>Detected At</th>
+                <th>Resolved</th>
+            </tr>
+        </thead>
+        <tbody id="fim-events-body">
+            {% for agent, events in agent_events.items() %}
+                {% for event in events %}
+                <tr>
+                    <td>{{ agent }}</td>
+                    <td>{{ event.file_path }}</td>
+                    <td>{{ event.change_type }}</td>
+                    <td>{{ event.old_hash }}</td>
+                    <td>{{ event.new_hash }}</td>
+                    <td>{{ event.signature_status or "unknown" }}</td>
+                    <td>{{ event.detected_at }}</td>
+                    <td>{{ "Yes" if event.resolved else "No" }}</td>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const agentLinks = document.querySelectorAll(".agent-link");
+    const resetBtn = document.getElementById("reset-agent");
+    const eventsBody = document.getElementById("fim-events-body");
+
+    function loadEvents(agent = null) {
+        let url = "/fim/events";
+        if (agent) url += `?agent=${encodeURIComponent(agent)}`;
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                eventsBody.innerHTML = "";
+                data.items.forEach(e => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${e.file_path.split("/")[0]}</td>
+                        <td>${e.file_path}</td>
+                        <td>${e.change_type}</td>
+                        <td>${e.old_hash}</td>
+                        <td>${e.new_hash}</td>
+                        <td>${e.signature_status}</td>
+                        <td>${e.detected_at}</td>
+                        <td>${e.resolved ? "Yes" : "No"}</td>
+                    `;
+                    eventsBody.appendChild(row);
+                });
+            });
+    }
+
+    agentLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const agent = link.dataset.agent;
+            loadEvents(agent);
+        });
+    });
+
+    resetBtn.addEventListener("click", () => {
+        loadEvents(); // load all events
+    });
+});
+</script>
+{% endblock %}

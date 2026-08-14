@@ -9,3 +9,6 @@ RULES_BY_ID, RULES_KEYWORD_MAP = build_rules_lookup(RULES_CACHE)
 
 DECODERS_CACHE = load_wazuh_decoders("/home/kali/wazuh-ruleset/decoders")  # replace with actual path
 DECODERS_LOOKUP = build_decoder_lookup(DECODERS_CACHE)
+
+PENDING_DECODERS = []  # list of dicts: {"name":..., "xml":..., "log_text":...}
+PENDING_RULES = []     # similar structure for Wazuh rules

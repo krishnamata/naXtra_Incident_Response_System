@@ -1,33 +1,57 @@
-<li class="mb-2">
-  <strong>{{ step.nist_phase }} - {{ step.sub_step }}:</strong>
+<div class="modal-body">
+  <h5>NIST Steps for Alert {{ alert.id }}</h5>
 
-  {% if step.step_id %}
-    <button class="btn btn-sm btn-outline-primary ms-2 step-btn"
-            data-bs-toggle="modal"
-            data-bs-target="#stepModal"
-            data-alert="{{ alert.id }}"
-            data-step-id="{{ step.step_id }}"
-            data-step-name="{{ step.sub_step }}">
-      {{ step.status }}
-      {% if step.evidence_count > 0 %}
-        ({{ step.evidence_count }} evidence{% if step.evidence_count > 1 %}s{% endif %})
-      {% endif %}
-    </button>
-  {% else %}
-    <span class="text-muted ms-2">Step not available</span>
-  {% endif %}
+  <div class="mb-3">
+    <label>Progress:</label>
+    <div class="progress">
+      <div id="nist-progress-bar" class="progress-bar bg-info" role="progressbar" style="width:0%">0%</div>
+    </div>
+  </div>
 
-  <br>
-  <small>
-    By: {{ step.updated_by or "-" }}, {{ step.updated_at or "-" }}
-  </small>
-
-  {% if step.status != "pending" and session.get('role') in ['admin', 'senior_analyst'] and step.step_id %}
-    <form method="POST" class="d-inline restore-form"
-          data-alert-id="{{ alert.id }}"
-          action="{{ url_for('alerts.restore_alert_step', alert_id=alert.id, step_id=step.step_id) }}">
-      <button class="btn btn-sm btn-secondary ms-2">Restore</button>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Status</th>
+        <th>Evidence Count</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+{% for step in step_objects %}
+<tr>
+  <td>{{ step.nist_phase }}-{{ step.sub_step }}</td>
+  <td id="step-status-{{ step.id }}">{{ step.status }}</td>
+  <td id="step-evidence-count-{{ step.id }}">{{ step.evidences|length }}</td>
+  <td>
+    <form data-alert-id="{{ alert.id }}" 
+          action="/alerts/{{ alert.id }}/step/{{ step.id }}/add_evidence" 
+          onsubmit="return submitEvidence(this, {{ step.id }})">
+      <textarea name="notes" class="form-control mb-1" placeholder="Notes" required></textarea>
+      <input type="file" name="file" class="form-control mb-1">
+      <button type="submit" class="btn btn-primary btn-sm">Submit Evidence</button>
     </form>
-  {% endif %}
-</li>
+  </td>
+</tr>
+{% endfor %}
 
+    </tbody>
+  </table>
+</div>
+
+<script>
+function updateProgressBar() {
+    const statusEls = document.querySelectorAll('[id^="step-status-"]');
+    const total = statusEls.length;
+    let completed = 0;
+    statusEls.forEach(el => { if(el.innerText.toLowerCase() === 'completed') completed++; });
+
+    const percent = total ? Math.round((completed / total) * 100) : 0;
+    const progressBar = document.getElementById("nist-progress-bar");
+    progressBar.style.width = percent + "%";
+    progressBar.innerText = percent + "%";
+}
+
+// Call on modal load
+updateProgressBar();
+</script>

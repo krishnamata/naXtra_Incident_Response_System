@@ -1,0 +1,29 @@
+[
+  {
+    "id": "KB001",
+    "type": "rule",
+    "text": "Suspicious login attempt detected from unusual location.",
+    "metadata": {
+      "severity": "high",
+      "category": "authentication"
+    }
+  },
+  {
+    "id": "KB002",
+    "type": "decoder",
+    "text": "Failed SSH login attempts parser",
+    "metadata": {
+      "source": "wazuh",
+      "category": "ssh"
+    }
+  },
+  {
+    "id": "KB003",
+    "type": "rule",
+    "text": "Malware file detected on endpoint.",
+    "metadata": {
+      "severity": "critical",
+      "category": "malware"
+    }
+  }
+]

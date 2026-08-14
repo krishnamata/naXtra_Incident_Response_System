@@ -9,8 +9,6 @@ def load_wazuh_decoders(decoders_dir):
     if not os.path.isdir(decoders_dir):
         raise FileNotFoundError(f"[ERROR] Decoders directory not found: {decoders_dir}")
 
-    print(f"[INFO] Loading decoders from: {decoders_dir}")
-
     for filename in os.listdir(decoders_dir):
         if not filename.endswith(".xml"):
             continue
@@ -24,29 +22,34 @@ def load_wazuh_decoders(decoders_dir):
                 name = decoder_elem.get("name", "UnnamedDecoder")
                 program_elem = decoder_elem.find("program_name")
                 regex_elem = decoder_elem.find("regex")
+                platform_elem = decoder_elem.find("platform")  # Optional: linux/windows/network
 
-                if program_elem is None or regex_elem is None:
-                    #print(f"[WARNING] Skipping decoder '{name}' in {filename}: missing <program_name> or <regex>")
-                    continue
+                program_name = program_elem.text.strip() if program_elem is not None and program_elem.text else ""
+                regex = regex_elem.text.strip() if regex_elem is not None and regex_elem.text else ""
+                platform = platform_elem.text.strip().lower() if platform_elem is not None and platform_elem.text else None
 
-                program_name = program_elem.text.strip() if program_elem.text else ""
-                regex = regex_elem.text.strip() if regex_elem.text else ""
-
-                if not regex:
-                    #print(f"[WARNING] Decoder '{name}' in {filename} has empty regex, skipping.")
+                # Skip decoders with neither program_name nor regex
+                if not program_name and not regex:
                     continue
 
                 decoder = Decoder(name, program_name, regex)
+                decoder.platform = platform  # attach platform info
                 decoders.append(decoder)
-                print(f"[INFO] Loaded decoder: {name}")
+                print(f"[INFO] Loaded decoder: {name} (Platform: {platform})")
 
         except ET.ParseError as e:
             print(f"[ERROR] Failed to parse XML file {filename}: {e}")
         except Exception as e:
             print(f"[ERROR] Unexpected error loading {filename}: {e}")
 
+    # Add ScriptCodeDecoder at the end (generic fallback)
     decoders.append(ScriptCodeDecoder())
+    decoders[-1].platform = None
     print("[INFO] ScriptCodeDecoder appended.")
+
+    # --- PRIORITIZE CRON decoders ---
+    decoders.sort(key=lambda d: 0 if d.name.startswith("cron-service") else 1)
+
     print(f"[INFO] Total decoders loaded: {len(decoders)}")
     return decoders
 
@@ -55,50 +58,50 @@ def build_decoder_lookup(decoders):
     """
     Build a dict for quick lookup by decoder name.
     """
-    lookup = {}
-    for decoder in decoders:
-        lookup[decoder.name.lower()] = decoder
-    return lookup
+    return {decoder.name.lower(): decoder for decoder in decoders}
 
 
-
-
-def apply_decoders(log, decoders):
-    # If input is string, convert to dict with "message"
+def apply_decoders(log, decoders, agent_type=None):
+    """
+    Apply decoders to a log.
+    If agent_type is provided, only decoders for that platform or generic will be considered.
+    Returns (parsed_log, decoder) or (original log, None)
+    """
     if isinstance(log, str):
         log = {"message": log}
 
-    print(f"[DEBUG] Raw log input: {log}")
     for decoder in decoders:
+        if agent_type and decoder.platform and decoder.platform != agent_type:
+            continue
         if decoder.matches(log):
-            #print(f"[DEBUG] Decoder matched: {decoder.name}")
             parsed_log = decoder.parse(log)
-            #print(f"[DEBUG] Parsed log after decoding: {parsed_log}")
             return parsed_log, decoder
-    print("[DEBUG] No decoder matched this log.")
+
+    # No matching decoder found; fallback to generic
+    for decoder in decoders:
+        if decoder.platform is None and decoder.matches(log):
+            parsed_log = decoder.parse(log)
+            return parsed_log, decoder
+
     return log, None
 
 
-def auto_detect_decoder_name(log: str, decoders: list) -> str | None:
+def auto_detect_decoder_name(log, decoders, agent_type=None):
     """
     Returns the name of the first decoder matching the log.
     """
-    for decoder in decoders:
-        if decoder.matches(log):
-            print(f"[INFO] auto_detect_decoder_name matched: {decoder.name}")
-            return decoder.name
-    print("[INFO] auto_detect_decoder_name found no match.")
-    return None
+    parsed_log, decoder = apply_decoders(log, decoders, agent_type)
+    return decoder.name if decoder else None
 
-def match_log_with_decoders(log_text, decoders):
+
+def match_log_with_decoders(log_text, decoders, agent_type=None):
     """
     Matches a log text against all loaded decoders.
-    Returns the parsed log if matched, else None.
+    Returns a tuple (parsed_log, decoder) if matched, else (log_text, None).
     """
-    parsed_log = apply_decoders(log_text, decoders)
-    if parsed_log != log_text:
-        return parsed_log
-    return None
+    return apply_decoders(log_text, decoders, agent_type)
 
-DECODERS_CACHE = load_wazuh_decoders("/home/kali/wazuh-ruleset/decoders")
+
+# --- LOAD DECODERS ---
+DECODERS_CACHE = load_wazuh_decoders("app/rules/wazuh-ruleset/decoders")
 DECODERS_LOOKUP = build_decoder_lookup(DECODERS_CACHE)

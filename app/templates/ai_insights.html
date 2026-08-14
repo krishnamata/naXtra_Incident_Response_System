@@ -47,20 +47,13 @@ sendBtn.addEventListener('click', async () => {
     const loadingDiv = addMessage(loadingText,'ai',true);
 
     try {
-        const response = await fetch('/ai_insights/generate', {
+        const response = await fetch('http://localhost:5001/api/naxtraai/generate', {
             method: 'POST',
             headers: {'Content-Type':'application/json', 'Role': 'admin'},
-            body: JSON.stringify({text, gen_type: genType.value})
+            body: JSON.stringify({log_text: text, gen_type: genType.value})
         });
 
-        let data;
-        try {
-            data = await response.json();
-        } catch (e) {
-            addMessage("Error: Invalid server response. Please try again.", 'ai');
-            return;
-        }
-
+        let data = await response.json();
         let displayText = '';
         if(data.status==='generated'){
             displayText = `<pre style="background:#f0f0f0;padding:10px;border-radius:6px;overflow-x:auto;">${data.data}</pre>`;
@@ -71,11 +64,10 @@ sendBtn.addEventListener('click', async () => {
         } else if(data.status==='error'){
             displayText = `Error: ${data.message || data.data}`;
         } else {
-            displayText = "Unexpected response from Server.";
+            displayText = "Unexpected response.";
         }
 
         addMessage(displayText,'ai');
-
     } catch(err){
         addMessage(`Error: ${err.message}`,'ai');
     } finally {
@@ -84,5 +76,4 @@ sendBtn.addEventListener('click', async () => {
     }
 });
 </script>
-
 {% endblock %}

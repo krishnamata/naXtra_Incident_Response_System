@@ -1,3 +1,20 @@
+mitre_map = {
+    "authentication failure": "T1110",
+    "brute force": "T1110",
+    "failed login": "T1110",
+    "denial of service": "T1499",
+    "flood": "T1499",
+    "sql injection": "T1190",
+    "privilege escalation": "T1068",
+    "data exfiltration": "T1020",
+    "unauthorized access": "T1078",
+}
+
+
+
+
+
+
 MITRE_KEYWORD_MAP = {
     # Privilege Escalation
     "privilege escalation": "T1068",

@@ -5,3 +5,23 @@ venv/
 agent_logs/
 logs/
 generated_outputs/
+# Virtual Environment (Thousands of heavy package files)
+venv/
+app/venv/
+
+# Databases & Backups (Heavy binary files & sensitive credentials)
+*.db
+*.sql
+*.tar.gz
+*.bak
+*.bk
+
+# Python Cache & System files
+__pycache__/
+*.pyc
+.env
+
+# Raw Log dumps and extra system extra extractions
+logs/
+log/
+*.json

@@ -246,16 +246,19 @@ def get_items():
         if current_role != 'admin' and (not task or task.assigned_to != current_user_id):
             continue
 
+        # Default values
+        agent_name = timestamp = description = None
+        playbook_steps = []
+        rule_ids = []
+        technique_ids = []
+        mitre_links = []
+        ioc_enrichment = {}
+
         if item_type == 'log':
             agent_name = obj.source
             timestamp = obj.timestamp
             description = json.dumps(obj.raw_log or {}, indent=2)
-            playbook_steps = []
-            rule_id = None
-            technique_id = None
-            mitre_link = None
-            ioc_enrichment = {}
-        else:
+        else:  # alert
             agent_name = obj.agent_name
             timestamp = obj.detected_time
             description = obj.description or obj.rule_title or ''
@@ -267,31 +270,32 @@ def get_items():
             else:
                 playbook_steps = obj.playbook_steps
 
-            rule_id = getattr(obj, 'rule_id', None)
-            technique_id = getattr(obj, 'technique_id', None)
-            ioc_enrichment = getattr(obj, 'ioc_enrichment', {})
+            # Split comma-separated IDs
+            rule_ids = obj.rule_id.split(",") if getattr(obj, 'rule_id', None) else []
+            technique_ids = obj.technique_id.split(",") if getattr(obj, 'technique_id', None) else []
 
-            # MITRE link
-            if technique_id and technique_id != 'NA':
-                mitre_link = f"https://attack.mitre.org/techniques/{technique_id}/"
-                mitre_info = get_mitre_info(technique_id)
-            else:
-                mitre_link = None
-                mitre_info = None
+            # Generate MITRE links for all techniques
+            for tid in technique_ids:
+                if tid:
+                    mitre_links.append({
+                        'id': tid,
+                        'link': f"https://attack.mitre.org/techniques/{tid}/"
+                    })
+
+            ioc_enrichment = getattr(obj, 'ioc_enrichment', {})
 
         items.append({
             'id': obj.id,
             'agent_name': agent_name or '-',
             'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S') if timestamp else '-',
-            'description': description,
+            'description': description or '',
             'status': status,
             'assigned_to': assigned_user or '-',
             'assigned_to_id': task.assigned_to if task else None,
             'playbook_steps': playbook_steps,
-            'rule_id': rule_id,
-            'technique_id': technique_id,
-            'mitre_link': mitre_link,
-            'mitre_info': mitre_info,
+            'rule_ids': rule_ids,             # all rule IDs
+            'technique_ids': technique_ids,   # all technique IDs
+            'mitre_links': mitre_links,
             'ioc_enrichment': ioc_enrichment
         })
 

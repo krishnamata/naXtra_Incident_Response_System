@@ -14,14 +14,17 @@ def management():
 
 @agents_bp.route('/linux')
 def linux():
-    return render_template('linux_agent_deploy.html')
+    os_logs = {
+        "auth": "",
+        "syslog": "",
+        "journal": ""
+    }
 
-@agents_bp.route('/download/linux')
-def download_linux_agent():
-    agent_dir = '/var/www/modular-soar/app/agents/linux_agents/'  # assumes folder is in project root
-    return send_from_directory(agent_dir, 'linux_agent.tar.gz', as_attachment=True)
-
-
+    return render_template(
+        'linux_agent_deploy.html',
+        os_logs=os_logs,
+        os_name="linux"
+    )
 
 
 
@@ -29,9 +32,6 @@ def download_linux_agent():
 def windows():
     return render_template('windows_agent.html')
 
-@agents_bp.route('/mac')
-def mac():
-    return "macOS Agent Deployment - Coming Soon"
 
 @agents_bp.route('/network')
 def network():

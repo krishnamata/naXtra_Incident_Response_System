@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Reset MFA{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h3>MFA Reset for {{ username }}</h3>
+    <p>Scan this new QR code with your authenticator app to set up MFA again:</p>
+    <img src="data:image/png;base64,{{ qr_code }}" alt="MFA QR Code" class="mb-3" style="max-width: 200px;">
+    <form method="get" action="{{ url_for('auth.login') }}">
+        <button type="submit" class="btn btn-primary">Back to Login</button>
+    </form>
+</div>
+{% endblock %}

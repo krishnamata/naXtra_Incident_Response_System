@@ -5,10 +5,12 @@ from app.rules.rules_engine import RuleEngine
 from flask import session
 
 app = create_app()
-
+app.config.from_object('app.config.settings')
+app.config["api_key"] = "naxtraSOAR-key"
 # Load rule engine
 rules = load_rules('app/rules/wazuh-ruleset/rules')
 app.rule_engine = RuleEngine(rules)
+
 
 @app.context_processor
 def inject_session():

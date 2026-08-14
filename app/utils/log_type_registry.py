@@ -1,54 +1,71 @@
-import json
-import os
-from threading import Lock
+# app/utils/log_type_registry.py
 
-LOG_TYPES_FILE = os.path.join(os.path.dirname(__file__), 'log_types.json')
+from threading import Lock
+from app.models import LogEntry
+from app.extensions import db
+
 _lock = Lock()
 
-def _load_known_log_types():
-    try:
-        with open(LOG_TYPES_FILE, 'r') as f:
-            return set(json.load(f))
-    except Exception:
-        # If file missing or corrupt, return default set
-        return {
-            "windows",
-            "windows_security",
-            "windows_system",
-            "linux",
-            "sshd",
-            "clamd",
-            "freshclam",
-            "suricata",
-            "osquery",
-            "apache",
-            "nginx",
-            "roundcube"
-        }
+# Map specific source agent names to generalized agent categories
+SOURCE_AGENT_MAP = {
+    "kali": "linux",
+    "ubuntu": "linux",
+    "centos": "linux",
+    "debian": "linux",
+    # add more Linux distros as needed
+}
 
-def _save_known_log_types(log_types):
-    with _lock:
-        with open(LOG_TYPES_FILE, 'w') as f:
-            json.dump(sorted(list(log_types)), f, indent=2)
+# Agent → log type mapping (baseline allowed types)
+AGENT_LOG_TYPE_MAP = {
+    "linux": ["syslog", "sulog", "auth", "maillog", "journal", "kernlog", "sendmail-reject"],
+    "windows": ["security_log", "system_log", "application_log", "setup_log"],
+    "network_device": ["network_snmp", "network_cdp", "network_lldp", "network_ntp", "network_syslog"],
+}
 
-# Load known types at module import
-KNOWN_LOG_TYPES = _load_known_log_types()
 
-def normalize_log_type(log_type: str, log_data: dict = None) -> str:
-    log_type = log_type.strip().lower()
+# Map journal-type logs to rule-compatible log types
+JOURNAL_TO_RULE_MAP = {
+    "journal": "syslog",  # all journal logs use syslog rules
+}
 
-    # Heuristics based on log_data if available
-    if log_data:
-        agent_name = log_data.get("agent_name", "").lower()
-        if "windows" in agent_name or "win" in agent_name:
-            return "windows"
-        if "clamd" in agent_name or "freshclam" in agent_name:
-            return "clamd"
+def normalize_log_type(log_type: str, agent_type: str = None) -> str:
+    """
+    Normalize a log type:
+    - Maps agent_name via SOURCE_AGENT_MAP
+    - Maps 'journal' to 'syslog' for Linux
+    - If agent_type missing, attempt to infer from known Linux log types
+    - Unknown types become 'other_<agent_type>' or 'generic'
+    """
+    log_type = (log_type or "generic").strip().lower()
 
-    if log_type not in KNOWN_LOG_TYPES:
-        print(f"[WARN] Unknown log_type '{log_type}' received. Adding to KNOWN_LOG_TYPES and saving.")
-        KNOWN_LOG_TYPES.add(log_type)  # Add dynamically in-memory
-        _save_known_log_types(KNOWN_LOG_TYPES)  # Persist to file
+    # If agent_type not provided, infer Linux logs
+    if not agent_type:
+        if log_type in ["syslog", "sulog", "auth", "maillog", "journal", "kernlog", "sendmail-reject"]:
+            agent_type = "linux"
+        elif log_type in ["security_log", "system_log", "application_log", "setup_log"]:
+            agent_type = "windows"
+        else:
+            agent_type = "unknown"
+
+    # Map agent name to generic type
+    mapped_agent_type = SOURCE_AGENT_MAP.get(agent_type.lower(), agent_type.lower())
+    allowed_types = AGENT_LOG_TYPE_MAP.get(mapped_agent_type, [])
+
+    # Map journal logs to syslog rules
+    if log_type in JOURNAL_TO_RULE_MAP and mapped_agent_type == "linux":
+        return JOURNAL_TO_RULE_MAP[log_type]
+
+    if log_type in allowed_types:
         return log_type
+    else:
+        return f"other_{mapped_agent_type}"
 
-    return log_type
+
+
+def get_existing_log_types() -> list[str]:
+    """
+    Get distinct log types currently present in the database.
+    """
+    with _lock:
+        results = db.session.query(LogEntry.log_type).distinct().all()
+        return [row[0] for row in results if row[0]]

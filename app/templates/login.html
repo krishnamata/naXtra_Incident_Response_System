@@ -20,12 +20,26 @@
           <input name="password" type="password" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary w-100">Login</button>
-        {% with messages = get_flashed_messages(category_filter=["login"]) %}
-          {% if messages %}
-            <div class="alert alert-danger mt-2">{{ messages[0] }}</div>
-          {% endif %}
-        {% endwith %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
       </form>
+
+<!-- Reset MFA Form -->
+<form method="POST" action="{{ url_for('auth.reset_mfa') }}" class="mt-2">
+  <div class="mb-3">
+    <label for="reset_username">Forgot OTP? Reset MFA</label>
+    <input type="text" id="reset_username" name="username" class="form-control" placeholder="Enter your username" required>
+  </div>
+  <button type="submit" class="btn btn-warning w-100">Reset MFA</button>
+</form>
+
+
 
       <!-- Signup Form -->
       <form method="POST" action="{{ url_for('auth.signup') }}" class="card card-body">

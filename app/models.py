@@ -54,8 +54,25 @@ class LogEntry(db.Model):
     message = db.Column(db.Text)
     raw_log = db.Column(db.JSON)
     md5_hash = db.Column(db.String(32), index=True, nullable=True)
-    ip_address = db.Column(db.String(45), nullable=True)  
-
+    ip_address = db.Column(db.String(45), nullable=True)
+    processed = db.Column(db.Boolean, default=False, nullable=False)
+    decoder_name = db.Column(db.String(50), nullable=True, index=True)
+    rule_group = db.Column(db.Text, nullable=True)
+ 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "source": self.source,
+            "log_type": self.log_type,
+            "message": self.message,
+            "raw_log": self.raw_log,
+            "md5_hash": self.md5_hash,
+            "ip_address": self.ip_address,
+            "timestamp": self.timestamp.isoformat(),
+            "processed": self.processed,
+            "decoder_name": self.decoder_name,
+            "rule_group": self.rule_group
+        }
 
 # --- Alert Model (Unified) ---
 class Alert(db.Model):
@@ -105,6 +122,55 @@ class Alert(db.Model):
     cvss_score = db.Column(db.Float, nullable=True)
     assigned_to_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     assigned_to_user = db.relationship('User', backref='alerts_assigned')
+
+def to_dict(self):
+    return {
+        "id": self.id,
+        "rule_id": self.rule_id,
+        "rule_title": self.rule_title,
+        "description": self.description,
+        "severity": self.severity,
+        "tactic": self.tactic,
+        "technique_id": self.technique_id,
+        "technique_name": self.technique_name,
+        "agent_name": self.agent_name,
+        "analyst": getattr(getattr(self, "assigned_to_user", None), "full_name", None) or "Not Assigned",
+        "cvss_score": getattr(self, "cvss_score", None),
+        "risk_score": getattr(self, "risk_score", None),
+        "enrichment_status": self.enrichment_status,
+        "status": str(self.status) if self.status else None,
+        "detected_time": self.detected_time.isoformat() if self.detected_time else None
+    }
+
+
+class UnmatchedLog(db.Model):
+    __tablename__ = 'unmatched_logs'
+
+    id = db.Column(db.Integer, primary_key=True)
+    log_id = db.Column(db.Integer, db.ForeignKey('logs.id'), nullable=True)  # relationship to LogEntry
+    alert_id = db.Column(db.Integer, db.ForeignKey('alerts.id'), nullable=True)  # if later matched to alert
+
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    source = db.Column(db.String(255), nullable=False)
+    log_type = db.Column(db.String(50), nullable=True)
+    message = db.Column(db.Text, nullable=True)
+    
+    processed = db.Column(db.Boolean, default=False)
+    alert_checked = db.Column(db.Boolean, default=False)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    log = db.relationship("LogEntry", backref=db.backref("unmatched", lazy=True))
+    alert = db.relationship("Alert", backref=db.backref("unmatched", lazy=True))
+
+    def __repr__(self):
+        return f"<UnmatchedLog {self.id} | {self.source} | {self.timestamp}>"
+
+
+
+
 
 # Add below your existing models
 class MitreTactic(db.Model):
@@ -230,3 +296,77 @@ class AlertHistory(db.Model):
 
     alert = db.relationship("Alert", backref="history")
     user = db.relationship("User")
+
+
+class FimBaseline(db.Model):
+    __tablename__ = "fim_baseline"
+
+    id = db.Column(db.Integer, primary_key=True)
+    file_path = db.Column(db.String, nullable=False)
+    hash_sha256 = db.Column(db.String, nullable=False)
+    owner = db.Column(db.String)
+    permissions = db.Column(db.String)
+    size = db.Column(db.Integer)
+    signature_status = db.Column(db.String)  # valid, invalid, unsigned
+    signature_hex = db.Column(db.Text)
+    hash_algo = db.Column(db.String(10), default="SHA256")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    additional_metadata = db.Column(JSON)  # Store extra attributes, like reason for changes, etc.
+
+    def __repr__(self):
+        return f"<FimBaseline {self.file_path}>"
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "file_path": self.file_path,
+            "hash_sha256": self.hash_sha256,
+            "owner": self.owner,
+            "permissions": self.permissions,
+            "size": self.size,
+            "signature_status": self.signature_status,
+            "signature_hex": self.signature_hex,
+            "hash_algo": self.hash_algo,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+            "additional_metadata": self.additional_metadata
+        }
+
+
+class FimEvent(db.Model):
+    __tablename__ = "fim_events"
+
+    id = db.Column(db.Integer, primary_key=True)
+    baseline_id = db.Column(db.Integer, db.ForeignKey("fim_baseline.id"))
+    file_path = db.Column(db.String, nullable=False)
+    old_hash = db.Column(db.String)
+    new_hash = db.Column(db.String)
+    change_type = db.Column(db.String)  # hash_mismatch, permission_change, etc.
+    severity = db.Column(db.String)  # low, medium, high, critical
+    intel_status = db.Column(db.String)  # known_good, malicious, unknown
+    status = db.Column(db.String, default="pending")  # intact, modified, not_verified
+    additional_metadata = db.Column(JSON)  # Store context, reason, etc.
+    detected_at = db.Column(db.DateTime, default=datetime.utcnow)
+    resolved = db.Column(db.Boolean, default=False)
+
+    baseline = db.relationship("FimBaseline", backref="events")
+
+    def __repr__(self):
+        return f"<FimEvent {self.file_path} - {self.change_type}>"
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "baseline_id": self.baseline_id,
+            "file_path": self.file_path,
+            "old_hash": self.old_hash,
+            "new_hash": self.new_hash,
+            "change_type": self.change_type,
+            "severity": self.severity,
+            "intel_status": self.intel_status,
+            "status": self.status,
+            "additional_metadata": self.additional_metadata,
+            "detected_at": self.detected_at.isoformat() if self.detected_at else None,
+            "resolved": self.resolved
+        }

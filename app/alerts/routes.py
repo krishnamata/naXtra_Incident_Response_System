@@ -1,15 +1,16 @@
-from sqlalchemy.orm import joinedload
-from flask import request, render_template, session, redirect, url_for, jsonify, Blueprint
+from sqlalchemy.orm import joinedload, aliased
+from sqlalchemy.sql import exists
+from flask import request, send_from_directory,  render_template, session, redirect, url_for, jsonify, Blueprint, abort
 from sqlalchemy import asc, desc, cast, Integer, func
 from markupsafe import Markup
 from app.models import Alert, User, AlertStepWork, AlertEvidence, AlertHistory
 from app.extensions import db
+from app.utils.NIST_STEPS import NIST_STEPS
 from app.rules.rules_loader import load_rules, parse_rule_description
-from app.models import AlertStepWork
 from werkzeug.utils import secure_filename
 from app.playbooks.dispatcher import dispatch_playbook, assign_playbook_to_alert
 from app.utils.mitre import get_mitre_info
-from app.dlp import detect_logs_and_generate_alerts, NIST_STEPS
+from app.dlp import detect_logs_and_generate_alerts_for_selected_logs, seed_nist_steps
 from app.integrations.ioc_enrichment import enrich_ioc
 import logging
 import time
@@ -18,42 +19,37 @@ import os
 import json
 
 logger = logging.getLogger(__name__)
-
 alerts_bp = Blueprint('alerts', __name__, template_folder='templates', url_prefix='/alerts')
 
-
 # -------------------------------
-# Add Evidence to Alert Step
+# Constants & Helpers
 # -------------------------------
-
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "pdf", "txt", "log"}
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# -------------------------------
+# Add Evidence
+# -------------------------------
 @alerts_bp.route("/<int:alert_id>/step/<int:step_id>/add_evidence", methods=["POST"])
 def add_alert_evidence(alert_id, step_id):
+    if 'user_id' not in session:
+        return jsonify({"success": False, "message": "Login required"}), 403
     try:
-        if 'user_id' not in session:
-            return jsonify({"success": False, "message": "Login required"}), 403
-
-        step = AlertStepWork.query.filter_by(id=step_id, alert_id=alert_id).first()
-        if not step:
-            return jsonify({"success": False, "message": "Step not found"}), 404
-
+        step = AlertStepWork.query.filter_by(id=step_id, alert_id=alert_id).first_or_404()
         evidence_text = request.form.get("notes")
         file = request.files.get("file")
         file_path, file_hash = None, None
 
-        if file:
+        if file and file.filename:
             filename = secure_filename(file.filename)
             if not allowed_file(filename):
                 return jsonify({"success": False, "message": "File type not allowed"}), 400
 
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             filename = f"{timestamp}_{filename}"
-
             upload_folder = os.path.join("uploads", "alert_evidence", str(alert_id))
             os.makedirs(upload_folder, exist_ok=True)
             file_path = os.path.join(upload_folder, filename)
@@ -62,7 +58,6 @@ def add_alert_evidence(alert_id, step_id):
             with open(file_path, "rb") as f:
                 file_hash = hashlib.sha256(f.read()).hexdigest()
 
-        # Save evidence
         evidence = AlertEvidence(
             step_id=step.id,
             evidence_text=evidence_text,
@@ -72,41 +67,107 @@ def add_alert_evidence(alert_id, step_id):
         )
         db.session.add(evidence)
 
-        # Audit trail
-        details = f"Evidence added to step {step.sub_step}"
-        if file_path:
-            details += f" | File: {file_path} | Hash: {file_hash}"
-
         history = AlertHistory(
             alert_id=alert_id,
             action="added_evidence",
-            details=details,
+            details=f"Evidence added to step {step.sub_step} | File: {file_path or 'None'}",
             performed_by=session['user_id']
         )
         db.session.add(history)
         db.session.commit()
 
         return jsonify({"success": True, "message": f"Evidence added to step '{step.sub_step}'"})
-
     except Exception as e:
-        # Log full exception
-        logger.exception(f"Error adding evidence for alert {alert_id}, step {step_id}: {e}")
-        return jsonify({"success": False, "message": "An unexpected error occurred. Please try again."}), 500
+        logger.exception(e)
+        return jsonify({"success": False, "message": "Unexpected error"}), 500
+
+
+def read_text_file(value):
+    try:
+        with open(value, "r") as f:
+            return f.read()
+    except Exception:
+        return "[Unable to read file]"
 
 
 
 
-@alerts_bp.route("/<int:alert_id>/steps_partial")
-def alert_steps_partial(alert_id):
+# View Alert Evidence
+@alerts_bp.route('/<int:alert_id>/evidence_partial')
+def alert_evidence_partial(alert_id):
     alert = Alert.query.get_or_404(alert_id)
-    non_admin_users = User.query.filter(User.role != 'admin').all()
-    return render_template("alerts_steps_partial.html", alert=alert, non_admin_users=non_admin_users)
+    steps = AlertStepWork.query.options(joinedload(AlertStepWork.evidences)).filter_by(alert_id=alert.id).all()
+
+    # Enrich evidence objects
+    for step in steps:
+        for ev in step.evidences:
+            ev.filename = os.path.basename(ev.file_path) if ev.file_path else None
+
+            # Use the serve_evidence route for file URLs
+            if ev.file_path and os.path.isfile(ev.file_path):
+                ev.file_url = url_for('alerts.serve_evidence', alert_id=alert.id, filename=os.path.basename(ev.file_path))
+            else:
+                ev.file_url = None
+
+            # Get uploader name safely
+            ev.uploader_name = User.query.get(ev.uploaded_by).username if ev.uploaded_by else "Unknown"
+
+    return render_template('alerts_evidence_partial.html', alert=alert, steps=steps)
+
+
+
+# Delete Evidence only Admin
+@alerts_bp.route('/delete_evidence/<int:evidence_id>', methods=['POST'])
+def delete_evidence(evidence_id):
+    if session.get('role') != 'admin':
+        abort(403)
+    ev = AlertEvidence.query.get_or_404(evidence_id)
+    db.session.delete(ev)
+    db.session.commit()
+    return redirect(request.referrer or url_for('alerts.view_alerts'))
+
+@alerts_bp.route('/<int:alert_id>/evidence/<filename>')
+def serve_evidence(alert_id, filename):
+    folder = os.path.join(os.getcwd(), "uploads", "alert_evidence", str(alert_id))
+    if not os.path.exists(os.path.join(folder, filename)):
+        abort(404)
+    return send_from_directory(folder, filename)  # <-- remove as_attachment
+
+
+
 
 
 
 
 # -------------------------------
-# Update Alert Step Status
+# Load NIST Steps Partial
+# -------------------------------
+@alerts_bp.route("/<int:alert_id>/steps_partial")
+def alert_steps_partial(alert_id):
+    alert = Alert.query.get_or_404(alert_id)
+
+    # Explicitly get steps for this alert
+    steps_worked = AlertStepWork.query.filter_by(alert_id=alert.id).all()
+
+    # If no steps exist, seed them
+    if not steps_worked:
+        alert_type = "malware" if alert.is_malware else "normal"
+        seed_nist_steps(alert.id, alert_type=alert_type, created_by=0)
+        steps_worked = AlertStepWork.query.filter_by(alert_id=alert.id).all()
+
+    # Get non-admin users for assigning/review purposes
+    non_admin_users = User.query.filter(User.role != 'admin').all()
+
+    return render_template(
+        "alerts_steps_partial.html",
+        alert=alert,
+        step_objects=steps_worked,
+        non_admin_users=non_admin_users
+    )
+
+
+# -------------------------------
+# Update Step Status
 # -------------------------------
 @alerts_bp.route("/<int:alert_id>/step/<int:step_id>/update_status", methods=["POST"])
 def update_alert_step_status(alert_id, step_id):
@@ -122,7 +183,6 @@ def update_alert_step_status(alert_id, step_id):
         step.notes = notes
     step.updated_by = session['user_id']
 
-    # Log history
     history = AlertHistory(
         alert_id=alert_id,
         action=f"step_{new_status}",
@@ -134,9 +194,8 @@ def update_alert_step_status(alert_id, step_id):
 
     return jsonify({"success": True, "message": f"Step updated to {new_status}"})
 
-
 # -------------------------------
-# Restore False Positive Alert Step
+# Restore Step
 # -------------------------------
 @alerts_bp.route("/<int:alert_id>/step/<int:step_id>/restore", methods=["POST"])
 def restore_alert_step(alert_id, step_id):
@@ -147,7 +206,6 @@ def restore_alert_step(alert_id, step_id):
     previous_status = step.status
     step.status = "pending"
 
-    # Log history
     history = AlertHistory(
         alert_id=alert_id,
         action="restored_step",
@@ -159,9 +217,8 @@ def restore_alert_step(alert_id, step_id):
 
     return jsonify({"success": True, "message": f"Step restored from {previous_status}"})
 
-
 # -------------------------------
-# List All Steps & Evidence for Alert
+# Get Steps for Alert (JSON)
 # -------------------------------
 @alerts_bp.route("/<int:alert_id>/steps")
 def get_alert_steps(alert_id):
@@ -193,13 +250,17 @@ def get_alert_steps(alert_id):
 
     return jsonify({"steps": data})
 
-
+# -------------------------------
+# New Alerts Count
+# -------------------------------
 @alerts_bp.route('/api/new_alerts_count')
 def new_alerts_count_api():
     count = Alert.query.filter_by(is_new=True).count()
     return jsonify({'new_alert_count': count})
 
-
+# -------------------------------
+# Escalate Alert
+# -------------------------------
 @alerts_bp.route("/escalate/<int:alert_id>", methods=["POST"])
 def escalate_alert(alert_id):
     if 'user_id' not in session or session.get('role') == 'admin':
@@ -217,9 +278,9 @@ def escalate_alert(alert_id):
     else:
         return jsonify({"success": False, "message": "Alert already escalated"})
 
-
-
-
+# -------------------------------
+# Alert Notifications
+# -------------------------------
 @alerts_bp.route('/notifications')
 def alert_notifications():
     if 'user_id' not in session:
@@ -228,113 +289,178 @@ def alert_notifications():
     new_alerts = Alert.query.filter_by(is_new=True).order_by(Alert.detected_time.desc()).all()
     return render_template('alerts_notifications.html', alerts=new_alerts)
 
-
-@alerts_bp.route("/assign/<int:alert_id>", methods=["POST"])
+# -------------------------------
+# Assign Alert
+# -------------------------------
+@alerts_bp.route('/<int:alert_id>/assign', methods=['POST'])
 def assign_alert(alert_id):
-    user_id = request.form.get("user_id")
+    if session.get('role') != 'admin':
+        return "Unauthorized", 403
+    user_id = request.form.get('assigned_to')
     alert = Alert.query.get_or_404(alert_id)
-    if user_id:
-        alert.assigned_to_id = user_id
-        db.session.commit()
-    return redirect(url_for("alerts.view_alerts"))
+    alert.assigned_to_id = user_id
+    db.session.commit()
+    return redirect(request.referrer or url_for('alerts.view_alerts'))
 
 
+# -------------------------------
+# View Alerts Page
+# -------------------------------
 @alerts_bp.route('/')
 def view_alerts():
-    agent_name = request.args.get('agent_name', None)
+    agent_name = request.args.get('agent_name')
     page = request.args.get('page', 1, type=int)
-    sort_by = request.args.get('sort_by', 'severity')
+    sort_by = request.args.get('sort_by', 'priority')  # default to priority
     sort_order = request.args.get('sort_order', 'desc')
-    show_malware = request.args.get("malware", "false").lower() == "true"
+    user_role = session.get('role')
+
+    # Determine if malware should be shown
+    if user_role in ['admin', 'senior_analyst']:
+        show_malware = request.args.get("malware", "false").lower() in ["true", "on"]
+    else:
+        show_malware = False  # Analysts never see malware alerts
 
     # Base query
-    query = db.session.query(Alert).options(joinedload(Alert.playbook))
+    query = Alert.query.options(joinedload(Alert.playbook), joinedload(Alert.assigned_to_user))
     query = query.filter(Alert.is_malware == show_malware)
     if agent_name:
         query = query.filter(func.lower(Alert.agent_name) == agent_name.lower())
-    if 'user_id' in session and session.get('role') != 'admin':
-        query = query.filter(Alert.assigned_to_id == session['user_id'])
 
-    # Sorting
-    order_column = Alert.detected_time if sort_by == 'time' else cast(Alert.severity, Integer)
-    query = query.order_by(desc(order_column), Alert.detected_time.desc()) if sort_order != 'asc' else query.order_by(asc(order_column), Alert.detected_time.desc())
+    # Filter by alert ID if provided
+    alert_id = request.args.get('alert_id', type=int)
+    if alert_id:
+        query = query.filter(Alert.id == alert_id)
 
+    # Evidence filter
+    evidence_only = request.args.get("evidence", "false").lower() in ["true", "on"]
+    if evidence_only:
+        query = query.filter(
+            Alert.id.in_(
+                db.session.query(AlertStepWork.alert_id)
+                          .join(AlertEvidence, AlertEvidence.step_id == AlertStepWork.id)
+                          .distinct()
+            )
+        )
+
+    # Analysts can see only their own or unassigned alerts
+    if 'user_id' in session and user_role not in ['admin', 'senior_analyst']:
+        query = query.filter(
+            (Alert.assigned_to_id == session['user_id']) | (Alert.assigned_to_id == None)
+        )
+
+    # Pagination
     pagination = query.paginate(page=page, per_page=20, error_out=False)
     alerts_page = pagination.items
 
+    # Preload user data for steps
+    user_ids = set()
+    alert_ids = [a.id for a in alerts_page]
+    steps_all = AlertStepWork.query.filter(AlertStepWork.alert_id.in_(alert_ids)).all()
+    for s in steps_all:
+        if s.updated_by: user_ids.add(s.updated_by)
+        if getattr(s, "reviewed_by", None): user_ids.add(s.reviewed_by)
+    users = {u.id: u.username for u in User.query.filter(User.id.in_(user_ids)).all()}
+
     enriched_alerts = []
+
+    # Enrich alerts
     for alert in alerts_page:
-        # Seed missing steps if none exist
-        steps_worked = AlertStepWork.query.filter_by(alert_id=alert.id).all()
+        alert.priority_score = alert.severity + (5 if getattr(alert, "technique_id", None) else 0)
+        alert_type = "malware" if alert.is_malware else "normal"
+
+        remedy_steps = NIST_STEPS.get(alert_type, {}).get(user_role, [])
+        if not remedy_steps:
+            continue
+
+        steps_worked = [s for s in steps_all if s.alert_id == alert.id]
+
+        # Seed steps if missing
         if not steps_worked:
-            from app.dlp import seed_nist_steps
-            seed_nist_steps(alert.id, created_by="system")
+            seed_nist_steps(alert.id, alert_type=alert_type, created_by=0)
             steps_worked = AlertStepWork.query.filter_by(alert_id=alert.id).all()
 
+        # Filter steps by role’s remedy_steps
+        steps_worked = [s for s in steps_worked if any(
+            s.sub_step == r['sub_step'] and s.nist_phase == r['nist_phase'] for r in remedy_steps
+        )]
+
+        # Populate MITRE info if missing
+        if not getattr(alert, "technique_id", None) and getattr(alert, "rule_id", None):
+            mitre_info = get_mitre_info(alert.rule_id)
+            if mitre_info:
+                alert.technique_id = mitre_info.get("technique_id")
+                alert.technique_name = mitre_info.get("technique_name")
+                db.session.commit()
+
+        # Handle comma-separated rule IDs and technique IDs
+        #all_rule_ids = getattr(alert, "all_rule_ids", None)
+        #all_technique_ids = getattr(alert, "all_technique_ids", None)
+        mitre_links = []
+        if getattr(alert, "technique_id", None):
+            tid = alert.technique_id.strip()
+            mitre_links.append({
+                    'id': tid,
+                    'link': f"https://attack.mitre.org/techniques/{tid}/"
+                })
+
+        ioc_data = enrich_ioc(alert.md5_hash, alert.sha256_hash) if alert.is_malware else {}
+
+        # Prepare step summaries
         worked_dict = {f"{s.nist_phase}-{s.sub_step}": s for s in steps_worked}
-
-        # Select steps based on role
-        role = session.get("role")
-        remedy_steps = NIST_STEPS.get(role, []) if role in ["analyst", "senior_analyst", "admin"] else []
-
         step_summaries = []
         for step in remedy_steps:
             key = f"{step['nist_phase']}-{step['sub_step']}"
-            if key in worked_dict:
-                s = worked_dict[key]
-                evidence_count = len(s.evidences)
-                updated_by_user = User.query.get(s.updated_by).username if s.updated_by and User.query.get(s.updated_by) else "-"
-                reviewer_user = User.query.get(s.reviewed_by).username if s.reviewed_by and User.query.get(s.reviewed_by) else "-"
-                step_summaries.append({
-                    "step_id": s.id,
-                    "nist_phase": step["nist_phase"],
-                    "sub_step": step["sub_step"],
-                    "status": s.status,
-                    "updated_by": updated_by_user,
-                    "reviewer": reviewer_user,
-                    "review_status": getattr(s, "review_status", None),
-                    "updated_at": s.updated_at,
-                    "evidence_count": evidence_count
-                })
-            else:
-                # Should not happen, fallback
-                step_summaries.append({
-                    "step_id": None,
-                    "nist_phase": step["nist_phase"],
-                    "sub_step": step["sub_step"],
-                    "status": "pending",
-                    "updated_by": "-",
-                    "reviewer": "-",
-                    "review_status": None,
-                    "updated_at": None,
-                    "evidence_count": 0
-                })
+            s = worked_dict.get(key)
+            step_summaries.append({
+                "step_id": s.id if s else None,
+                "nist_phase": step["nist_phase"],
+                "sub_step": step["sub_step"],
+                "status": s.status if s else "pending",
+                "updated_by": users.get(getattr(s, "updated_by", None), "-") if s else "-",
+                "reviewer": users.get(getattr(s, "reviewed_by", None), "-") if s else "-",
+                "review_status": getattr(s, "review_status", None) if s else None,
+                "updated_at": s.updated_at if s else None,
+                "evidence_count": len(s.evidences) if s else 0
+            })
 
-        assigned_to = getattr(alert.assigned_to_user, "username", "-")
         enriched_alerts.append({
             "id": alert.id,
             "detected_time": alert.detected_time,
             "description": Markup(alert.description or "-"),
             "step_objects": steps_worked,
             "step_summaries": step_summaries,
-            "rule_id": getattr(alert, "rule_id", None),
+            "technique_id": alert.technique_id,
+            "mitre_links": mitre_links,
+            "ioc_enrichment": ioc_data,
             "level": alert.severity,
             "agent_name": alert.agent_name,
-            "assigned_to": assigned_to,
+            "assigned_to": getattr(alert.assigned_to_user, "username", "-"),
             "status": alert.status,
+            "is_malware": alert.is_malware,
+            "priority_score": alert.priority_score
         })
 
+    # Sort enriched alerts
+    reverse_sort = sort_order != 'asc'
+    if sort_by == 'priority':
+        enriched_alerts.sort(key=lambda a: a['priority_score'], reverse=reverse_sort)
+    elif sort_by == 'time':
+        enriched_alerts.sort(key=lambda a: a['detected_time'], reverse=reverse_sort)
+    elif sort_by == 'severity':
+        enriched_alerts.sort(key=lambda a: a['level'], reverse=reverse_sort)
+
     non_admin_users = User.query.filter(User.role != 'admin').all()
+    agent_names = [name[0] for name in db.session.query(Alert.agent_name).distinct().all() if name[0]]
 
     if request.args.get("ajax") == "true":
         return render_template(
             'alerts_table_rows.html',
             alerts=enriched_alerts,
             show_malware=show_malware,
-            non_admin_users=non_admin_users
+            non_admin_users=non_admin_users,
+            evidence_only=evidence_only
         )
 
-    agent_names = [name[0] for name in db.session.query(Alert.agent_name).distinct().all() if name[0] is not None]
     return render_template(
         'alerts.html',
         alerts=enriched_alerts,
@@ -342,8 +468,13 @@ def view_alerts():
         pagination=pagination,
         non_admin_users=non_admin_users,
         selected_agent=agent_name,
-        show_malware=show_malware
+        show_malware=show_malware,
+        evidence_only=evidence_only
     )
+
+
+
+
 
 
 

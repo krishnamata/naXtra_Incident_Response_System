@@ -2,6 +2,8 @@ from flask import (
     Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 )
 from app.forms import AddUserForm
+from app.utils.mfa_utils import generate_totp_secret, get_totp_uri, generate_qr_base64, verify_otp
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import User
 from app.extensions import db
@@ -20,8 +22,6 @@ from werkzeug.security import check_password_hash
 from app.models import User
 
 
-
-
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -30,27 +30,89 @@ def login():
 
         user = User.query.filter_by(username=username).first()
 
-        if not user:
+        if not user or not check_password_hash(user.password_hash, password):
             flash('Invalid username or password.', 'danger')
             return redirect(url_for('auth.login'))
 
         if user.status != 'active':
-            flash('Your account is not active. Please contact admin.', 'danger')
+            flash('Your account is not active.', 'danger')
             return redirect(url_for('auth.login'))
 
-        if not check_password_hash(user.password_hash, password):
-            flash('Invalid username or password.', 'danger')
-            return redirect(url_for('auth.login'))
+        # Enable MFA if not already enabled
+        if not user.mfa_enabled:
+            user.mfa_enabled = True
+            if not user.otp_secret:
+                user.otp_secret = generate_totp_secret()
+            db.session.commit()
+            # Generate TOTP URI and QR for first-time setup
+            totp_uri = get_totp_uri(user.otp_secret, user.username)
+            qr_code_base64 = generate_qr_base64(totp_uri)
+            # Show QR page for user to scan
+            session['mfa_user_id'] = user.id
+            return render_template('mfa_setup.html', qr_code=qr_code_base64, username=user.username)
 
-        # Set session manually instead of login_user
-        session['user_id'] = user.id
-        session['username'] = user.username
-        session['role'] = user.role
-
-        flash('Logged in successfully.', 'success')
-        return redirect(url_for('dashboard.dashboard'))  # Adjust as per your app
+        # If MFA enabled, redirect to MFA verification page
+        session['mfa_user_id'] = user.id
+        return redirect(url_for('auth.mfa_verify'))
 
     return render_template('login.html')
+
+
+@auth_bp.route('/mfa-verify', methods=['GET', 'POST'])
+def mfa_verify():
+    if 'mfa_user_id' not in session:
+        flash('No MFA session found. Please login first.', 'warning')
+        return redirect(url_for('auth.login'))
+
+    user = User.query.get(session['mfa_user_id'])
+
+    if request.method == 'POST':
+        # User may be coming from MFA setup page (first-time)
+        if 'otp' in request.form:
+            otp = request.form.get('otp', '').strip()
+            if verify_otp(user.otp_secret, otp):
+                # MFA passed: complete login
+                session['user_id'] = user.id
+                session['username'] = user.username
+                session['role'] = user.role
+                session.pop('mfa_user_id')
+                flash('Logged in successfully.', 'success')
+                return redirect(url_for('dashboard.dashboard'))
+            else:
+                flash('Invalid OTP. Please try again.', 'danger')
+        else:
+            # Coming from setup page: redirect to OTP entry
+            return redirect(url_for('auth.mfa_verify'))
+
+    # For GET request, show OTP entry form
+    return render_template('mfa_verify.html', username=user.username)
+
+@auth_bp.route('/reset-mfa', methods=['POST'])
+def reset_mfa():
+    username = request.form.get('username', '').strip()
+    user = User.query.filter_by(username=username).first()
+
+    if not user:
+        flash("User not found.", "danger")
+        return redirect(url_for('auth.login'))
+
+    # Generate a new secret and save
+    user.otp_secret = generate_totp_secret()
+    db.session.commit()
+
+    # Generate new QR
+    totp_uri = get_totp_uri(user.otp_secret, user.username)
+    qr_code_base64 = generate_qr_base64(totp_uri)
+
+    # Directly show QR code for scanning
+    return render_template(
+        'mfa_reset.html',
+        username=user.username,
+        qr_code=qr_code_base64
+    )
+
+
+
 
 
 

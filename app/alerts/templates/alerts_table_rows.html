@@ -1,208 +1,117 @@
-<!-- Toast container -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
-  <div id="stepToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="d-flex">
-      <div class="toast-body" id="stepToastMessage">Evidence added successfully!</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-</div>
+{% set show_ioc_column = alerts|selectattr('is_malware')|list|length > 0 %}
 
-{% for alert in alerts %}
-<tr>
-  <td>{{ alert.detected_time or '-' }}</td>
-  <td>{{ alert.level or '-' }}</td>
-  <td title="{{ alert.description|striptags }}">{{ alert.description|safe or '-' }}</td>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Detected Time</th>
+      <th>Description</th>
+      <th>Severity</th>
+      <th>Agent</th>
+      <th>
+        {% if request.args.get('evidence', 'false')|lower in ['true', 'on'] %}
+          Uploaded By
+        {% else %}
+          Assigned To
+        {% endif %}
+      </th>
+      <th>Steps</th>
+      <th>MITRE</th>
+      {% if show_ioc_column %}
+        <th>IOC Enrichment</th>
+      {% endif %}
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for alert in alerts %}
+    <tr id="alertRow{{ alert.id }}"
+        class="{% if alert.level >= 15 %}high-priority{% elif alert.level <= 13 %}low-priority{% endif %}">
+      <td>{{ alert.id }}</td>
+      <td>{{ alert.detected_time }}</td>
+      <td>{{ alert.description }}</td>
+      <td>{{ alert.level }}</td>
+      <td>{{ alert.agent_name }}</td>
 
-  <!-- Steps -->
-<td>
-  <ul class="list-unstyled mb-0" id="alert-{{ alert.id }}-steps">
-    {% for step in alert.step_summaries %}
-      {% include 'alerts_steps_partial.html' with context %}
-    {% endfor %}
-  </ul>
+      <!-- Assigned To / Uploaded By -->
+      <td>
+        {% if request.args.get('evidence', 'false')|lower in ['true', 'on'] %}
+          {% set uploader_names = [] %}
+          {% for step in alert.step_objects %}
+            {% for ev in step.evidences %}
+              {% if ev.uploader_name not in uploader_names %}
+                {% set uploader_names = uploader_names + [ev.uploader_name] %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+          {{ uploader_names|join(', ') if uploader_names else '-' }}
+        {% else %}
+          {% if alert.assigned_to != '-' %}
+            {{ alert.assigned_to }}
+          {% elif session.get('role') == 'admin' %}
+            <form method="POST" action="{{ url_for('alerts.assign_alert', alert_id=alert.id) }}">
+              <select name="assigned_to" onchange="this.form.submit()">
+                <option value="">Assign user</option>
+                {% for user in non_admin_users %}
+                  <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+              </select>
+            </form>
+          {% else %}
+            -
+          {% endif %}
+        {% endif %}
+      </td>
+
+      <!-- Steps -->
+      <td id="stepsCell{{ alert.id }}">
+        {% for step in alert.step_summaries %}
+          {% set badge_class = 'secondary' %}
+          {% if step.status == 'completed' %}
+            {% set badge_class = 'success' %}
+          {% elif step.status == 'in_progress' %}
+            {% set badge_class = 'warning' %}
+          {% endif %}
+
+          <a href="javascript:void(0);"
+             class="badge bg-{{ badge_class }}"
+             onclick="loadStepModal({{ alert.id }}, {{ step.step_id or 'null' }})">
+             {{ step.nist_phase }}-{{ step.sub_step }}
+          </a>
+        {% endfor %}
+      </td>
+
+      <!-- MITRE -->
+      <td>
+  {% if alert.technique_id %}
+    <a href="https://attack.mitre.org/techniques/{{ alert.technique_id }}/" target="_blank" class="badge bg-warning">
+      {{ alert.technique_id }}
+    </a>
+  {% else %}
+    N/A
+  {% endif %}
 </td>
 
 
-  <td>
-    {% if alert.rule_id %}
-      <a href="{{ url_for('search.search_view') }}?search_query={{ alert.rule_id }}">{{ alert.rule_id }}</a>
-    {% else %}<span class="text-muted">-</span>{% endif %}
-  </td>
+      <!-- IOC Enrichment -->
+      {% if show_ioc_column %}
+      <td>
+        {% if alert.is_malware %}
+          {% set ioc = alert.ioc_enrichment %}
+          {{ "HA ✔" if ioc.hybrid_analysis else "-" }}
+          {{ "TF ✔" if ioc.threatfox else "-" }}
+          {{ "MB ✔" if ioc.malwarebazaar else "-" }}
+        {% else %}
+          -
+        {% endif %}
+      </td>
+      {% endif %}
 
-  <td>
-    {% if alert.mitre_id and alert.mitre_id != "NA" %}
-      <a href="https://attack.mitre.org/techniques/{{ alert.mitre_id }}/" target="_blank">{{ alert.mitre_id }}</a>
-    {% else %}<span class="text-muted">-</span>{% endif %}
-  </td>
-
-  {% if show_malware %}
-  <td>
-    {% if alert.ioc_enrichment %}
-      <div class="accordion" id="ioc-accordion-{{ alert.id }}">
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="ioc-heading-{{ alert.id }}">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ioc-collapse-{{ alert.id }}">
-              View IOC Details
-            </button>
-          </h2>
-          <div id="ioc-collapse-{{ alert.id }}" class="accordion-collapse collapse">
-            <div class="accordion-body p-2">
-              {% for key, val in alert.ioc_enrichment.items() %}
-                <strong>{{ key }}:</strong>
-                <pre class="small">{{ val | tojson(indent=2) }}</pre>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-      </div>
-    {% else %}<span class="text-muted">No IOC enrichment data</span>{% endif %}
-  </td>
-  {% endif %}
-
-  <td>
-    {% if alert.assigned_to != "-" %}
-      {{ alert.assigned_to }}
-    {% elif session.get('role') == 'admin' %}
-      <form method="POST" action="{{ url_for('alerts.assign_alert', alert_id=alert.id) }}">
-        <select name="user_id" class="form-select form-select-sm" onchange="this.form.submit()">
-          <option value="">Assign...</option>
-          {% for user in non_admin_users %}
-            <option value="{{ user.id }}">{{ user.username }}</option>
-          {% endfor %}
-        </select>
-      </form>
-    {% else %}<span class="text-muted">-</span>{% endif %}
-  </td>
-
-  <td>
-    {% if session.get('role') != 'admin' %}
-      {% if alert.status != 'Escalated' %}
-        <button class="btn btn-sm btn-warning" onclick="escalateAlert({{ alert.id }})">Escalate</button>
-      {% else %}<span class="text-success">Escalated</span>{% endif %}
-    {% else %}-{% endif %}
-  </td>
-
-  <td>{{ alert.status or '-' }}</td>
-</tr>
-{% endfor %}
-
-<!-- Step Modal -->
-<div class="modal fade" id="stepModal" tabindex="-1" aria-labelledby="stepModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="stepWorkForm" method="POST" enctype="multipart/form-data">
-        <div class="modal-header">
-          <h5 class="modal-title" id="stepModalLabel">Step Work</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" name="alert_id" id="modalAlertId">
-          <input type="hidden" name="step_id" id="modalStepId">
-          <input type="hidden" id="modalStepName" name="step_name">
-
-          <div class="mb-3">
-            <label for="stepNotes" class="form-label">Notes</label>
-            <textarea class="form-control" name="notes" id="stepNotes" rows="3"></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="stepFile" class="form-label">Upload Evidence (PNG/Text)</label>
-            <input class="form-control" type="file" name="file" id="stepFile" accept=".png,.txt">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Submit Work</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- JS -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const stepModalEl = document.getElementById('stepModal');
-    const stepForm = document.getElementById('stepWorkForm');
-    const stepModal = new bootstrap.Modal(stepModalEl);
-    const toastEl = document.getElementById('stepToast');
-    const toast = new bootstrap.Toast(toastEl);
-
-    function showToast(message, type="success") {
-        toastEl.classList.remove('text-bg-success', 'text-bg-danger');
-        toastEl.classList.add(type === "success" ? 'text-bg-success' : 'text-bg-danger');
-        toastEl.querySelector('.toast-body').textContent = message;
-        toast.show();
-    }
-
-    // Open modal on step button click
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('step-btn')) {
-            const btn = e.target;
-            const stepId = btn.dataset.stepId;
-            const alertId = btn.dataset.alert;
-            const stepName = btn.dataset.stepName;
-
-            if (!stepId || stepId === "None") {
-                showToast("Step ID not available.", "danger");
-                return;
-            }
-
-            // Populate modal fields
-            document.getElementById('modalStepName').value = stepName;
-            document.getElementById('modalAlertId').value = alertId;
-            document.getElementById('modalStepId').value = stepId;
-            document.getElementById('stepModalLabel').textContent = "Work on Step: " + stepName;
-
-            // Set form action dynamically
-            stepForm.action = `/alerts/${alertId}/step/${stepId}/add_evidence`;
-
-            stepModal.show();
-        }
-    });
-
-    // Submit modal form
-    stepForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const submitButton = stepForm.querySelector("button[type='submit']");
-        submitButton.disabled = true;
-
-        const formData = new FormData(stepForm);
-        const alertId = document.getElementById('modalAlertId').value;
-
-        fetch(stepForm.action, {
-            method: 'POST',
-            body: formData
-        })
-        .then(resp => resp.json())
-        .then(data => {
-            if (data.success) {
-                showToast(data.message, "success");
-            } else {
-                showToast(data.message || "Error submitting step work.", "danger");
-            }
-
-            stepModal.hide();
-
-            // Refresh step list
-            fetch(`/alerts/${alertId}/steps_partial`)
-                .then(resp => resp.text())
-                .then(html => {
-                    document.getElementById(`alert-${alertId}-steps`).innerHTML = html;
-                });
-        })
-        .catch(err => {
-            console.error(err);
-            showToast("Unexpected error occurred.", "danger");
-        })
-        .finally(() => {
-            submitButton.disabled = false;
-        });
-    });
-
-    // Cleanup modal backdrop
-    stepModalEl.addEventListener('hidden.bs.modal', function () {
-        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-        document.body.classList.remove('modal-open');
-    });
-});
-</script>
+      <!-- Actions -->
+      <td>
+         <button class="btn btn-sm btn-secondary" onclick="loadEvidenceModal({{ alert.id }})">View Evidence</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

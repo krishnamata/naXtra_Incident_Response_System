@@ -1,32 +1,79 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="dashboard-container">
-    <aside class="sidebar">
-        <h3>SOC Control Panel</h3>
-        <ul>
-            <li><a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
-            {% if role in ['admin', 'Senior analyst'] %}
-            <li><a href="#">Manage Agents</a></li>
-            <li><a href="#">Alerts</a></li>
-            <li><a href="#">Tasks</a></li>
-            {% endif %}
-            <li><a href="#">Logs</a></li>
-            {% if role == 'admin' %}
-            <li><a href="#">AI Insights</a></li>
-            <li><a href="#">Configurations</a></li>
-            <li><a href="#">Compliance Reports</a></li>
-            {% endif %}
-        </ul>
-    </aside>
+<style>
+.cvss-score-link { cursor: pointer; text-decoration: underline; }
+.card-count { font-size: 2rem; font-weight: bold; cursor: pointer; }
+.modal-body { max-height: 400px; overflow-y: auto; }
+.progress { height: 25px; margin-top: 10px; }
+</style>
 
-    <main class="main-content">
+<style> .dashboard-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* Main content takes remaining space */
+.dashboard-main {
+    flex: 1;
+}
+
+/* Right-side SOC panel */
+.sidebar {
+    width: 260px;
+    background: #0d1b2a;
+    color: #abb;
+    padding: 15px;
+    border-radius: 8px;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.sidebar h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #2a3b55;
+    padding-bottom: 8px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    color: #afd8e3;
+    text-decoration: none;
+}
+
+.sidebar ul li a:hover {
+    color: #aaafff;
+    text-decoration: underline;
+}
+
+.agents-left {
+    width: 260px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    height: fit-content;
+}
+
+
+   </style>
+
+   <div class="dashboard-container">
+    
         <section class="welcome-section">
             <h2>Welcome, {{ username }} ({{ role }})</h2>
             <p>Total Agents: {{ total_agents | default(0) }}</p>
-        </section>
-
-        <section class="agents-overview">
+                
             <h3>Agents Overview</h3>
             <ul>
                 {% for agent in agent_names %}
@@ -34,52 +81,799 @@
                 {% endfor %}
             </ul>
         </section>
+        <main class="main-content dashboard-main">
+        <div class="container mt-4">
+            <h2>naXtra Pulse IR - Dashboard</h2>
+            <hr> 
 
-        <section class="endpoint-risk">
-            <h3>Endpoint Risk</h3>
-            <ul>
-                {% for agent, data in endpoint_risk.items() %}
-                    {% set score = data.get('values', [0])[0] %}
-                    {% if score < 4 %}
-                        {% set label = "Low" %}
-                    {% elif score < 7 %}
-                        {% set label = "Medium" %}
-                    {% elif score < 9 %}
-                        {% set label = "High" %}
-                    {% else %}
-                        {% set label = "Critical" %}
-                    {% endif %}
-                    <li>{{ agent }}: {{ score }} ({{ label }})</li>
-                {% endfor %}
-            </ul>
-        </section>
+            <!-- Logs Summary -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body text-center">
+                            <h5>Total Logs</h5>
+                            <p class="card-count" id="total_logs" onclick="showLogs('all')">{{ logs.total }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning mb-3">
+                        <div class="card-body text-center">
+                            <h5>Unprocessed Logs</h5>
+                            <p class="card-count" id="unprocessed_logs" onclick="showLogs('unprocessed')">{{ logs.unprocessed }}</p>
+                             <button class="btn btn-light btn-sm mb-2" onclick="viewUnprocessedLogs()">View Unprocessed</button>
+            
+                            <button class="btn btn-light btn-sm" onclick="startRealTimeProcessing('unprocessed')">Process Unprocessed</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-body text-center">
+                            <h5>Processed Logs</h5>
+                            <p class="card-count" id="processed_logs" onclick="showLogs('processed')">{{ logs.processed }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger mb-3">
+                        <div class="card-body text-center">
+                            <h5>Unmatched Logs</h5>
+                            <p class="card-count" id="unmatched_logs" onclick="showLogs('unmatched')">{{ logs.unmatched }}</p>
+                           <button class="btn btn-light btn-sm" onclick="startRealTimeProcessing('unmatched')">Process Unmatched</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+  
 
-        {% if generator_summary %}
-        <section class="naxtraai-summary">
-            <h3>naXtraAI Summary</h3>
-            <p>{{ generator_summary }}</p>
-        </section>
-        {% endif %}
+
+            <!-- Alerts Summary -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-white bg-info mb-3">
+                        <div class="card-body text-center">
+                            <h5>Total Alerts</h5>
+                            <p class="card-count" id="total_alerts" onclick="showAlerts()">{{ alerts.total }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Progress Bar -->
+            <div class="progress">
+              <div id="logProgressBar" class="progress-bar" role="progressbar" style="width:0%">0%</div>
+            </div>
+            <p id="logTimeInfo">Elapsed: 0s | Remaining: estimating...</p>
+
+        </div>
+
+        <!-- Modals -->
+        <div class="modal fade" id="logsModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="logsModalTitle">Logs</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="logsModalBody"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="alertsModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Alerts</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="alertsModalBody"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+<aside class="sidebar">
+        <h3>SOC Control Panel</h3>
+        <ul>
+            <li><a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
+            {% if role in ['admin', 'Senior analyst'] %}
+            
+            {% endif %}
+            <li><a href="{{ url_for('stats.stats_dashboard') }}">Logs and Alerts</a></li>
+            {% if role == 'admin' %}
+            <li><a href="{{ url_for('fim.dashboard') }}">FIM Dashboard</a></li>
+            <li><a href="{{ url_for('ai_insights_bp.insights_page')}}">AI Insights</a></li>
+            <li><a href="{{ url_for('audit.audit_dashboard') }}">Compliance Reports</a></li>
+            {% endif %}
+        </ul>
+        
+    </aside>
+</div>
+
+<!-- Unprocessed Logs Modal -->
+<div class="modal fade" id="unprocessedLogsModal" tabindex="-1" aria-labelledby="unprocessedLogsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="unprocessedLogsModalLabel">Unprocessed Logs</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="unprocessedLogsTable">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Timestamp</th>
+              <th>Agent</th>
+              <th>Log Type</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Logs will be populated here dynamically -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<section class="endpoint-risk">
+    <h3>Endpoint Heuristic Severity Score</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Agent</th>
+                <th>Score</th>
+                <th>Level</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for agent, data in endpoint_risk.items() %}
+            {% set score = data.get('values', [0])[0] %}
+            {% if score < 4 %}
+                {% set label = "Low" %}
+            {% elif score < 7 %}
+                {% set label = "Medium" %}
+            {% elif score < 9 %}
+                {% set label = "High" %}
+            {% else %}
+                {% set label = "Critical" %}
+            {% endif %}
+            <tr>
+                <td>{{ agent }}</td>
+                <td>{{ score }}</td>
+                <td>{{ label }}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" onclick="showRiskDetails(this)"
+                            data-agent="{{ agent }}">
+                        View Alerts
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+
+
 
         <!-- Future sections -->
-        <section class="threat-intel">
-            <h3>Threat Intelligence</h3>
-            <p>Upcoming: integrate external threat feeds here</p>
-        </section>
-
-        <section class="behavior-trends">
-            <h3>Behavior & Risk Trends</h3>
-            <p>Charts will display trends of alerts, risk, and user behavior.</p>
-        </section>
+      
     </main>
 </div>
+
+<!-- Endpoint Risk Modal -->
+<!-- Endpoint Risk Modal (already in your file, cleaned for pagination) -->
+<div class="modal fade" id="riskDetailsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Endpoint Severity Score Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex mb-2">
+            <input type="text" id="riskSearchBox" class="form-control me-2"
+                   placeholder="Search by Rule ID or Description...">
+            <select id="riskSortDropdown" class="form-select w-auto">
+                <option value="cvss" selected>Sort by Severity </option>
+                <option value="time">Sort by Time</option>
+            </select>
+        </div>
+        <div id="riskDetailsBody"></div>
+        <div class="text-center mt-2">
+            <button id="showMoreRiskBtn" class="btn btn-sm btn-secondary" style="display:none;">Show More</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- CVSS Details Modal -->
+<div class="modal fade" id="cvssDetailsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Severity Score Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="cvssDetailsBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Real-time / Batch Mode Selector -->
+<!-- Alert detection Mode -->
+<div class="d-flex align-items-center mb-3">
+    <label class="me-3">
+        <input type="radio" name="detection_mode" id="realtime_radio" checked> Real-time
+    </label>
+    <label class="me-3">
+        <input type="radio" name="detection_mode" id="batch_radio"> Batch Mode
+    </label>
+
+    <button id="batch_queue_btn" class="btn btn-info me-2" disabled>Start Batch Queue</button>
+    <button id="run_detection_btn" class="btn btn-warning" disabled>Run Batch Detection</button>
+</div>
+
+<!-- Batch Progress Bar -->
+<div class="progress mb-2" style="height: 25px;">
+    <div id="batch_progress" class="progress-bar" role="progressbar" style="width: 0%">0%</div>
+</div>
+
+<!-- Batch Log Output -->
+<pre id="batch_log" style="background:#f8f9fa; padding:10px; height:200px; overflow:auto;"></pre>
+
+<!-- Real-time Progress Bar -->
+<div class="progress">
+  <div id="logProgressBar" class="progress-bar" role="progressbar" style="width: 0%">0%</div>
+</div>
+<p id="logTimeInfo">Elapsed: 0s | Remaining: estimating...</p>
+
+ 
+
+
+
 {% endblock %}
 
 {% block scripts %}
 <script>
-    const endpointRisk = {{ endpoint_risk | default({}) | safe }};
-    const globalTrend = {{ global_trend | default({}) | safe }};
-    console.log("Endpoint Risk:", endpointRisk);
-    console.log("Global Trend:", globalTrend);
+
+function viewUnprocessedLogs() {
+    fetch('/dashboard/logs/unprocessed')
+        .then(response => response.json())
+        .then(data => {
+            const logs = data.unprocessed_logs || [];
+            const tbody = document.querySelector('#unprocessedLogsTable tbody');
+            tbody.innerHTML = ''; // clear previous rows
+
+            logs.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${log.id}</td>
+                    <td>${log.timestamp}</td>
+                    <td>${log.agent_name}</td>
+                    <td>${log.log_type}</td>
+                    <td>${log.message}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Show the modal
+            const modalEl = document.getElementById('unprocessedLogsModal');
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        })
+        .catch(err => console.error('Error fetching unprocessed logs:', err));
+}
+
+
+
+
+function ajaxPost(url, payload, callback) {
+    fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(callback) callback(data);
+    })
+    .catch(err => console.error(err));
+}
+
+//
+let realtimeSource = null;
+
+function startRealTimeProcessing(type) {
+    if(realtimeSource) { realtimeSource.close(); }
+
+    logProgressBar.style.width = "0%";
+    logProgressBar.innerText = "0%";
+    logTimeInfo.innerText = `Processing ${type} logs...`;
+
+    realtimeSource = new EventSource(`/dashboard/process_realtime?type=${type}`);
+
+    realtimeSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if(!data.total) return;
+        const percent = Math.min((data.processed / data.total) * 100, 100).toFixed(1);
+        logProgressBar.style.width = percent + "%";
+        logProgressBar.innerText = `${percent}% (${data.processed}/${data.total})`;
+        refreshCountsRealtime(data.counts);
+    };
+
+    realtimeSource.addEventListener("done", function(e){
+        const data = JSON.parse(e.data);
+        logProgressBar.style.width = "100%";
+        logProgressBar.innerText = "100%";
+        alert(data.message);
+        realtimeSource.close();
+        refreshCounts();
+    });
+}
+
+
+
+
+// -------------------
+// Show logs modal
+// -------------------
+function showLogs(type) {
+    let url = `/dashboard/logs_view?type=${type}`;
+    if (type === 'unmatched') url = '/dashboard/unmatched_logs';
+
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+        let logsArray = (type === 'unmatched') ? data.unmatched_logs : data.logs;
+        let html = '<table class="table table-sm table-bordered"><thead><tr><th>Timestamp</th><th>Agent</th><th>Type</th><th>Message</th></tr></thead><tbody>';
+        logsArray.forEach(log => {
+            html += `<tr>
+                        <td>${log.timestamp}</td>
+                        <td>${log.agent_name || log.source}</td>
+                        <td>${log.log_type}</td>
+                        <td>${log.message}</td>
+                     </tr>`;
+        });
+        html += '</tbody></table>';
+
+        document.getElementById('logsModalTitle').innerText = type.charAt(0).toUpperCase() + type.slice(1) + ' Logs';
+        document.getElementById('logsModalBody').innerHTML = html;
+        new bootstrap.Modal(document.getElementById('logsModal')).show();
+    });
+}
+
+
+// -------------------
+// Show alerts modal
+// -------------------
+function showAlerts() {
+    fetch('/dashboard/alerts_view')
+    .then(res=>res.json())
+    .then(data=>{
+        let html='<table class="table table-sm table-bordered"><thead><tr><th>Timestamp</th><th>Agent</th><th>Severity</th><th>Rule</th><th>Description</th></tr></thead><tbody>';
+        data.alerts.forEach(a=>{
+            html+=`<tr><td>${a.detected_time}</td><td>${a.agent_name}</td><td>${a.severity}</td><td>${a.rule_id}</td><td>${a.description}</td></tr>`;
+        });
+        html+='</tbody></table>';
+        document.getElementById('alertsModalBody').innerHTML=html;
+        new bootstrap.Modal(document.getElementById('alertsModal')).show();
+    });
+}
+
+// -------------------
+// Refresh counts dynamically
+// -------------------
+function refreshCountsRealtime(counts) {
+    if (!counts) return;
+
+    document.getElementById('total_logs').innerText = counts.logs.total;
+    document.getElementById('unprocessed_logs').innerText = counts.logs.unprocessed;
+    document.getElementById('processed_logs').innerText = counts.logs.processed;
+
+    document.getElementById('unmatched_logs').innerText = counts.unmatched_logs.total;
+
+    document.getElementById('total_alerts').innerText = counts.alerts.total;
+}
+
+
+
+function refreshCounts(){
+    fetch('/dashboard/summary')
+    .then(res=>res.json())
+    .then(data=>{
+        refreshCountsRealtime(data);
+    });
+}
+//show logs
+
+
+
+
+
+
+
+
+
+
+
+
+const endpointRisk = {{ endpoint_risk | default({}) | tojson | safe }};
+
+
+// Numeric values for CVSS metrics
+const metrics_numeric = {
+    "AV": {"N": 0.85, "A": 0.62, "L": 0.55, "P": 0.2},
+    "AC": {"L": 0.77, "H": 0.44},
+    "PR": {"N": 0.85, "L": 0.62, "H": 0.27},
+    "UI": {"N": 0.85, "R": 0.62},
+    "C": {"H": 0.56, "L": 0.22, "N": 0},
+    "I": {"H": 0.56, "L": 0.22, "N": 0},
+    "A": {"H": 0.56, "L": 0.22, "N": 0}
+};
+
+let currentRiskDetails = [];
+let offset = 0;
+const limit = 50;
+let currentSort = "cvss"; // default
+function getCVSSLabelAndColor(score) {
+    let label = "Unknown";
+    let colorClass = "text-dark";
+
+    if (score < 4) {
+        label = "Low";
+        colorClass = "text-success"; // green
+    } else if (score < 7) {
+        label = "Medium";
+        colorClass = "text-warning"; // yellow/orange
+    } else if (score < 9) {
+        label = "High";
+        colorClass = "text-danger"; // red
+    } else {
+        label = "Critical";
+        colorClass = "bg-danger text-white"; // red background
+    }
+
+    return { label, colorClass };
+}
+
+function renderRiskTable(alerts) {
+    let tableHtml = `<table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Detected Time</th>
+                <th>Description</th>
+                <th>Severity Score</th>
+                <th>Level</th>
+                <th>Rule ID</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
+    alerts.forEach(alert => {
+        const { label, colorClass } = getCVSSLabelAndColor(alert.cvss_score);
+
+        tableHtml += `<tr>
+            <td>${alert.detected_time}</td>
+            <td>${alert.description}</td>
+            <td>
+                <a href="javascript:void(0);" class="cvss-score-link"
+                   data-metrics='${JSON.stringify(alert.metrics)}'
+                   data-numeric='${alert.cvss_score}'>
+                   ${alert.cvss_score}
+                </a>
+            </td>
+            <td class="${colorClass} fw-bold">${label}</td>
+            <td>
+                <a href="/user/search?search_type=rule&search_query=${alert.rule_id}" target="_blank">
+                    ${alert.rule_id || '-'}
+                </a>
+            </td>
+        </tr>`;
+    });
+
+    tableHtml += `</tbody></table>`;
+    document.getElementById('riskDetailsBody').innerHTML = tableHtml;
+
+    // Re-bind CVSS click events
+    document.querySelectorAll('.cvss-score-link').forEach(link => {
+        link.onclick = function() { showCVSSDetails(this); };
+    });
+}
+
+function fetchRiskDetails(agent, reset=false) {
+    if (reset) offset = 0;
+
+    fetch(`/dashboard/endpoint_risk_details?agent_name=${agent}&offset=${offset}&limit=${limit}&sort_by=${currentSort}`)
+        .then(res => res.json())
+        .then(data => {
+            if (reset) {
+                currentRiskDetails = data.risk_details;
+            } else {
+                currentRiskDetails = currentRiskDetails.concat(data.risk_details);
+            }
+
+            renderRiskTable(currentRiskDetails);
+
+            // Show/hide "Show More"
+            const showMoreBtn = document.getElementById('showMoreRiskBtn');
+            showMoreBtn.style.display = (currentRiskDetails.length < data.total) ? 'block' : 'none';
+            showMoreBtn.dataset.agent = agent;
+        });
+}
+
+function showRiskDetails(button) {
+    const agent = button.dataset.agent;
+    currentSort = document.getElementById('riskSortDropdown').value;
+    fetchRiskDetails(agent, true);
+    new bootstrap.Modal(document.getElementById('riskDetailsModal')).show();
+}
+
+function fetchMoreAlerts(button) {
+    const agent = button.dataset.agent;
+    offset += limit;
+    fetchRiskDetails(agent, false);
+}
+
+// Bind "Show More" button
+document.getElementById('showMoreRiskBtn').addEventListener('click', function() {
+    fetchMoreAlerts(this);
+});
+
+// Bind dropdown change
+document.getElementById('riskSortDropdown').addEventListener('change', function() {
+    const agent = document.getElementById('showMoreRiskBtn').dataset.agent;
+    currentSort = this.value;
+    fetchRiskDetails(agent, true); // reset table
+});
+
+// Search filter
+document.getElementById("riskSearchBox").addEventListener("input", function() {
+    const query = this.value.toLowerCase();
+    document.querySelectorAll("#riskDetailsBody table tbody tr").forEach(tr => {
+        const text = tr.innerText.toLowerCase();
+        tr.style.display = text.includes(query) ? "" : "none";
+    });
+});
+
+
+
+function showCVSSDetails(element) {
+    const metrics = JSON.parse(element.dataset.metrics || '{}');
+    const numeric = element.dataset.numeric || 'N/A';
+
+    let html = `<p><strong>Severity Score:</strong> ${numeric}</p>`;
+
+    if (metrics && Object.keys(metrics).length > 0) {
+        html += `<h6>Component Metrics:</h6>`;
+        html += `<table class="table table-sm table-bordered">
+            <thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody>`;
+
+        for (const [key, value] of Object.entries(metrics)) {
+            html += `<tr><td>${key}</td><td>${value}</td></tr>`;
+        }
+        html += `</tbody></table>`;
+
+        // Optional: build a readable formula string
+        let formula = "Base Score = ";
+        formula += `(AV:${metrics.AV || 'N/A'} × AC:${metrics.AC || 'N/A'} × PR:${metrics.PR || 'N/A'} × UI:${metrics.UI || 'N/A'}) `;
+        formula += `+ (Impact: C:${metrics.C || 'N/A'} × I:${metrics.I || 'N/A'} × A:${metrics.A || 'N/A'})`;
+        html += `<p><strong>Heuristic Severity Formula:</strong> ${formula}</p>`;
+    } else {
+        html += `<p>No detailed metrics available. Score may be heuristically estimated.</p>`;
+    }
+
+    document.getElementById('cvssDetailsBody').innerHTML = html;
+    new bootstrap.Modal(document.getElementById('cvssDetailsModal')).show();
+}
+
+
+
+
+// batch or real time detection
+// -----------------------
+// Elements
+const realtimeRadio = document.getElementById("realtime_radio");
+const batchRadio = document.getElementById("batch_radio");
+const batchQueueBtn = document.getElementById("batch_queue_btn");
+const batchDetectBtn = document.getElementById("run_detection_btn");
+const batchLogBox = document.getElementById("batch_log");
+const batchProgressBar = document.getElementById("batch_progress");
+const logProgressBar = document.getElementById("logProgressBar");
+const logTimeInfo = document.getElementById("logTimeInfo");
+
+let realTimeSource = null;
+let queueSource = null;
+let detectSource = null;
+
+// -----------------------
+// Real-time functions
+// -----------------------
+function startRealTime() {
+    if (realTimeSource) return;
+
+    logProgressBar.parentElement.style.display = "block";
+    logTimeInfo.style.display = "block";
+
+    realTimeSource = new EventSource("/run_detection_realtime");
+
+    realTimeSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (!data || !data.total) return;
+
+        const percent = data.total ? Math.min((data.received / data.total) * 100, 100).toFixed(1) : 0;
+
+        logProgressBar.style.width = percent + "%";
+        logProgressBar.textContent = `${percent}%`;
+        logTimeInfo.textContent = data.agent 
+    ? `Agent: ${data.agent} | Received: ${data.received} / ${data.total}`
+    : `Waiting for logs... Received: ${data.received} / ${data.total}`;
+
+    };
+
+    realTimeSource.onerror = function(err) {
+        console.error("Real-time SSE error:", err);
+    };
+}
+
+function stopRealTime() {
+    if (realTimeSource) {
+        realTimeSource.close();
+        realTimeSource = null;
+    }
+    logProgressBar.parentElement.style.display = "none";
+    logTimeInfo.style.display = "none";
+    console.log("Real-time stopped");
+}
+
+// -----------------------
+// Batch functions
+// -----------------------
+function startBatchQueue() {
+    stopRealTime();
+    batchLogBox.innerHTML = "🚀 Starting batch queue...\n";
+    batchProgressBar.style.width = "0%";
+    batchProgressBar.innerText = "0%";
+    batchDetectBtn.disabled = true;
+
+    queueSource = new EventSource("/dashboard/batch_queue");
+
+    queueSource.onmessage = function(event) {
+        const data = JSON.parse(event.data); // {received, total}
+        const total = data.total || 1;
+        const percent = Math.min((data.received / total) * 100, 100).toFixed(1);
+
+
+        batchProgressBar.style.width = percent + "%";
+        batchProgressBar.innerText = `${percent}%`;
+        batchLogBox.innerHTML += `Logs received: ${data.received} / ${data.total}\n`;
+        batchLogBox.scrollTop = batchLogBox.scrollHeight;
+    };
+
+    queueSource.addEventListener("done", function(e) {
+        const data = JSON.parse(e.data); // {total_logs}
+        batchLogBox.innerHTML += `✅ Batch queue completed. Total logs queued: ${data.total_logs}\n`;
+        batchLogBox.scrollTop = batchLogBox.scrollHeight;
+        batchDetectBtn.disabled = false;
+
+        queueSource.close();
+        queueSource = null;
+    });
+}
+
+document.getElementById("riskSearchBox").addEventListener("input", function() {
+    const query = this.value.toLowerCase();
+    document.querySelectorAll("#riskDetailsBody table tbody tr").forEach(tr => {
+        const text = tr.innerText.toLowerCase();
+        tr.style.display = text.includes(query) ? "" : "none";
+    });
+});
+
+
+function startBatchDetection() {
+    batchLogBox.innerHTML += "⚡ Alert generation in progress...\n";
+    batchDetectBtn.disabled = true;
+
+    detectSource = new EventSource("/dashboard/run_batch_detection");
+
+    detectSource.onmessage = function(event) {
+        const data = JSON.parse(event.data); // {received, total}
+        const percent = data.total ? Math.min((data.received / data.total) * 100, 100).toFixed(1) : 0;
+
+        batchProgressBar.style.width = percent + "%";
+        batchProgressBar.innerText = `${percent}%`;
+        batchLogBox.innerHTML += `Alerts processed: ${data.received} / ${data.total}\n`;
+        batchLogBox.scrollTop = batchLogBox.scrollHeight;
+    };
+
+    detectSource.addEventListener("done", function(e) {
+        const data = JSON.parse(e.data); // {total_logs, total_alerts}
+        batchLogBox.innerHTML += `✅ Batch detection completed.\nTotal logs: ${data.total_logs}\nTotal alerts: ${data.total_alerts}\n`;
+        batchLogBox.scrollTop = batchLogBox.scrollHeight;
+
+        detectSource.close();
+        detectSource = null;
+
+        // Automatically switch to real-time **only if logs exist**
+        if (data.total_logs > 0) {
+            realtimeRadio.checked = true;
+            batchRadio.checked = false;
+            startRealTime();
+        }
+
+        batchQueueBtn.disabled = true;
+        batchDetectBtn.disabled = true;
+    });
+}
+
+// -----------------------
+// Stop batch
+// -----------------------
+function stopBatch() {
+    if (queueSource) { queueSource.close(); queueSource = null; }
+    if (detectSource) { detectSource.close(); detectSource = null; }
+    console.log("Batch stopped");
+}
+
+// -----------------------
+// Event listeners
+// -----------------------
+realtimeRadio.addEventListener("change", function() {
+    if (this.checked) {
+        stopBatch();
+        startRealTime();
+        batchQueueBtn.disabled = true;
+        batchDetectBtn.disabled = true;
+    }
+});
+
+batchRadio.addEventListener("change", function() {
+    if (this.checked) {
+        stopRealTime();
+        batchQueueBtn.disabled = false;
+        batchDetectBtn.disabled = true;
+
+        // Hide real-time progress bar while in batch mode
+        logProgressBar.parentElement.style.display = "none";
+        logTimeInfo.style.display = "none";
+    }
+});
+
+batchQueueBtn.addEventListener("click", startBatchQueue);
+batchDetectBtn.addEventListener("click", startBatchDetection);
+
+
 </script>
+
+
+
 {% endblock %}

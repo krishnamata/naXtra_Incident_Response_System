@@ -1,0 +1,3 @@
+SHA256(RDS_2025.09.1_modern_minimal_delta.sql)= 32ff203a842259a8cf7913bec746992b787c6d3949d566b8e9fe1afb7cdd711b
+SHA256(RDS_2025.09.1_modern_minimal.schema.sql)= b37a8c53dcc81a00828f7e53177b1c38c90dde8dee83a012d5ec56a8cc24ca72
+SHA256(readme.txt)= 0cc55913f16daf85dc76ce9ec86e4b6d9d6308cd14add6b85ae17107946982a5

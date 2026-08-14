@@ -92,7 +92,7 @@ function loadItems() {
       row.append(`<td>${item.id}</td>`);
       row.append(`<td>${item.agent_name}</td>`);
       row.append(`<td>${item.timestamp}</td>`);
-      row.append(`<td title="${item.description}">${item.description}</td>`);
+      row.append(`<td title="${$('<div>').text(item.description).html()}">${$('<div>').text(item.description).html()}</td>`);
       row.append(`<td>${item.status}</td>`);
       row.append(`<td>${item.assigned_to}</td>`);
 
@@ -106,12 +106,18 @@ function loadItems() {
         } else { row.append('<td>-</td>'); }
 
         // Rule ID
-        row.append(`<td>${item.rule_id || '-'}</td>`);
+        row.append(`<td>${item.rule_ids && item.rule_ids.length ? item.rule_ids.join(', ') : '-'}</td>`);
+
 
         // MITRE ID link
-        if(item.technique_id && item.technique_id !== 'NA') {
-          row.append(`<td><a href="https://attack.mitre.org/techniques/${item.technique_id}/" target="_blank">${item.technique_id}</a></td>`);
-        } else { row.append('<td>-</td>'); }
+        // MITRE ID links — show all
+if(item.mitre_links && item.mitre_links.length > 0) {
+    let mitre_html = item.mitre_links.map(t => 
+        `<a href="${t.link}" target="_blank">${t.id}</a>`).join(', ');
+    row.append(`<td>${mitre_html}</td>`);
+} else {
+    row.append('<td>-</td>');
+}
 
         // IOC Info — only for malware alerts
         if(show_malware && item.ioc_enrichment && Object.keys(item.ioc_enrichment).length > 0) { 

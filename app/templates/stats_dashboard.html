@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Alerts & FIM Dashboard</h2>
+
+<!-- Filters -->
+<div style="margin-bottom:20px;">
+    <label>Alert Type:
+        <select id="alert_type">
+            <option value="">All</option>
+        </select>
+    </label>
+    <label>CVSS Minimum:
+        <input type="number" id="cvss_min" min="0" max="10" step="0.1" value="0">
+    </label>
+    <label>Start Date:
+        <input type="date" id="start_date">
+    </label>
+    <label>End Date:
+        <input type="date" id="end_date">
+    </label>
+</div>
+
+<!-- Logs Charts -->
+<h3>Logs Charts</h3>
+<div class="chart-row">
+    <canvas id="logsByTypeChart" class="wide-chart"></canvas>
+    <canvas id="logsBySourceChart" class="wide-chart"></canvas>
+</div>
+<canvas id="logsTrendChart" class="wide-chart"></canvas>
+
+<!-- Alert Charts -->
+<h3>Alerts Charts</h3>
+<div class="chart-row">
+    <canvas id="alertsPerTypeChart" class="wide-chart zoom-200"></canvas>
+    <br> 
+    <canvas id="alertsPerCVSSChart" class="medium-chart"></canvas>
+</div>
+
+<!-- Alerts by Agent & Hourly Pattern -->
+<div class="chart-row">
+    <canvas id="alertsByAgentChart" class="medium-chart"></canvas>
+    <canvas id="alertsHourlyChart" class="medium-chart"></canvas>
+</div>
+
+<!-- FIM Charts -->
+<h3>FIM Events by Type</h3>
+<canvas id="fimTypeChart" class="wide-chart"></canvas>
+
+<!-- Timeline Charts -->
+<h3>Alerts & FIM Trends (Last 30 Days)</h3>
+<div class="chart-row">
+    <canvas id="alertsTrendChart" class="medium-chart"></canvas>
+    <canvas id="fimTrendChart" class="medium-chart"></canvas>
+</div>
+
+<style>
+.chart-row {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+canvas.small-chart {
+    width: 400px !important;
+    height: 200px !important;
+}
+
+canvas.medium-chart {
+    width: 400px !important;
+    height: 250px !important;
+}
+
+canvas.wide-chart {
+    width: 800px !important;
+    height: 500px !important;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
+
+<script>
+// Logs charts
+function renderLogsCharts() {
+    const logsType = {{ logs_type|tojson }};
+    const logsSource = {{ logs_source|tojson }};
+    const logsDates = {{ logs_dates|tojson }};
+    const logsCounts = {{ logs_counts|tojson }};
+
+    // Logs by type (donut)
+    new Chart(document.getElementById('logsByTypeChart'), {
+        type: 'doughnut',
+        data: { labels: Object.keys(logsType), datasets: [{ data: Object.values(logsType), backgroundColor: ['#36A2EB','#FFCE56','#FF6384','#4BC0C0'] }] },
+        options: { responsive: true }
+    });
+
+    // Logs by source (bar)
+    new Chart(document.getElementById('logsBySourceChart'), {
+        type: 'bar',
+        data: { labels: Object.keys(logsSource), datasets: [{ label: 'Logs per Source', data: Object.values(logsSource), backgroundColor: 'rgba(153, 102, 255, 0.6)' }] },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // Logs trend timeline (line)
+    new Chart(document.getElementById('logsTrendChart'), {
+        type: 'line',
+        data: { labels: logsDates, datasets: [{ label: 'Logs', data: logsCounts, borderColor: 'rgba(255, 159, 64, 1)', backgroundColor: 'rgba(255, 159, 64, 0.2)', fill: true }] },
+        options: { responsive: true }
+    });
+}
+
+// Alerts charts
+let alertsPerTypeChart, alertsPerCVSSChart, alertsByAgentChart, alertsHourlyChart, alertsTrendChart, fimTrendChart, fimTypeChart;
+
+function populateAlertTypes() {
+    const types = {{ alert_types|tojson }};
+    const select = document.getElementById('alert_type');
+    select.innerHTML = '<option value="">All</option>';
+    Object.keys(types).forEach(type => {
+        const opt = document.createElement('option');
+        opt.value = type;
+        opt.textContent = type;
+        select.appendChild(opt);
+    });
+}
+
+function renderCharts() {
+    const types = {{ alert_types|tojson }};
+    const cvss = {{ cvss_distribution|tojson }};
+    const fimTypes = {{ fim_by_type|tojson }};
+    const byAgent = {{ by_agent|tojson }};
+    const hourlyPattern = {{ hourly_pattern|tojson }};
+
+    // Alerts per type (bar with zoom/pan)
+    if (alertsPerTypeChart) alertsPerTypeChart.destroy();
+    alertsPerTypeChart = new Chart(document.getElementById('alertsPerTypeChart'), {
+        type: 'bar',
+        data: { labels: Object.keys(types), datasets: [{ label: 'Alerts', data: Object.values(types), backgroundColor: 'rgba(75, 192, 192, 0.6)' }] },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                zoom: {
+                    pan: { enabled: true, mode: 'xy' },
+                    zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'xy' }
+                }
+            }
+        }
+    });
+
+    // Alerts per CVSS
+    if (alertsPerCVSSChart) alertsPerCVSSChart.destroy();
+    alertsPerCVSSChart = new Chart(document.getElementById('alertsPerCVSSChart'), {
+        type: 'pie',
+        data: { labels: Object.keys(cvss), datasets: [{ data: Object.values(cvss), backgroundColor: ['#FF6384','#FFCE56','#36A2EB'] }] },
+        options: { responsive: true }
+    });
+
+    // Alerts by agent
+    if (alertsByAgentChart) alertsByAgentChart.destroy();
+    alertsByAgentChart = new Chart(document.getElementById('alertsByAgentChart'), {
+        type: 'bar',
+        data: { labels: Object.keys(byAgent), datasets: [{ label: 'Alerts by Agent', data: Object.values(byAgent), backgroundColor: 'rgba(153, 102, 255, 0.6)' }] },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // Alerts hourly pattern
+    if (alertsHourlyChart) alertsHourlyChart.destroy();
+    alertsHourlyChart = new Chart(document.getElementById('alertsHourlyChart'), {
+        type: 'bar',
+        data: { labels: Object.keys(hourlyPattern), datasets: [{ label: 'Alerts per Hour', data: Object.values(hourlyPattern), backgroundColor: 'rgba(255, 159, 64, 0.6)' }] },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // FIM types
+    if (fimTypeChart) fimTypeChart.destroy();
+    fimTypeChart = new Chart(document.getElementById('fimTypeChart'), {
+        type: 'bar',
+        data: { labels: Object.keys(fimTypes), datasets: [{ label: 'FIM Events', data: Object.values(fimTypes), backgroundColor: 'rgba(255, 99, 132, 0.6)' }] },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+}
+
+function renderTrendCharts() {
+    const alertDates = {{ alert_dates|tojson }};
+    const alertCounts = {{ alert_counts|tojson }};
+    const fimDates = {{ fim_dates|tojson }};
+    const fimCounts = {{ fim_counts|tojson }};
+
+    if (alertsTrendChart) alertsTrendChart.destroy();
+    alertsTrendChart = new Chart(document.getElementById('alertsTrendChart'), {
+        type: 'line',
+        data: { labels: alertDates, datasets: [{ label: 'Alerts', data: alertCounts, borderColor: 'rgba(75, 192, 192, 1)', backgroundColor: 'rgba(75, 192, 192, 0.2)', fill: true }] },
+        options: { responsive: true }
+    });
+
+    if (fimTrendChart) fimTrendChart.destroy();
+    fimTrendChart = new Chart(document.getElementById('fimTrendChart'), {
+        type: 'line',
+        data: { labels: fimDates, datasets: [{ label: 'FIM Events', data: fimCounts, borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.2)', fill: true }] },
+        options: { responsive: true }
+    });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    renderLogsCharts();
+    populateAlertTypes();
+    renderCharts();
+    renderTrendCharts();
+});
+</script>
+{% endblock %}
