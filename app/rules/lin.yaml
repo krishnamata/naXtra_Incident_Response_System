@@ -1,0 +1,31 @@
+id: rule-001
+version: 1.0
+title: Suspicious PowerShell Execution
+description: Detects execution of PowerShell with encoded command, commonly used in attacks.
+author: krishnaram
+created_at: 2025-07-10
+updated_at: 2025-07-10
+enabled: true
+log_type: process
+
+detection:
+  logic: and
+  conditions:
+    - field: process_name
+      operator: contains
+      value: powershell.exe
+    - field: command_line
+      operator: contains
+      value: -EncodedCommand
+    - field: parent_process
+      operator: regex
+      value: (?i)cmd.exe|wscript.exe
+
+mitre:
+  tactic: Execution
+ technique_id: T1059.001
+  technique_name: PowerShell
+
+severity: 9
+tags: [windows, powershell, execution, mitre]
+playbook: isolate_and_alert

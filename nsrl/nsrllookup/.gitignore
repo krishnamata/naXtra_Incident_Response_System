@@ -1,0 +1,6 @@
+CMakeFiles/
+.idea/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+nsrllookup

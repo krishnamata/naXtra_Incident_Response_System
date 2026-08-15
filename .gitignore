@@ -25,3 +25,17 @@ __pycache__/
 logs/
 log/
 *.json
+
+# Nested project environments and Python cache
+**/venv/
+**/__pycache__/
+*.pyc
+
+# llama.cpp build artifacts
+llama.cpp/
+nsrl/nsrllookup/src/all_hashes.txt
+
+# Runtime databases
+*.db
+*.sqlite
+*.sqlite3

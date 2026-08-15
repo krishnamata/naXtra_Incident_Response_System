@@ -1,0 +1,22 @@
+<group name="syslog, cron-service">
+  <!-- Base grouping rule -->
+  <rule id="111800" level="0">
+    <decoded_as>cron-service</decoded_as>
+    <description>Journald logs for CRON.</description>
+</rule>
+
+
+  <!-- Command execution -->
+  <rule id="111801" level="8">
+    <if_sid>111800</if_sid>
+    <decoded_as>cron-service-cmd</decoded_as>
+    <description>CRON: The $(service_user) user executed ($(command)) on $(hostname).</description>
+  </rule>
+
+  <!-- INFO skipping jobs -->
+  <rule id="111802" level="6">
+    <if_sid>111800</if_sid>
+    <decoded_as>cron-service-info</decoded_as>
+    <description>CRON: The cron.service on $(hostname) skipped @$(frequency) jobs.</description>
+  </rule>
+</group>

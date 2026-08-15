@@ -1,0 +1,22 @@
+<decoders>
+  <!-- Base decoder for CRON -->
+  <decoder name="cron-service">
+      <program_name>CRON</program_name>
+  </decoder>
+
+  <!-- Decoder for CMD logs -->
+  <decoder name="cron-service-cmd">
+      <parent>cron-service</parent>
+      <!-- Allow leading timestamp, hostname, and PID -->
+      <regex type="pcre2">.*\((\w+)\) CMD \((.*)\)$</regex>
+      <order>service_user, command</order>
+  </decoder>
+
+  <!-- Decoder for INFO (Skipping ...) logs -->
+  <decoder name="cron-service-info">
+      <parent>cron-service</parent>
+      <!-- Allow leading timestamp, hostname, and PID -->
+      <regex type="pcre2">.*\((\w+)\) INFO \(Skipping @(\w+) jobs.*\)$</regex>
+      <order>service_user, frequency</order>
+  </decoder>
+</decoders>

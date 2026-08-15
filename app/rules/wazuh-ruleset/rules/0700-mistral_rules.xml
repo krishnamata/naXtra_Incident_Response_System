@@ -1,0 +1,13 @@
+<group name="mistral-output">
+  <rule id="750001" level="10">
+    <decoded_as>mistral-failure-decoder</decoded_as>
+    <description>Mistral output error: Failed to load data</description>
+    <match>Failed to load data</match>
+    <group>mistral-output, errors</group>
+    <mitre>
+      <id>T1499</id>
+      <tactic>Impact</tactic>
+      <technique>Resource Hijacking</technique>
+    </mitre>
+  </rule>
+</group>

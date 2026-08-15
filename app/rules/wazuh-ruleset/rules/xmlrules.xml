@@ -1,0 +1,6 @@
+<group name="testgroup">
+  <rule id="999001" level="5">
+    <description>Test Rule for Keyword Match</description>
+    <match>promiscuous mode</match>
+  </rule>
+</group>
