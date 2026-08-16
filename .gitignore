@@ -1,41 +1,50 @@
-# Ignore model files and databases
-venv/
-*.db
-*.gguf
-agent_logs/
-logs/
-generated_outputs/
-# Virtual Environment (Thousands of heavy package files)
+# Python virtual environments
 venv/
 app/venv/
+**/venv/
 
-# Databases & Backups (Heavy binary files & sensitive credentials)
-*.db
-*.sql
-*.tar.gz
-*.bak
-*.bk
-
-# Python Cache & System files
+# Python cache
 __pycache__/
 *.pyc
-.env
 
-# Raw Log dumps and extra system extra extractions
+# Environment and secrets
+.env
+.env.*
+
+# Cryptographic keys
+keys/*.pem
+keys/*.key
+
+# Logs and runtime output
+*.log
+agent_logs/
 logs/
 log/
-*.json
+app/log/
+app/logs/
 
-# Nested project environments and Python cache
-**/venv/
-**/__pycache__/
-*.pyc
-
-# llama.cpp build artifacts
-llama.cpp/
-nsrl/nsrllookup/src/all_hashes.txt
-
-# Runtime databases
+# Databases
 *.db
 *.sqlite
 *.sqlite3
+*.sql
+
+# Backups
+*.bak
+*.bk
+*.tar.gz
+
+# Generated reports
+*.xlsx
+
+# Model files
+*.gguf
+
+# Generated outputs
+generated_outputs/
+
+# Build artifacts
+llama.cpp/
+
+# NSRL generated/hash data
+nsrl/nsrllookup/src/all_hashes.txt

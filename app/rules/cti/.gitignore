@@ -4,3 +4,4 @@ hashes.json
 .idea
 .vscode
 venv
+*.json
